@@ -17,7 +17,16 @@ import psutil
 from functools import wraps
 from urllib.parse import urlparse
 
-from telegram import Update, BotCommand, InlineKeyboardButton, InlineKeyboardMarkup, ForceReply
+from telegram import (
+    Update,
+    BotCommand,
+    BotCommandScopeAllGroupChats,
+    BotCommandScopeAllPrivateChats,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    ForceReply,
+    MenuButtonCommands,
+)
 from telegram.error import Conflict
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes, MessageHandler, filters
 from telegram.constants import ParseMode
@@ -68,6 +77,33 @@ logging.basicConfig(
 logger = logging.getLogger("telegram")
 logging.getLogger("httpx").setLevel(logging.WARNING)
 _PID_LOCK_PATH = os.path.join(LOG_DIR, "telegram.pid")
+_MENU_COMMANDS = [
+    BotCommand("xian_start", "Start"),
+    BotCommand("xian_register", "Register"),
+    BotCommand("xian_stat", "Status"),
+    BotCommand("xian_cul", "Cultivate"),
+    BotCommand("xian_hunt", "Hunt"),
+    BotCommand("xian_break", "Breakthrough"),
+    BotCommand("xian_sign", "Daily sign-in"),
+    BotCommand("xian_shop", "Shop"),
+    BotCommand("xian_bag", "Inventory"),
+    BotCommand("xian_quest", "Quests"),
+    BotCommand("xian_skills", "Skills"),
+    BotCommand("xian_secret", "Secret realm"),
+    BotCommand("xian_rank", "Rankings"),
+    BotCommand("xian_pvp", "PVP"),
+    BotCommand("xian_chat", "Chat"),
+    BotCommand("xian_sect", "Sect"),
+    BotCommand("xian_alchemy", "Alchemy"),
+    BotCommand("xian_convert", "Convert"),
+    BotCommand("xian_gacha", "Gacha"),
+    BotCommand("xian_achievements", "Achievements"),
+    BotCommand("xian_codex", "Codex"),
+    BotCommand("xian_events", "Events"),
+    BotCommand("xian_worldboss", "World boss"),
+    BotCommand("xian_guide", "Guide"),
+    BotCommand("xian_version", "Version"),
+]
 
 
 def _is_live_telegram_adapter(pid: int) -> bool:
@@ -357,6 +393,11 @@ async def _on_app_init(_app: Application) -> None:
             BotCommand("xian_rank", "修仙排行榜"),
             BotCommand("xian_guide", "修仙指南"),
         ])
+        await _app.bot.set_my_commands(_MENU_COMMANDS)
+        await _app.bot.set_my_commands(_MENU_COMMANDS, scope=BotCommandScopeAllPrivateChats())
+        await _app.bot.set_my_commands(_MENU_COMMANDS, scope=BotCommandScopeAllGroupChats())
+        await _app.bot.set_chat_menu_button(menu_button=MenuButtonCommands())
+        logger.info("Telegram commands synced: %s", len(_MENU_COMMANDS))
     except Exception as e:
         logger.warning("Failed to set bot commands: %s", e)
 
