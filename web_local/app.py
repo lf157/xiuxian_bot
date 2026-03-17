@@ -39,6 +39,7 @@ CONFIG_PATH = os.path.join(ROOT_DIR, 'config.json')
 I18N_DIR    = os.path.join(BASE_DIR, 'i18n')
 LOG_DIR     = os.path.join(ROOT_DIR, 'logs')
 DEFAULT_LANG = "zh"
+ADAPTER_STOP_TIMEOUT_SECONDS = max(15, int(os.getenv("ADAPTER_STOP_TIMEOUT_SECONDS", "15")))
 
 os.makedirs(LOG_DIR, exist_ok=True)
 
@@ -309,8 +310,11 @@ def stop_adapter(adapter_name):
         logger.info(f"Stopping {adapter_name} adapter (PID {running_processes['adapters'][adapter_name].pid})")
         running_processes['adapters'][adapter_name].terminate()
         try:
-            running_processes['adapters'][adapter_name].wait(timeout=5)
+            running_processes['adapters'][adapter_name].wait(timeout=ADAPTER_STOP_TIMEOUT_SECONDS)
         except subprocess.TimeoutExpired:
+            logger.warning(
+                f"{adapter_name} adapter did not exit within {ADAPTER_STOP_TIMEOUT_SECONDS}s; forcing kill"
+            )
             running_processes['adapters'][adapter_name].kill()
         
         del running_processes['adapters'][adapter_name]

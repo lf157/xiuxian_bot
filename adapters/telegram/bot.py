@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import atexit
 import os
 import sys
 import logging
@@ -12,10 +13,12 @@ import re
 import uuid
 import random
 import aiohttp
+import psutil
 from functools import wraps
 from urllib.parse import urlparse
 
 from telegram import Update, BotCommand, InlineKeyboardButton, InlineKeyboardMarkup, ForceReply
+from telegram.error import Conflict
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes, MessageHandler, filters
 from telegram.constants import ParseMode
 
@@ -53,16 +56,78 @@ CORE_VERSION = os.getenv("CORE_VERSION", "DEV")
 LOG_DIR = os.path.abspath(os.path.join(ROOT_DIR, "logs"))
 os.makedirs(LOG_DIR, exist_ok=True)
 
+_LOG_HANDLERS = [logging.StreamHandler()]
+if os.getenv("XIUXIAN_CAPTURED_STDIO") != "1":
+    _LOG_HANDLERS.insert(0, logging.FileHandler(os.path.join(LOG_DIR, "telegram.log"), encoding="utf-8"))
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.FileHandler(os.path.join(LOG_DIR, "telegram.log")),
-        logging.StreamHandler(),
-    ],
+    handlers=_LOG_HANDLERS,
 )
 logger = logging.getLogger("telegram")
 logging.getLogger("httpx").setLevel(logging.WARNING)
+_PID_LOCK_PATH = os.path.join(LOG_DIR, "telegram.pid")
+
+
+def _is_live_telegram_adapter(pid: int) -> bool:
+    try:
+        process = psutil.Process(pid)
+        if not process.is_running():
+            return False
+        cmdline = " ".join(process.cmdline()).lower()
+        return "adapters" in cmdline and "telegram" in cmdline and "bot.py" in cmdline
+    except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+        return False
+
+
+def _release_pid_lock() -> None:
+    try:
+        with open(_PID_LOCK_PATH, "r", encoding="utf-8") as handle:
+            current_pid = handle.read().strip()
+    except OSError:
+        return
+
+    if current_pid != str(os.getpid()):
+        return
+
+    try:
+        os.remove(_PID_LOCK_PATH)
+    except OSError:
+        pass
+
+
+def _acquire_pid_lock() -> bool:
+    for _attempt in range(2):
+        try:
+            fd = os.open(_PID_LOCK_PATH, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        except FileExistsError:
+            existing_pid = None
+            try:
+                with open(_PID_LOCK_PATH, "r", encoding="utf-8") as handle:
+                    existing_pid = int((handle.read() or "").strip())
+            except (OSError, ValueError):
+                existing_pid = None
+
+            if existing_pid and existing_pid != os.getpid() and _is_live_telegram_adapter(existing_pid):
+                logger.error(
+                    "Telegram adapter already running with PID %s; refusing to start a second polling instance",
+                    existing_pid,
+                )
+                return False
+
+            try:
+                os.remove(_PID_LOCK_PATH)
+            except OSError:
+                return False
+            continue
+
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            handle.write(str(os.getpid()))
+        atexit.register(_release_pid_lock)
+        return True
+
+    return False
 
 
 def _mask_bot_token(token_value: str) -> str:
@@ -98,6 +163,7 @@ for _handler in logging.getLogger().handlers:
 DEFAULT_SERVER_PORT = 11450
 SERVER_URL = f"http://127.0.0.1:{DEFAULT_SERVER_PORT}"
 INTERNAL_API_TOKEN = (config.internal_api_token or "").strip()
+TELEGRAM_POLL_TIMEOUT = max(1, int(os.getenv("TELEGRAM_POLL_TIMEOUT", "3")))
 _HTTP_SESSION: aiohttp.ClientSession | None = None
 _ACTOR_PATH_PATTERNS = compiled_actor_path_patterns()
 
@@ -300,6 +366,12 @@ async def _on_app_shutdown(_app: Application) -> None:
 
 
 async def global_error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if isinstance(context.error, Conflict):
+        logger.error(
+            "Telegram polling conflict detected. Another bot instance is using the same token; stopping this process."
+        )
+        context.application.stop_running()
+        return
     logger.exception("Unhandled telegram handler error", exc_info=context.error)
     try:
         if isinstance(update, Update) and update.effective_message is not None:
@@ -5215,6 +5287,9 @@ def main():
     port = app_config.core_server_port
     SERVER_URL = f"http://127.0.0.1:{port}"
 
+    if not _acquire_pid_lock():
+        return
+
     token = app_config.telegram_token() if callable(app_config.telegram_token) else app_config.telegram_token
     if not token:
         logger.error("No telegram token configured (set XXBOT_TELEGRAM_TOKEN env var)")
@@ -5326,7 +5401,7 @@ def main():
 
     logger.info("Starting XiuXianBot v2.0")
     logger.info("Command registry loaded: %s", len(registry.all_commands))
-    app.run_polling()
+    app.run_polling(timeout=TELEGRAM_POLL_TIMEOUT)
 
 
 if __name__ == "__main__":

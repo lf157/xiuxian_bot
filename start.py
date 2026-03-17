@@ -4,12 +4,15 @@ import subprocess
 import threading
 import importlib.util
 import logging
+import signal
 import time
 from pathlib import Path
 
 CORE_VERSION = "OSBETADocker0.1.52"
 WEB_VERSION = "0.3.2"
 TELEGRAM_VERSION = "0.1.0"
+ADAPTER_STOP_TIMEOUT_SECONDS = max(15, int(os.getenv("ADAPTER_STOP_TIMEOUT_SECONDS", "15")))
+CAPTURED_STDIO_ENV = "XIUXIAN_CAPTURED_STDIO"
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LOG_DIR = os.path.join(BASE_DIR, "logs")
@@ -31,9 +34,14 @@ web_thread = None
 web_local_module = None
 public_thread = None
 web_public_module = None
+shutdown_requested = threading.Event()
 
 # 使用统一配置模块
 from core.config import config
+
+
+def _is_subprocess_running(process) -> bool:
+    return isinstance(process, subprocess.Popen) and process.poll() is None
 
 def start_web_local():
     try:
@@ -172,6 +180,13 @@ def start_adapter(adapter_name):
         if not config.is_adapter_enabled(adapter_name):
             logger.info(f"Adapter {adapter_name} is disabled in config")
             return None
+
+        existing = adapter_processes.get(adapter_name)
+        if _is_subprocess_running(existing):
+            logger.info(f"{adapter_name} adapter already running with PID {existing.pid}")
+            return existing
+        if existing is not None and not isinstance(existing, threading.Thread):
+            adapter_processes.pop(adapter_name, None)
         
         logger.info(f"Starting {adapter_name} adapter")
         adapter_path = os.path.join(BASE_DIR, 'adapters', adapter_name, 'bot.py')
@@ -184,16 +199,20 @@ def start_adapter(adapter_name):
         env["CORE_VERSION"] = CORE_VERSION
         env["WEB_VERSION"] = WEB_VERSION
         env["TELEGRAM_VERSION"] = TELEGRAM_VERSION
+        env[CAPTURED_STDIO_ENV] = "1"
 
         log_path = os.path.join(LOG_DIR, f"{adapter_name}.log")
         log_file = open(log_path, "a", encoding="utf-8")
-        process = subprocess.Popen(
-            [sys.executable, adapter_path],
-            stdout=log_file,
-            stderr=log_file,
-            text=True,
-            env=env
-        )
+        try:
+            process = subprocess.Popen(
+                [sys.executable, adapter_path],
+                stdout=log_file,
+                stderr=log_file,
+                text=True,
+                env=env
+            )
+        finally:
+            log_file.close()
         
         adapter_processes[adapter_name] = process
         if web_local_module is not None:
@@ -218,11 +237,20 @@ def stop_adapter(adapter_name):
             logger.info(f"Adapter {adapter_name} runs in-thread; skipping terminate")
             del adapter_processes[adapter_name]
             return True
+        if process.poll() is not None:
+            del adapter_processes[adapter_name]
+            if web_local_module is not None:
+                web_local_module.running_processes['adapters'].pop(adapter_name, None)
+            logger.info(f"{adapter_name} adapter already stopped")
+            return True
         logger.info(f"Stopping {adapter_name} adapter (PID {process.pid})")
         process.terminate()
         try:
-            process.wait(timeout=5)
+            process.wait(timeout=ADAPTER_STOP_TIMEOUT_SECONDS)
         except subprocess.TimeoutExpired:
+            logger.warning(
+                f"{adapter_name} adapter did not exit within {ADAPTER_STOP_TIMEOUT_SECONDS}s; forcing kill"
+            )
             process.kill()
         
         del adapter_processes[adapter_name]
@@ -232,12 +260,41 @@ def stop_adapter(adapter_name):
         return True
     return False
 
+
+def shutdown_all():
+    for adapter_name in list(adapter_processes.keys()):
+        stop_adapter(adapter_name)
+    stop_core()
+
+
+def _handle_shutdown_signal(signum, _frame):
+    if shutdown_requested.is_set():
+        return
+    try:
+        signal_name = signal.Signals(signum).name
+    except Exception:
+        signal_name = str(signum)
+    logger.info(f"Received {signal_name}. Shutting down...")
+    shutdown_requested.set()
+
+
+def _install_signal_handlers():
+    for sig_name in ("SIGINT", "SIGTERM"):
+        sig = getattr(signal, sig_name, None)
+        if sig is None:
+            continue
+        try:
+            signal.signal(sig, _handle_shutdown_signal)
+        except Exception:
+            logger.debug("Unable to register signal handler for %s", sig_name, exc_info=True)
+
 def main():
     logger.info("Starting XiuXianBot")
 
     os.environ["CORE_VERSION"] = CORE_VERSION
     os.environ["WEB_VERSION"] = WEB_VERSION
     os.environ["TELEGRAM_VERSION"] = TELEGRAM_VERSION
+    _install_signal_handlers()
 
     if not start_core():
         logger.error("Failed to start core server. Exiting.")
@@ -258,13 +315,13 @@ def main():
     
     try:
         logger.info("XiuXianBot is running. Press Ctrl+C to stop.")
-        while True:
+        while not shutdown_requested.is_set():
             time.sleep(1)
     except KeyboardInterrupt:
         logger.info("Received keyboard interrupt. Shutting down...")
-        for adapter_name in list(adapter_processes.keys()):
-            stop_adapter(adapter_name)
-        stop_core()
+        shutdown_requested.set()
+    finally:
+        shutdown_all()
         logger.info("XiuXianBot stopped")
 
 if __name__ == "__main__":
