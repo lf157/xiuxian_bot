@@ -21,17 +21,8 @@ from core.database.connection import (
     execute,
 )
 from core.config import config as app_config
+from core.utils.runtime_logging import setup_runtime_logging
 from flask import Flask, render_template, request, jsonify, send_file, session, redirect, url_for
-
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(os.path.join("logs", "web_local.log")),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger("WebLocal")
 
 BASE_DIR    = os.path.abspath(os.path.dirname(__file__))
 ROOT_DIR    = os.path.abspath(os.path.join(BASE_DIR, '..'))
@@ -42,6 +33,7 @@ DEFAULT_LANG = "zh"
 ADAPTER_STOP_TIMEOUT_SECONDS = max(15, int(os.getenv("ADAPTER_STOP_TIMEOUT_SECONDS", "15")))
 
 os.makedirs(LOG_DIR, exist_ok=True)
+logger = setup_runtime_logging("web_local", project_root=ROOT_DIR, stats_interval_seconds=180)
 
 app = Flask(__name__,
             static_folder=os.path.join(BASE_DIR, 'static'),

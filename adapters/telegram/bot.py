@@ -37,6 +37,7 @@ if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 
 from core.config import config
+from core.utils.runtime_logging import setup_runtime_logging, install_asyncio_exception_logging
 from adapters.actor_paths import compiled_actor_path_patterns
 from core.commands.registry import registry, CommandDef
 from core.utils.account_status import format_status_text
@@ -75,7 +76,7 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=_LOG_HANDLERS,
 )
-logger = logging.getLogger("telegram")
+logger = setup_runtime_logging("telegram", project_root=ROOT_DIR, stats_interval_seconds=120)
 logging.getLogger("httpx").setLevel(logging.WARNING)
 _PID_LOCK_PATH = os.path.join(LOG_DIR, "telegram.pid")
 _MENU_COMMANDS = [
@@ -396,6 +397,7 @@ async def _reply_text(update_or_query, text: str, **kwargs):
 
 
 async def _on_app_init(_app: Application) -> None:
+    install_asyncio_exception_logging("telegram")
     await _get_http_session()
     try:
         await _app.bot.set_my_commands([

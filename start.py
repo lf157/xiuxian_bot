@@ -7,6 +7,7 @@ import logging
 import signal
 import time
 from pathlib import Path
+from core.utils.runtime_logging import setup_runtime_logging
 
 CORE_VERSION = "OSBETADocker0.1.52"
 WEB_VERSION = "0.3.2"
@@ -18,15 +19,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LOG_DIR = os.path.join(BASE_DIR, "logs")
 os.makedirs(LOG_DIR, exist_ok=True)
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(os.path.join(LOG_DIR, "xiuxianbot.log"), encoding="utf-8"),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger("XiuXianBot")
+logger = setup_runtime_logging("xiuxianbot", project_root=BASE_DIR, stats_interval_seconds=180)
 
 adapter_processes = {}
 core_process = None

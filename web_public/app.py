@@ -4,19 +4,11 @@ import datetime
 from flask import Flask, render_template, jsonify
 
 from core.config import config
-
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(os.path.join("logs", "web_public.log"), encoding="utf-8"),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger("WebPublic")
+from core.utils.runtime_logging import setup_runtime_logging
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 ROOT_DIR = os.path.abspath(os.path.join(BASE_DIR, '..'))
+logger = setup_runtime_logging("web_public", project_root=ROOT_DIR, stats_interval_seconds=180)
 
 app = Flask(
     __name__,

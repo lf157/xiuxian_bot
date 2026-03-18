@@ -22,19 +22,12 @@ from flask import Flask, jsonify, request
 from werkzeug.exceptions import HTTPException
 from werkzeug.serving import make_server
 from core.config import config
+from core.utils.runtime_logging import setup_runtime_logging
 
 LOG_DIR = os.path.join(PROJECT_ROOT, "logs")
 os.makedirs(LOG_DIR, exist_ok=True)
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.FileHandler(os.path.join(LOG_DIR, "core.log"), encoding="utf-8"),
-        logging.StreamHandler(),
-    ],
-)
-logger = logging.getLogger("core.server")
+logger = setup_runtime_logging("core", project_root=PROJECT_ROOT, stats_interval_seconds=180)
 
 
 def is_internal_request_authorized(provided_token: str) -> bool:
