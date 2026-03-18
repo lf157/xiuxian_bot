@@ -83,7 +83,7 @@ def _compensate_expired_secret_session(session: Dict[str, Any], now: int) -> Non
         execute(
             """UPDATE users
                SET secret_realm_attempts = CASE
-                    WHEN secret_realm_last_reset >= ? THEN MAX(secret_realm_attempts - 1, 0)
+                    WHEN secret_realm_last_reset >= ? THEN GREATEST(secret_realm_attempts - 1, 0)
                     ELSE secret_realm_attempts
                END,
                    last_secret_time = CASE

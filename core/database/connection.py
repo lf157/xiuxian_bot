@@ -1,4 +1,4 @@
-"""
+﻿"""
 数据库连接和操作
 
 线程安全：使用 psycopg2.pool.ThreadedConnectionPool + threading.local 缓存。
@@ -567,6 +567,9 @@ def _create_indexes(cur) -> None:
         "CREATE INDEX IF NOT EXISTS idx_worldboss_attacks_user ON world_boss_attacks(user_id)",
         # 商店轮换限购索引
         "CREATE INDEX IF NOT EXISTS idx_shop_limits_user_period ON shop_purchase_limits(user_id, period_key)",
+        # Story progression indexes
+        "CREATE INDEX IF NOT EXISTS idx_story_unlocks_user_order ON user_story_unlocks(user_id, chapter_order)",
+        "CREATE INDEX IF NOT EXISTS idx_story_unlocks_user_claimed ON user_story_unlocks(user_id, claimed)",
         # Metrics & reports
         "CREATE INDEX IF NOT EXISTS idx_event_logs_ts ON event_logs(ts)",
         "CREATE INDEX IF NOT EXISTS idx_event_logs_user_event ON event_logs(user_id, event)",
@@ -1450,6 +1453,47 @@ def create_tables(conn: Optional[object] = None) -> None:
         )
         """
     )
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS user_story_state (
+            user_id TEXT PRIMARY KEY,
+            next_chapter_order INTEGER DEFAULT 1,
+            updated_at INTEGER NOT NULL
+        )
+        """
+    )
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS user_story_counters (
+            user_id TEXT PRIMARY KEY,
+            signin_count INTEGER DEFAULT 0,
+            cultivate_count INTEGER DEFAULT 0,
+            hunt_victory_count INTEGER DEFAULT 0,
+            secret_realm_count INTEGER DEFAULT 0,
+            breakthrough_success_count INTEGER DEFAULT 0,
+            updated_at INTEGER NOT NULL
+        )
+        """
+    )
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS user_story_unlocks (
+            id SERIAL PRIMARY KEY,
+            user_id TEXT NOT NULL,
+            chapter_id TEXT NOT NULL,
+            chapter_order INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            summary TEXT DEFAULT '',
+            narrative TEXT DEFAULT '',
+            reward_json TEXT DEFAULT '{}',
+            trigger_event TEXT,
+            unlocked_at INTEGER NOT NULL,
+            claimed INTEGER DEFAULT 0,
+            claimed_at INTEGER DEFAULT 0,
+            UNIQUE(user_id, chapter_id)
+        )
+        """
+    )
 
     # --- 创建索引 ---
     _create_indexes(cur)
@@ -1841,7 +1885,7 @@ def upsert_quest(user_id: str, quest_id: str, date_str: str, progress: int, goal
         VALUES (%s, %s, %s, %s, 0, %s)
         ON CONFLICT(user_id, quest_id, assigned_date) DO UPDATE SET
             goal = excluded.goal,
-            progress = MAX(user_quests.progress, excluded.progress)
+            progress = GREATEST(user_quests.progress, excluded.progress)
         """,
         (user_id, quest_id, int(progress or 0), int(goal or 1), date_str),
     )

@@ -32,6 +32,7 @@ from core.services.sect_service import get_user_sect_buffs
 from core.services.stats_service import recalculate_user_combat_stats
 from core.services.metrics_service import log_event, log_economy_ledger
 from core.services.realm_trials_service import get_or_create_realm_trial
+from core.services.story_service import track_story_action
 
 cultivation_bp = Blueprint("cultivation", __name__)
 
@@ -180,6 +181,11 @@ def cultivate_end():
 
     # Quest progress: cultivate
     increment_quest(user_id, "daily_cultivate")
+    story_update = []
+    try:
+        story_update = track_story_action(user_id, "cultivate_end")
+    except Exception:
+        story_update = []
 
     # 检查是否可以突破
     new_exp = user.get("exp", 0) + gain
@@ -213,6 +219,7 @@ def cultivate_end():
         hours=gain_result["hours"],
         efficiency=gain_result["efficiency"],
         tip=gain_result["tip"],
+        story_update=story_update,
     )
 
 

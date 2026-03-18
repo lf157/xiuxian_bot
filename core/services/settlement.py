@@ -55,6 +55,7 @@ from core.services.drop_pity_service import roll_targeted_drop_with_pity
 from core.services.quests_service import increment_quest
 from core.services.sect_service import apply_sect_stat_buffs, get_user_sect_buffs, increment_sect_quest_progress
 from core.services.metrics_service import log_event, log_economy_ledger
+from core.services.story_service import track_story_action
 from core.services.skills_service import gain_skill_mastery
 from core.services.realm_trials_service import increment_realm_trial
 from core.utils.timeutil import midnight_timestamp, local_day_key
@@ -270,6 +271,7 @@ def settle_hunt(
 
     element_relation = _element_relation_label(user, result.get("monster"))
     drop_pity_meta: Optional[Dict[str, Any]] = None
+    story_update: List[Dict[str, Any]] = []
 
     if result.get("success") and result.get("victory"):
         try:
@@ -343,6 +345,10 @@ def settle_hunt(
             increment_realm_trial(user_id, int(user.get("rank", 1) or 1), "hunt", 1)
         except Exception:
             pass
+        try:
+            story_update = track_story_action(user_id, "hunt_victory")
+        except Exception:
+            story_update = []
     else:
         update_user(
             user_id,
@@ -384,6 +390,8 @@ def settle_hunt(
         resp["element_relation"] = element_relation
     if event_point_grants:
         resp["event_points"] = event_point_grants
+    if story_update:
+        resp["story_update"] = story_update
     resp["combat_modifiers"] = {
         "element_relation": element_relation,
         "elite_affixes": result.get("elite_affixes", []),
@@ -754,6 +762,12 @@ def settle_secret_realm_explore(
                 increment_realm_trial(user_id, int(user.get("rank", 1) or 1), "secret", 1)
         except Exception:
             pass
+        story_update: List[Dict[str, Any]] = []
+        if overall_victory:
+            try:
+                story_update = track_story_action(user_id, "secret_realm_victory")
+            except Exception:
+                story_update = []
 
         resp = {
             "success": True,
@@ -784,6 +798,8 @@ def settle_secret_realm_explore(
             resp["post_status"] = _battle_post_status(updated_user, {"attacker_remaining_hp": max(1, int(current_hp))})
         if drop_buff_used:
             resp["buff_used"] = "realm_drop_boost"
+        if story_update:
+            resp["story_update"] = story_update
         if overall_victory:
             try:
                 from core.services.events_service import grant_event_points_for_action
@@ -962,6 +978,12 @@ def settle_secret_realm_explore(
             increment_realm_trial(user_id, int(user.get("rank", 1) or 1), "secret", 1)
     except Exception:
         pass
+    story_update: List[Dict[str, Any]] = []
+    if battle_result.get("victory", True):
+        try:
+            story_update = track_story_action(user_id, "secret_realm_victory")
+        except Exception:
+            story_update = []
 
     combat_modifiers = {
         "element_relation": _element_relation_label(user, battle_result.get("monster")),
@@ -996,6 +1018,8 @@ def settle_secret_realm_explore(
         resp["post_status"] = _battle_post_status(updated_user, battle_result)
     if drop_buff_used:
         resp["buff_used"] = "realm_drop_boost"
+    if story_update:
+        resp["story_update"] = story_update
     if battle_result.get("victory", True):
         try:
             from core.services.events_service import grant_event_points_for_action

@@ -1,4 +1,4 @@
-"""
+﻿"""
 修仙 Telegram Bot - 完整版
 """
 
@@ -502,7 +502,6 @@ async def text_message_handler(update: Update, context: ContextTypes.DEFAULT_TYP
             return
         username = text.split()[0] if text else ""
         element = context.user_data.get("pending_element")
-        _clear_pending_action(context)
         if not username:
             prompt = await message.reply_text(
                 "请输入游戏名（2-16 位中文/字母/数字）：",
@@ -512,6 +511,16 @@ async def text_message_handler(update: Update, context: ContextTypes.DEFAULT_TYP
             if element:
                 context.user_data["pending_element"] = element
             return
+        if not re.fullmatch(r"^[A-Za-z0-9\u4e00-\u9fff]{2,16}$", username):
+            prompt = await message.reply_text(
+                "游戏名格式不正确，请输入 2-16 位中文、字母或数字：",
+                reply_markup=ForceReply(selective=True),
+            )
+            _set_pending_action(context, action="register_name", prompt_message=prompt, user_id=message.from_user.id)
+            if element:
+                context.user_data["pending_element"] = element
+            return
+        _clear_pending_action(context)
         await do_register(update, context, str(message.from_user.id), username, element)
         return
 
@@ -649,12 +658,24 @@ async def start_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         if r.get("success"):
             # 已注册，显示主菜单
+            story_hint = ""
+            try:
+                story_r = await http_get(f"{SERVER_URL}/api/story/{r['user_id']}", timeout=15)
+                pending = ((story_r or {}).get("story") or {}).get("pending_claims") or []
+                if pending:
+                    first_chapter = pending[0]
+                    title = str(first_chapter.get("title") or "主线")
+                    detail = str(first_chapter.get("narrative") or first_chapter.get("summary") or "")
+                    story_hint = f"\n📜 *{title}*\n{detail}\n"
+            except Exception:
+                story_hint = ""
             text = f"""
 👋 欢迎回来，*{r.get('username', user_name)}*！
 
 🕯️ 修仙之路漫漫，吾将上下而求索。
 
 选择下方按钮开始你的修仙之旅：
+{story_hint}
 """
             await _reply_with_owned_panel(
                 update,
@@ -774,6 +795,9 @@ async def do_register(update, context: ContextTypes.DEFAULT_TYPE, user_id: str, 
     try:
         data = await http_post(f"{SERVER_URL}/api/register", json=payload, timeout=15)
         if data.get("success"):
+            story_intro = data.get("story_intro") or {}
+            intro_title = str(story_intro.get("title") or "")
+            intro_text = str(story_intro.get("narrative") or story_intro.get("summary") or "")
             text = f"""
 ✅ *注册成功！*
 
@@ -783,6 +807,8 @@ async def do_register(update, context: ContextTypes.DEFAULT_TYPE, user_id: str, 
 
 开始你的修仙之旅吧！
 """
+            if intro_title or intro_text:
+                text += f"\n📜 *{intro_title or '序章'}*\n{intro_text}\n"
             await _reply_with_owned_panel(
                 update,
                 context,

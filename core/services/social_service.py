@@ -191,7 +191,7 @@ def accept_chat_request(*, user_id: str, request_id: int) -> Tuple[Dict[str, Any
         cur.execute(
             """
             UPDATE users
-            SET stamina = MIN(%s, stamina + %s),
+            SET stamina = LEAST(%s, stamina + %s),
                 stamina_updated_at = CASE WHEN stamina + %s >= %s THEN %s ELSE stamina_updated_at END,
                 exp = exp + %s,
                 chat_energy_today = (CASE WHEN chat_energy_reset < %s THEN 0 ELSE chat_energy_today END) + %s,
@@ -217,7 +217,7 @@ def accept_chat_request(*, user_id: str, request_id: int) -> Tuple[Dict[str, Any
         cur.execute(
             """
             UPDATE users
-            SET stamina = MIN(%s, stamina + %s),
+            SET stamina = LEAST(%s, stamina + %s),
                 stamina_updated_at = CASE WHEN stamina + %s >= %s THEN %s ELSE stamina_updated_at END,
                 exp = exp + %s,
                 chat_energy_today = (CASE WHEN chat_energy_reset < %s THEN 0 ELSE chat_energy_today END) + %s,

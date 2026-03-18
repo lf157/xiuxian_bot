@@ -1,4 +1,4 @@
-"""Extra settlement services (shop/signin/breakthrough etc.).
+﻿"""Extra settlement services (shop/signin/breakthrough etc.).
 
 Keep this module free of imports from core.server to avoid circular imports.
 Each function returns (response_dict, http_status).
@@ -24,6 +24,7 @@ from core.services.quests_service import increment_quest
 from core.services.realm_trials_service import is_realm_trial_complete, get_or_create_realm_trial
 from core.database.migrations import reserve_request, save_response
 from core.services.metrics_service import log_event, log_economy_ledger
+from core.services.story_service import track_story_action
 from core.utils.timeutil import local_day_key, midnight_timestamp
 from core.game.items import (
     get_item_by_id,
@@ -479,6 +480,11 @@ def settle_signin(*, user_id: str) -> Tuple[Dict[str, Any], int]:
             )
 
     increment_quest(user_id, "daily_signin")
+    story_update = []
+    try:
+        story_update = track_story_action(user_id, "signin")
+    except Exception:
+        story_update = []
     log_event(
         "signin",
         user_id=user_id,
@@ -502,7 +508,7 @@ def settle_signin(*, user_id: str) -> Tuple[Dict[str, Any], int]:
             "month_days": rewards.get("month_days"),
         },
     )
-    return {"success": True, "message": message, "rewards": rewards}, 200
+    return {"success": True, "message": message, "rewards": rewards, "story_update": story_update}, 200
 
 
 def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal") -> Tuple[Dict[str, Any], int]:
@@ -824,6 +830,12 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
             resp["strategy_cost_text"] = (
                 "消耗突破丹 x1" if strategy == "steady" else f"消耗灵石 x{protect_material_need}"
             )
+        story_update = []
+        try:
+            story_update = track_story_action(user_id, "breakthrough_success")
+        except Exception:
+            story_update = []
+        resp["story_update"] = story_update
         log_event(
             "breakthrough",
             user_id=user_id,
@@ -902,7 +914,7 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
             if protect_active:
                 cur.execute(
                     """UPDATE users SET
-                       exp = MAX(0, exp - %s), copper = copper - %s,
+                       exp = GREATEST(0, exp - %s), copper = copper - %s,
                        weak_until = %s, breakthrough_pity = %s, breakthrough_protect_until = 0,
                        breakthrough_boost_until = 0, breakthrough_boost_pct = 0
                        WHERE user_id = %s AND copper >= %s""",
@@ -918,7 +930,7 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
             else:
                 cur.execute(
                     """UPDATE users SET
-                       exp = MAX(0, exp - %s), copper = copper - %s,
+                       exp = GREATEST(0, exp - %s), copper = copper - %s,
                        weak_until = %s, breakthrough_pity = %s,
                        breakthrough_boost_until = 0, breakthrough_boost_pct = 0
                        WHERE user_id = %s AND copper >= %s""",
@@ -1095,14 +1107,14 @@ def settle_use_item(*, user_id: str, item_id: str) -> Tuple[Dict[str, Any], int]
                 elif effect == "hp":
                     heal_amount = max(1, int(round(int(user.get("max_hp", 100) or 100) * value_pct)))
                     cur.execute(
-                        "UPDATE users SET hp = MIN(max_hp, hp + %s), vitals_updated_at = %s WHERE user_id = %s",
+                        "UPDATE users SET hp = LEAST(max_hp, hp + %s), vitals_updated_at = %s WHERE user_id = %s",
                         (heal_amount, now, user_id),
                     )
                     message = f"使用成功！恢复 {heal_amount} HP"
                 elif effect == "mp":
                     recover_amount = max(1, int(round(int(user.get("max_mp", 50) or 50) * value_pct)))
                     cur.execute(
-                        "UPDATE users SET mp = MIN(max_mp, mp + %s), vitals_updated_at = %s WHERE user_id = %s",
+                        "UPDATE users SET mp = LEAST(max_mp, mp + %s), vitals_updated_at = %s WHERE user_id = %s",
                         (recover_amount, now, user_id),
                     )
                     message = f"使用成功！恢复 {recover_amount} MP"

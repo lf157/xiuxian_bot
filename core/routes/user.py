@@ -12,6 +12,7 @@ from core.routes._helpers import (
 from core.database.connection import get_user_by_id
 from core.utils.account_status import get_user_status
 from core.services.account_service import register_account
+from core.services.story_service import get_story_status, track_story_action
 from core.services.codex_service import (
     list_monsters as codex_list_monsters,
     list_items as codex_list_items,
@@ -61,6 +62,15 @@ def register_user():
         element=element,
         lang=lang,
     )
+    if resp.get("success") and resp.get("user_id"):
+        try:
+            track_story_action(resp["user_id"], "status_check", amount=0)
+            story_resp, _ = get_story_status(resp["user_id"])
+            pending = ((story_resp or {}).get("story") or {}).get("pending_claims") or []
+            if pending:
+                resp["story_intro"] = pending[0]
+        except Exception:
+            pass
     return jsonify(resp), http_status
 
 
