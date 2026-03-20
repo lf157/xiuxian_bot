@@ -54,6 +54,44 @@ def _pill_buff_cfg() -> Dict[str, Any]:
     }
 
 
+def _cfg_float(raw: Any, default: float) -> float:
+    try:
+        return float(raw)
+    except (TypeError, ValueError):
+        return float(default)
+
+
+def _cfg_int(raw: Any, default: int) -> int:
+    try:
+        return int(raw)
+    except (TypeError, ValueError):
+        return int(default)
+
+
+def _breakthrough_cfg() -> Dict[str, Any]:
+    cfg = (APP_CONFIG.get("balance", {}) or {}).get("breakthrough", {}) or {}
+    return {
+        "fire_bonus": _cfg_float(cfg.get("fire_bonus"), 0.03),
+        "steady_bonus": _cfg_float(cfg.get("steady_bonus"), 0.10),
+        "post_breakthrough_restore_ratio": min(1.0, max(0.0, _cfg_float(cfg.get("post_breakthrough_restore_ratio"), 0.30))),
+        "stamina_cost": max(1, _cfg_int(cfg.get("stamina_cost"), 1)),
+        "protect_material_base": max(0, _cfg_int(cfg.get("protect_material_base"), 2)),
+        "protect_material_per_10_rank": max(0, _cfg_int(cfg.get("protect_material_per_10_rank"), 1)),
+        "desperate_exp_penalty_add": max(0.0, _cfg_float(cfg.get("desperate_exp_penalty_add"), 0.05)),
+        "desperate_exp_penalty_cap": max(0.0, _cfg_float(cfg.get("desperate_exp_penalty_cap"), 0.30)),
+        "desperate_weak_seconds_add": max(0, _cfg_int(cfg.get("desperate_weak_seconds_add"), 1800)),
+        "desperate_success_gold_bonus": max(0, _cfg_int(cfg.get("desperate_success_gold_bonus"), 1)),
+        "desperate_success_copper_min": max(0, _cfg_int(cfg.get("desperate_success_copper_min"), 50)),
+        "desperate_success_copper_cost_divisor": max(1, _cfg_int(cfg.get("desperate_success_copper_cost_divisor"), 5)),
+    }
+
+
+def _protect_material_need(rank: int, bt_cfg: Dict[str, Any]) -> int:
+    base = int(bt_cfg.get("protect_material_base", 2) or 2)
+    per_10 = int(bt_cfg.get("protect_material_per_10_rank", 1) or 1)
+    return base + max(0, int(rank or 1) // 10) * per_10
+
+
 def _realm_trial_requirement_payload(trial: Dict[str, Any]) -> Dict[str, Any]:
     hunt_target = max(0, int((trial or {}).get("hunt_target", 0) or 0))
     hunt_progress = max(0, int((trial or {}).get("hunt_progress", 0) or 0))
@@ -90,6 +128,25 @@ def _current_period_key(period: str) -> str:
     if period == "week":
         return f"week:{day_key // 7}"
     return f"day:{day_key}"
+
+
+def _format_ratio_percent(ratio: float) -> str:
+    pct = max(0.0, float(ratio or 0.0) * 100.0)
+    rounded = round(pct, 2)
+    if abs(rounded - round(rounded)) < 1e-9:
+        return f"{int(round(rounded))}%"
+    if abs(rounded * 10 - round(rounded * 10)) < 1e-9:
+        return f"{rounded:.1f}%"
+    return f"{rounded:.2f}%"
+
+
+def _format_weak_penalty_text(weak_seconds: int) -> str:
+    seconds = max(0, int(weak_seconds or 0))
+    if seconds <= 0:
+        return "不进入虚弱状态"
+    if seconds % 60 == 0:
+        return f"进入虚弱状态{seconds // 60}分钟"
+    return f"进入虚弱状态{seconds}秒"
 
 
 def get_breakthrough_preview(*, user_id: str, use_pill: bool = False, strategy: str = "steady") -> Tuple[Dict[str, Any], int]:
@@ -134,11 +191,14 @@ def get_breakthrough_preview(*, user_id: str, use_pill: bool = False, strategy: 
     threshold = get_hard_pity_threshold(current_rank)
     pity = int(user.get("breakthrough_pity", 0) or 0)
     base_rate = float(next_realm.get("break_rate", 0.0) or 0.0)
+    bt_cfg = _breakthrough_cfg()
+    fire_bonus = float(bt_cfg.get("fire_bonus", 0.03) or 0.03)
+    steady_bonus = float(bt_cfg.get("steady_bonus", 0.10) or 0.10)
     rate_parts = [f"基础成功率 {int(base_rate * 100)}%"]
     shown_rate = base_rate
     if user.get("element") == "火":
-        shown_rate = min(1.0, shown_rate + 0.03)
-        rate_parts.append("火灵根 +3%")
+        shown_rate = min(1.0, shown_rate + fire_bonus)
+        rate_parts.append(f"火灵根 +{_format_ratio_percent(fire_bonus)}")
 
     if protect_active:
         protect_bonus = float(protect_cfg.get("success_bonus", 0.05))
@@ -158,11 +218,11 @@ def get_breakthrough_preview(*, user_id: str, use_pill: bool = False, strategy: 
 
     extra_cost_text = "无额外材料"
     if strategy == "steady":
-        shown_rate = min(1.0, shown_rate + 0.10)
-        rate_parts.append("突破丹 +10%")
+        shown_rate = min(1.0, shown_rate + steady_bonus)
+        rate_parts.append(f"突破丹 +{_format_ratio_percent(steady_bonus)}")
         extra_cost_text = "额外消耗: 突破丹 x1"
     elif strategy == "protect":
-        protect_need = 2 + max(0, current_rank // 10)
+        protect_need = _protect_material_need(current_rank, bt_cfg)
         extra_cost_text = f"额外消耗: 灵石 x{protect_need}"
         rate_parts.append("护脉: 失败不进虚弱")
     elif strategy == "desperate":
@@ -175,23 +235,24 @@ def get_breakthrough_preview(*, user_id: str, use_pill: bool = False, strategy: 
 
     base_for_notes = float(next_realm.get("break_rate", 0.0) or 0.0)
     if user.get("element") == "火":
-        base_for_notes = min(1.0, base_for_notes + 0.03)
+        base_for_notes = min(1.0, base_for_notes + fire_bonus)
     if protect_active:
         base_for_notes = min(1.0, base_for_notes + float(protect_cfg.get("success_bonus", 0.05)))
     if boost_active:
         base_for_notes = min(1.0, base_for_notes + boost_pct / 100.0)
     base_for_notes = min(1.0, base_for_notes + pity_bonus(pity))
-    protect_need = 2 + max(0, current_rank // 10)
-    steady_rate = min(1.0, base_for_notes + 0.10)
+    protect_need = _protect_material_need(current_rank, bt_cfg)
+    steady_rate = min(1.0, base_for_notes + steady_bonus)
     protect_rate = base_for_notes
     desperate_rate = base_for_notes
+    stamina_cost = int(bt_cfg.get("stamina_cost", 1) or 1)
 
     preview_text = (
         f"⚡ *渡劫预告*\n"
         f"策略: *{strategy_name}*\n"
         f"你将从 *{current_realm.get('name', '当前境界')}* 冲击 *{next_realm.get('name', '下一境界')}*。\n"
         f"消耗: {cost:,} 下品灵石\n"
-        "额外消耗: 1 点精力\n"
+        f"额外消耗: {stamina_cost} 点精力\n"
         f"{extra_cost_text}\n"
         f"预计成功率: *{int(shown_rate * 100)}%*\n"
         f"保底进度: {pity}/{threshold}\n"
@@ -212,7 +273,7 @@ def get_breakthrough_preview(*, user_id: str, use_pill: bool = False, strategy: 
             "current_realm": current_realm.get("name", "当前境界"),
             "next_realm": next_realm.get("name", "下一境界"),
             "cost_copper": int(cost),
-            "stamina_cost": 1,
+            "stamina_cost": stamina_cost,
             "success_rate": float(shown_rate),
             "success_rate_pct": int(shown_rate * 100),
             "pity": int(pity),
@@ -753,6 +814,7 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
         )
         return {"success": False, "code": "MAX", "message": "你已达到最高境界！"}, 400
     base_rate = float(next_realm.get("break_rate", 0.0) or 0.0)
+    bt_cfg = _breakthrough_cfg()
     consume_item_id = None
     consume_item_type = None
     consume_item_qty = 0
@@ -762,11 +824,11 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
         consume_item_id = "breakthrough_pill"
         consume_item_type = "pill"
         consume_item_qty = 1
-        pill_bonus = 0.10
+        pill_bonus = float(bt_cfg.get("steady_bonus", 0.10) or 0.10)
     elif strategy == "protect":
         consume_item_id = "spirit_stone"
         consume_item_type = "material"
-        protect_material_need = 2 + max(0, current_rank // 10)
+        protect_material_need = _protect_material_need(current_rank, bt_cfg)
         consume_item_qty = protect_material_need
     hard_pity_threshold = get_hard_pity_threshold(current_rank)
 
@@ -794,8 +856,9 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
                 )
                 return {"success": False, "code": "INSUFFICIENT_ITEM", "message": f"{item_name}不足，无法使用当前冲关策略"}, 400
 
+    fire_bonus = float(bt_cfg.get("fire_bonus", 0.03) or 0.03)
     if user.get("element") == "火":
-        base_rate = min(1.0, base_rate + 0.03)
+        base_rate = min(1.0, base_rate + fire_bonus)
     if protect_active:
         base_rate = min(1.0, base_rate + float(protect_cfg.get("success_bonus", 0.05)))
     if boost_active:
@@ -804,12 +867,13 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
         base_rate = min(1.0, base_rate + pill_bonus)
     extra = pity_bonus(int(user.get("breakthrough_pity", 0) or 0))
     shown_rate = min(1.0, base_rate + extra)
+    stamina_cost = int(bt_cfg.get("stamina_cost", 1) or 1)
 
     try:
         current_stamina = float(user.get("stamina", 0) or 0)
     except (TypeError, ValueError):
         current_stamina = 0.0
-    if current_stamina < 1:
+    if current_stamina < stamina_cost:
         log_event(
             "breakthrough",
             user_id=user_id,
@@ -821,9 +885,9 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
         return {
             "success": False,
             "code": "INSUFFICIENT_STAMINA",
-            "message": "精力不足，突破需要 1 点精力",
+            "message": f"精力不足，突破需要 {stamina_cost} 点精力",
             "stamina": format_stamina_value(current_stamina),
-            "stamina_cost": 1,
+            "stamina_cost": stamina_cost,
         }, 400
 
     extra_bonus = 0.0
@@ -850,13 +914,23 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
         elif new_rank >= 6:
             gold_reward = 1    # 筑基
         if strategy == "desperate":
-            gold_reward += 1
+            gold_reward += int(bt_cfg.get("desperate_success_gold_bonus", 1) or 1)
         copper_reward = 0
         if strategy == "desperate":
-            copper_reward = max(50, cost // 5)
+            copper_reward = max(
+                int(bt_cfg.get("desperate_success_copper_min", 50) or 50),
+                cost // int(bt_cfg.get("desperate_success_copper_cost_divisor", 5) or 5),
+            )
 
         new_stats = calculate_user_stats({"rank": new_rank, "element": user.get("element")})
         pity_fields = apply_on_success(user)
+        restore_ratio = float(bt_cfg.get("post_breakthrough_restore_ratio", 0.30) or 0.30)
+        current_hp = max(0, int(user.get("hp", 0) or 0))
+        current_mp = max(0, int(user.get("mp", 0) or 0))
+        hp_gain = max(0, int(round(int(new_stats["max_hp"]) * restore_ratio)))
+        mp_gain = max(0, int(round(int(new_stats["max_mp"]) * restore_ratio)))
+        restored_hp = min(int(new_stats["max_hp"]), current_hp + hp_gain)
+        restored_mp = min(int(new_stats["max_mp"]), current_mp + mp_gain)
 
         # ---- 单事务原子突破成功 ----
         try:
@@ -872,7 +946,7 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
                     if int(cur.rowcount or 0) != 1:
                         raise ValueError("INSUFFICIENT_ITEM")
 
-                if not spend_user_stamina_tx(cur, user_id, 1, now=now):
+                if not spend_user_stamina_tx(cur, user_id, stamina_cost, now=now):
                     raise ValueError("INSUFFICIENT_STAMINA")
 
                 if protect_active:
@@ -891,8 +965,8 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
                             gold_reward,
                             new_stats["max_hp"],
                             new_stats["max_mp"],
-                            new_stats["max_hp"],
-                            new_stats["max_mp"],
+                            restored_hp,
+                            restored_mp,
                             new_stats["attack"],
                             new_stats["defense"],
                             pity_fields.get("breakthrough_pity", 0),
@@ -916,8 +990,8 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
                             gold_reward,
                             new_stats["max_hp"],
                             new_stats["max_mp"],
-                            new_stats["max_hp"],
-                            new_stats["max_mp"],
+                            restored_hp,
+                            restored_mp,
                             new_stats["attack"],
                             new_stats["defense"],
                             pity_fields.get("breakthrough_pity", 0),
@@ -942,9 +1016,9 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
                 return {
                     "success": False,
                     "code": "INSUFFICIENT_STAMINA",
-                    "message": "精力不足，突破需要 1 点精力",
+                    "message": f"精力不足，突破需要 {stamina_cost} 点精力",
                     "stamina": format_stamina_value((latest or {}).get("stamina", 0)),
-                    "stamina_cost": 1,
+                    "stamina_cost": stamina_cost,
                 }, 400
             if reason == "INSUFFICIENT_COPPER":
                 latest = get_user_by_id(user_id) or {}
@@ -980,7 +1054,10 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
             "event_title": "天劫已破，道心更进一步",
             "event_flavor": f"你熬过了从【{(get_realm_by_id(current_rank) or {}).get('name', '当前境界')}】到【{next_realm['name']}】的瓶颈，气海与经脉一同蜕变。",
             "next_goal": "建议立刻查看新解锁内容，并准备下一阶段的修炼、秘境和炼丹路线。",
-            "stamina_cost": 1,
+            "stamina_cost": stamina_cost,
+            "post_breakthrough_restore_ratio": restore_ratio,
+            "post_breakthrough_hp": restored_hp,
+            "post_breakthrough_mp": restored_mp,
         }
         if protect_active:
             resp["protect_pill_used"] = True
@@ -1024,7 +1101,7 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
             action="breakthrough",
             delta_copper=-cost + copper_reward,
             delta_gold=gold_reward,
-            delta_stamina=-1,
+            delta_stamina=-stamina_cost,
             item_id=consume_item_id,
             qty=consume_item_qty if consume_item_id else None,
             success=True,
@@ -1045,12 +1122,15 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
     if strategy == "steady":
         exp_lost_pct *= 0.5
     elif strategy == "desperate":
-        exp_lost_pct = min(0.3, exp_lost_pct + 0.05)
+        exp_lost_pct = min(
+            float(bt_cfg.get("desperate_exp_penalty_cap", 0.30) or 0.30),
+            exp_lost_pct + float(bt_cfg.get("desperate_exp_penalty_add", 0.05) or 0.05),
+        )
     weak_seconds = int(app_cfg.get("balance", {}).get("breakthrough", {}).get("weak_seconds", 3600))
     if strategy == "protect":
         weak_seconds = 0
     elif strategy == "desperate":
-        weak_seconds += 1800
+        weak_seconds += int(bt_cfg.get("desperate_weak_seconds_add", 1800) or 1800)
     if protect_active:
         exp_lost_pct *= float(protect_cfg.get("exp_loss_mult", 0.5))
         weak_seconds = int(weak_seconds * float(protect_cfg.get("weak_seconds_mult", 0.0)))
@@ -1073,7 +1153,7 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
                 if int(cur.rowcount or 0) != 1:
                     raise ValueError("INSUFFICIENT_ITEM")
 
-            if not spend_user_stamina_tx(cur, user_id, 1, now=now):
+            if not spend_user_stamina_tx(cur, user_id, stamina_cost, now=now):
                 raise ValueError("INSUFFICIENT_STAMINA")
 
             if protect_active:
@@ -1125,9 +1205,9 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
             return {
                 "success": False,
                 "code": "INSUFFICIENT_STAMINA",
-                "message": "精力不足，突破需要 1 点精力",
+                "message": f"精力不足，突破需要 {stamina_cost} 点精力",
                 "stamina": format_stamina_value((latest or {}).get("stamina", 0)),
-                "stamina_cost": 1,
+                "stamina_cost": stamina_cost,
             }, 400
         if reason == "INSUFFICIENT_COPPER":
             latest = get_user_by_id(user_id) or {}
@@ -1155,11 +1235,15 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
     realm_name = (get_realm_by_id(current_rank) or {}).get("name", "当前境界")
     pity_now = int(pity_updates.get("breakthrough_pity", 0) or 0)
     extra2 = pity_bonus(pity_now)
+    penalty_message = (
+        f"突破失败，损失{_format_ratio_percent(exp_lost_pct)}修为，"
+        f"{_format_weak_penalty_text(weak_seconds)}"
+    )
 
     resp = {
         "success": False,
         "code": "BREAKTHROUGH_FAILED",
-        "message": message + f"\n\n💢 心魔值+1（{pity_now}），下次突破成功率额外 +{int(extra2*100)}%",
+        "message": penalty_message + f"\n\n💢 心魔值+1（{pity_now}），下次突破成功率额外 +{int(extra2*100)}%",
         "exp_lost": exp_lost,
         "weak_seconds": weak_seconds,
         "cost": cost,
@@ -1167,7 +1251,7 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
         "pity": pity_now,
         "realm": realm_name,
         "strategy": strategy,
-        "stamina_cost": 1,
+        "stamina_cost": stamina_cost,
         "event_title": "天劫未过，但道心未碎",
         "event_flavor": f"这次冲关虽然折戟，但你已经摸到瓶颈裂缝。当前保底进度 {pity_now}/{hard_pity_threshold}。",
         "next_goal": "建议先恢复状态，补齐突破丹或材料，再择时再次冲关。",
@@ -1203,7 +1287,7 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
         action="breakthrough",
         delta_copper=-cost,
         delta_exp=-exp_lost,
-        delta_stamina=-1,
+        delta_stamina=-stamina_cost,
         item_id=consume_item_id,
         qty=consume_item_qty if consume_item_id else None,
         success=True,

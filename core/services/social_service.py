@@ -21,9 +21,23 @@ from core.services.metrics_service import log_event
 from core.utils.timeutil import midnight_timestamp
 
 
-CHAT_DAILY_LIMIT = 10.0
-CHAT_REQUEST_DAILY_LIMIT = 20
-CHAT_REQUEST_TTL_SECONDS = 6 * 3600
+def _social_cfg_float(key: str, default: float) -> float:
+    try:
+        return float(config.get_nested("social", key, default=default))
+    except (TypeError, ValueError):
+        return float(default)
+
+
+def _social_cfg_int(key: str, default: int) -> int:
+    try:
+        return int(config.get_nested("social", key, default=default))
+    except (TypeError, ValueError):
+        return int(default)
+
+
+CHAT_DAILY_LIMIT = _social_cfg_float("chat_daily_limit", 10.0)
+CHAT_REQUEST_DAILY_LIMIT = _social_cfg_int("chat_request_daily_limit", 20)
+CHAT_REQUEST_TTL_SECONDS = _social_cfg_int("chat_request_ttl_seconds", 6 * 3600)
 GIFT_CURRENCY_LABELS = {"copper": "下品灵石", "gold": "中品灵石"}
 
 
@@ -53,13 +67,21 @@ def _chat_exp_for(user: Dict[str, Any]) -> int:
     # Rank-scaled chat exp:
     # exp = base + floor((rank - 1) / rank_step) * per_step (capped by max_bonus).
     legacy_fixed = int(config.get_nested("balance", "social_chat_exp", default=0) or 0)
-    configured_base = int(config.get_nested("balance", "social_chat_exp_base", default=0) or 0)
+    configured_base = int(config.get_nested("social", "chat_exp_base", default=0) or 0)
+    if configured_base <= 0:
+        configured_base = int(config.get_nested("balance", "social_chat_exp_base", default=0) or 0)
     base = configured_base if configured_base > 0 else (legacy_fixed if legacy_fixed > 0 else 18)
     base = max(12, base)
 
-    rank_step = max(1, int(config.get_nested("balance", "social_chat_exp_rank_step", default=3) or 3))
-    per_step = max(0, int(config.get_nested("balance", "social_chat_exp_per_step", default=2) or 2))
-    max_bonus = max(0, int(config.get_nested("balance", "social_chat_exp_max_bonus", default=120) or 120))
+    rank_step = max(1, int(config.get_nested("social", "chat_exp_rank_step", default=0) or 0))
+    if rank_step <= 0:
+        rank_step = max(1, int(config.get_nested("balance", "social_chat_exp_rank_step", default=3) or 3))
+    per_step = max(0, int(config.get_nested("social", "chat_exp_per_step", default=0) or 0))
+    if per_step <= 0:
+        per_step = max(0, int(config.get_nested("balance", "social_chat_exp_per_step", default=2) or 2))
+    max_bonus = max(0, int(config.get_nested("social", "chat_exp_max_bonus", default=0) or 0))
+    if max_bonus <= 0:
+        max_bonus = max(0, int(config.get_nested("balance", "social_chat_exp_max_bonus", default=120) or 120))
 
     rank = max(1, int(user.get("rank", 1) or 1))
     bonus_steps = max(0, (rank - 1) // rank_step)
@@ -123,8 +145,31 @@ def request_chat(
     if not target_tid:
         return {"success": False, "code": "TARGET_OFFLINE", "message": "对方尚未激活机器人"}, 400
 
+    day_start = midnight_timestamp()
+    day_end = day_start + 86400
     try:
         with db_transaction() as cur:
+            # Serialize same-day same-target requests under concurrency.
+            lock_key = f"social_chat:{user_id}:{target['user_id']}:{day_start}"
+            cur.execute("SELECT pg_advisory_xact_lock(hashtext(%s))", (lock_key,))
+            cur.execute(
+                """
+                SELECT 1
+                FROM social_chat_requests
+                WHERE from_user_id = %s
+                  AND to_user_id = %s
+                  AND created_at >= %s
+                  AND created_at < %s
+                LIMIT 1
+                """,
+                (user_id, target["user_id"], day_start, day_end),
+            )
+            if cur.fetchone():
+                return {
+                    "success": False,
+                    "code": "CHAT_TARGET_DAILY_LIMIT",
+                    "message": "同一玩家一天内只能发起一次论道",
+                }, 400
             cur.execute(
                 """
                 INSERT INTO social_chat_requests (from_user_id, to_user_id, status, created_at)
@@ -135,7 +180,11 @@ def request_chat(
             )
             request_id = cur.fetchone()["id"]
     except psycopg2.errors.UniqueViolation:
-        return {"success": False, "code": "PENDING", "message": "已有待处理的论道请求"}, 400
+        return {
+            "success": False,
+            "code": "CHAT_TARGET_DAILY_LIMIT",
+            "message": "同一玩家一天内只能发起一次论道",
+        }, 400
 
     log_event(
         "social_chat_request",

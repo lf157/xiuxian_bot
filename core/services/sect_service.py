@@ -21,23 +21,52 @@ def _cfg_int(key: str, default: int) -> int:
         return int(default)
 
 
+def _cfg_float(key: str, default: float) -> float:
+    try:
+        return float(config.get_nested("sect", key, default=default))
+    except Exception:
+        return float(default)
+
+
 SECT_CREATE_COST_COPPER = _cfg_int("create_copper", 5000)
 SECT_CREATE_COST_GOLD = _cfg_int("create_gold", 10)
-SECT_BASE_MAX_MEMBERS = min(_cfg_int("base_max_members", 10), 10)
+SECT_BASE_MAX_MEMBERS = max(1, _cfg_int("base_max_members", 10))
 SECT_LEVEL_EXP_BASE = _cfg_int("level_exp_base", 1000)
 SECT_WAR_COOLDOWN = _cfg_int("war_cooldown_seconds", 3600)
-SECT_BRANCH_MAX = 5
-SECT_BRANCH_CREATE_COST_COPPER = 3000
-SECT_BRANCH_CREATE_COST_GOLD = 3
-SECT_BRANCH_BUFF_RATE = 0.9
-WEAK_DEBUFF_PCT = 30
+SECT_BRANCH_MAX = max(1, _cfg_int("branch_max", 5))
+SECT_BRANCH_CREATE_COST_COPPER = max(0, _cfg_int("branch_create_copper", 3000))
+SECT_BRANCH_CREATE_COST_GOLD = max(0, _cfg_int("branch_create_gold", 3))
+SECT_BRANCH_BUFF_RATE = max(0.0, _cfg_float("branch_buff_rate", 0.9))
+SECT_BRANCH_MAX_MEMBERS = max(1, _cfg_int("branch_max_members", 5))
+WEAK_DEBUFF_PCT = max(0, min(100, _cfg_int("weak_debuff_pct", 30)))
 WEAK_DEBUFF_MULT = 1.0 - WEAK_DEBUFF_PCT / 100.0
+SECT_DONATE_EXP_PER_COPPER_DIV = max(1, _cfg_int("donate_exp_per_copper_div", 10))
+SECT_DONATE_EXP_PER_GOLD = max(0, _cfg_int("donate_exp_per_gold", 20))
+SECT_DONATE_CONTRIBUTION_PER_GOLD = max(0, _cfg_int("donate_contribution_per_gold", 100))
+SECT_LEVEL_UP_MEMBER_INCREASE = max(0, _cfg_int("level_up_member_increase", 2))
+SECT_MAX_MEMBERS_CAP = max(1, _cfg_int("max_members_cap", SECT_BASE_MAX_MEMBERS))
 
-SECT_QUEST_DEFS: Dict[str, Dict[str, Any]] = {
-    "donate": {"target": 5000, "reward_copper": 1000, "reward_exp": 500},
-    "hunt": {"target": 12, "reward_copper": 600, "reward_exp": 300},
-    "secret_realm": {"target": 6, "reward_copper": 800, "reward_exp": 400},
-}
+def _load_quest_defs() -> Dict[str, Dict[str, Any]]:
+    defaults: Dict[str, Dict[str, Any]] = {
+        "donate": {"target": 5000, "reward_copper": 1000, "reward_exp": 500},
+        "hunt": {"target": 12, "reward_copper": 600, "reward_exp": 300},
+        "secret_realm": {"target": 6, "reward_copper": 800, "reward_exp": 400},
+    }
+    raw = config.get_nested("sect", "quest_defs", default={}) or {}
+    if not isinstance(raw, dict):
+        return defaults
+    merged: Dict[str, Dict[str, Any]] = {}
+    for key, base in defaults.items():
+        row = raw.get(key) if isinstance(raw.get(key), dict) else {}
+        merged[key] = {
+            "target": max(1, int(row.get("target", base["target"]) or base["target"])),
+            "reward_copper": max(0, int(row.get("reward_copper", base["reward_copper"]) or base["reward_copper"])),
+            "reward_exp": max(0, int(row.get("reward_exp", base["reward_exp"]) or base["reward_exp"])),
+        }
+    return merged
+
+
+SECT_QUEST_DEFS: Dict[str, Dict[str, Any]] = _load_quest_defs()
 
 
 def _gen_sect_id() -> str:
@@ -307,7 +336,7 @@ def apply_sect_stat_buffs(user: Dict[str, Any]) -> Dict[str, Any]:
     weak_remaining_seconds = max(0, weak_until - now)
     is_weak = weak_remaining_seconds > 0
     if is_weak:
-        # Breakthrough failure debuff: temporary -30% to core combat attributes.
+        # Breakthrough failure debuff: temporary reduction of core combat attributes.
         max_hp = int(enriched.get("max_hp", user.get("max_hp", 100)) or user.get("max_hp", 100) or 100)
         max_mp = int(enriched.get("max_mp", user.get("max_mp", 50)) or user.get("max_mp", 50) or 50)
         hp = int(enriched.get("hp", max_hp) or max_hp)
@@ -337,7 +366,7 @@ def apply_sect_stat_buffs(user: Dict[str, Any]) -> Dict[str, Any]:
     if is_weak:
         enriched["weak_effects"] = [
             "不能开始修炼",
-            "HP/MP/攻击/防御/暴击率 -30%",
+            f"HP/MP/攻击/防御/暴击率 -{WEAK_DEBUFF_PCT}%",
         ]
     else:
         enriched["weak_effects"] = []
@@ -466,7 +495,10 @@ def join_sect(user_id: str, sect_id: str) -> Tuple[Dict[str, Any], int]:
     if not sect:
         return {"success": False, "code": "NOT_FOUND", "message": "宗门不存在"}, 404
 
-    member_limit = min(int(sect.get("max_members", SECT_BASE_MAX_MEMBERS) or SECT_BASE_MAX_MEMBERS), SECT_BASE_MAX_MEMBERS)
+    member_limit = min(
+        int(sect.get("max_members", SECT_BASE_MAX_MEMBERS) or SECT_BASE_MAX_MEMBERS),
+        SECT_MAX_MEMBERS_CAP,
+    )
 
     now = int(time.time())
     try:
@@ -674,7 +706,16 @@ def review_branch_request(user_id: str, request_id: int, approve: bool) -> Tuple
                     """INSERT INTO sect_branches
                        (branch_id, parent_sect_id, name, display_name, leader_user_id, max_members, description, created_at)
                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
-                    (branch_id, sect["sect_id"], req_data["name"], display_name, applicant_id, 5, req_data.get("description", "") or "", now),
+                    (
+                        branch_id,
+                        sect["sect_id"],
+                        req_data["name"],
+                        display_name,
+                        applicant_id,
+                        SECT_BRANCH_MAX_MEMBERS,
+                        req_data.get("description", "") or "",
+                        now,
+                    ),
                 )
                 cur.execute(
                     """INSERT INTO sect_branch_members
@@ -743,7 +784,7 @@ def join_branch(user_id: str, branch_id: str) -> Tuple[Dict[str, Any], int]:
     if not branch:
         return {"success": False, "code": "NOT_FOUND", "message": "别院不存在"}, 404
     now = int(time.time())
-    max_members = int(branch.get("max_members", 5) or 5)
+    max_members = int(branch.get("max_members", SECT_BRANCH_MAX_MEMBERS) or SECT_BRANCH_MAX_MEMBERS)
     try:
         with db_transaction() as cur:
             cur.execute(
@@ -894,7 +935,10 @@ def _level_up_if_needed(sect_id: str) -> None:
     if exp < need:
         return
     new_level = level + 1
-    new_max = min(int(sect.get("max_members", SECT_BASE_MAX_MEMBERS) or SECT_BASE_MAX_MEMBERS) + 2, SECT_BASE_MAX_MEMBERS)
+    new_max = min(
+        int(sect.get("max_members", SECT_BASE_MAX_MEMBERS) or SECT_BASE_MAX_MEMBERS) + SECT_LEVEL_UP_MEMBER_INCREASE,
+        SECT_MAX_MEMBERS_CAP,
+    )
     with db_transaction() as cur:
         cur.execute(
             "UPDATE sects SET level = %s, exp = %s, max_members = %s WHERE sect_id = %s",
@@ -917,7 +961,7 @@ def donate(user_id: str, copper: int = 0, gold: int = 0) -> Tuple[Dict[str, Any]
         log_event("sect_donate", user_id=user_id, success=False, reason="INVALID_AMOUNT")
         return {"success": False, "code": "INVALID", "message": "请输入捐献数量"}, 400
 
-    exp_gain = copper // 10 + gold * 20
+    exp_gain = copper // SECT_DONATE_EXP_PER_COPPER_DIV + gold * SECT_DONATE_EXP_PER_GOLD
     today = today_local()
     now = int(time.time())
 
@@ -939,7 +983,7 @@ def donate(user_id: str, copper: int = 0, gold: int = 0) -> Tuple[Dict[str, Any]
             if int(cur.rowcount or 0) == 0:
                 raise ValueError("NOT_FOUND")
 
-            contribution = copper + gold * 100
+            contribution = copper + gold * SECT_DONATE_CONTRIBUTION_PER_GOLD
             if sect.get("membership_kind") == "branch":
                 cur.execute(
                     "UPDATE sect_branch_members SET contribution = contribution + %s WHERE branch_id = %s AND user_id = %s",

@@ -167,7 +167,9 @@ def test_request_chat_concurrent_single_pending(test_db):
         results = list(ex.map(lambda _: social_service.request_chat(user_id="u1", target_user_id="u2"), range(2)))
 
     success_count = sum(1 for payload, status in results if status == 200 and payload.get("success"))
-    pending_count = sum(1 for payload, status in results if status == 400 and payload.get("code") == "PENDING")
+    pending_count = sum(
+        1 for payload, status in results if status == 400 and payload.get("code") == "CHAT_TARGET_DAILY_LIMIT"
+    )
     assert success_count == 1
     assert pending_count == 1
 
@@ -178,6 +180,24 @@ def test_request_chat_concurrent_single_pending(test_db):
              AND ((from_user_id = 'u1' AND to_user_id = 'u2') OR (from_user_id = 'u2' AND to_user_id = 'u1'))"""
     )
     assert int(row["c"]) == 1
+
+
+def test_request_chat_same_target_once_per_day(test_db, monkeypatch):
+    create_user("u1", "甲")
+    create_user("u2", "乙")
+    execute("UPDATE users SET telegram_id = %s WHERE user_id = %s", ("tg-u2", "u2"))
+
+    day_start = social_service.midnight_timestamp()
+    payload1, status1 = social_service.request_chat(user_id="u1", target_user_id="u2")
+    assert status1 == 200, payload1
+
+    payload2, status2 = social_service.request_chat(user_id="u1", target_user_id="u2")
+    assert status2 == 400
+    assert payload2.get("code") == "CHAT_TARGET_DAILY_LIMIT"
+
+    monkeypatch.setattr(social_service, "midnight_timestamp", lambda: day_start + 86400)
+    payload3, status3 = social_service.request_chat(user_id="u1", target_user_id="u2")
+    assert status3 == 200, payload3
 
 
 def test_accept_chat_request_adds_stamina_without_overwrite(test_db):

@@ -27,8 +27,8 @@ USER_SCHEMA = {
     "exp": int,                   # 修为
     "rank": int,                  # 境界等级 (1-32)
     "dy_times": int,              # 成功狩猎次数
-    "copper": int,                # 铜币
-    "gold": int,                  # 金币
+    "copper": int,                # 下品灵石
+    "gold": int,                  # 中品灵石
     "spirit_high": int,
     "spirit_exquisite": int,
     "spirit_supreme": int,

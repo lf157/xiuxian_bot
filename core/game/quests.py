@@ -80,11 +80,11 @@ def format_quest_status(quest_rows: List[Dict], quest_defs: List[Dict]) -> str:
         reward_parts = []
         for k, v in qdef["rewards"].items():
             if k == "copper":
-                reward_parts.append(f"{v}铜")
+                reward_parts.append(f"{v}下品灵石")
             elif k == "exp":
                 reward_parts.append(f"{v}修为")
             elif k == "gold":
-                reward_parts.append(f"{v}金")
+                reward_parts.append(f"{v}中品灵石")
         lines.append(f"{status} {qdef['name']} - {qdef['desc']}  [{' '.join(reward_parts)}]")
 
     if all_done and quest_rows and all(r.get("claimed") for r in quest_rows):

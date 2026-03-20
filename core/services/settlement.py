@@ -119,6 +119,23 @@ def _element_relation_label(user: Dict[str, Any], monster: Optional[Dict[str, An
     return None
 
 
+def _hunt_defeat_weak_seconds() -> int:
+    configured = config.get_nested("balance", "hunt", "defeat_weak_seconds", default=1800)
+    try:
+        return max(0, int(configured or 0))
+    except (TypeError, ValueError):
+        return 1800
+
+
+def _format_weak_duration(seconds: int) -> str:
+    total = max(0, int(seconds or 0))
+    if total <= 0:
+        return "0秒"
+    if total % 60 == 0:
+        return f"{total // 60}分钟"
+    return f"{total}秒"
+
+
 def _stamina_block_response(user: Dict[str, Any], *, action_label: str) -> Tuple[Dict[str, Any], int]:
     current = format_stamina_value((user or {}).get("stamina", 0))
     return {
@@ -367,16 +384,26 @@ def settle_hunt(
             story_update = track_story_action(user_id, "hunt_victory")
         except Exception:
             story_update = []
-    else:
+    elif result.get("success"):
+        weak_seconds = _hunt_defeat_weak_seconds()
+        weak_until = max(int(user.get("weak_until", 0) or 0), now + weak_seconds) if weak_seconds > 0 else int(user.get("weak_until", 0) or 0)
         update_user(
             user_id,
             {
                 "hp": 1,
                 "mp": int(result.get("attacker_remaining_mp", user.get("mp", user.get("max_mp", 50))) or 0),
+                "weak_until": weak_until,
                 "vitals_updated_at": now,
             },
         )
+        if weak_seconds > 0:
+            base_msg = str(result.get("message") or "战斗失败")
+            result["message"] = f"{base_msg}，进入虚弱状态 {_format_weak_duration(weak_seconds)}"
+        result["weak_seconds"] = weak_seconds
+        result["weak_until"] = weak_until
         updated = get_user_by_id(user_id)
+    else:
+        updated = get_user_by_id(user_id) or user
 
     try:
         skill_id = result.get("active_skill_id")
@@ -966,7 +993,7 @@ def settle_secret_realm_explore(
         if targeted_drop:
             drops.append(targeted_drop)
 
-    # 金币 = 战斗掉落 + 秘境自身掉落
+    # 中品灵石 = 战斗掉落 + 秘境自身掉落
     battle_gold = battle_result.get("rewards", {}).get("gold", 0)
     realm_gold = reward.get("gold", 0)
     reward_mult = 1.0 + float(sect_buffs.get("battle_reward_pct", 0.0)) / 100.0

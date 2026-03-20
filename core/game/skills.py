@@ -4,6 +4,8 @@
 
 from typing import Dict, Any, List, Optional
 
+from core.config import config
+
 SKILLS = [
     {
         "id": "qixue_slash",
@@ -14,8 +16,9 @@ SKILLS = [
         "cost_gold": 0,
         "cost_copper": 300,
         "mp_cost": 8,
+        "mp_cost_tier": "basic",
         "effect": {"attack_multiplier": 1.35},
-        "desc": "下次攻击造成 135% 伤害，消耗 8 MP"
+        "desc": "下次攻击造成 135% 伤害（灵力消耗随境界提升）"
     },
     {
         "id": "stone_skin",
@@ -48,8 +51,9 @@ SKILLS = [
         "cost_gold": 2,
         "cost_copper": 1200,
         "mp_cost": 14,
+        "mp_cost_tier": "burst",
         "effect": {"attack_multiplier": 1.6},
-        "desc": "下次攻击造成 160% 伤害，消耗 14 MP"
+        "desc": "下次攻击造成 160% 伤害（灵力消耗随境界提升）"
     },
     {
         "id": "life_spring",
@@ -71,8 +75,9 @@ SKILLS = [
         "cost_gold": 1,
         "cost_copper": 900,
         "mp_cost": 12,
+        "mp_cost_tier": "basic",
         "effect": {"attack_multiplier": 1.15, "self_shield_pct": 0.22},
-        "desc": "造成 115% 伤害并生成护盾（最大生命22%），消耗 12 MP"
+        "desc": "造成 115% 伤害并生成护盾（最大生命22%，灵力消耗随境界提升）"
     },
     {
         "id": "vital_bloom",
@@ -83,8 +88,9 @@ SKILLS = [
         "cost_gold": 2,
         "cost_copper": 1400,
         "mp_cost": 10,
-        "effect": {"attack_multiplier": 1.0, "restore_hp_pct": 0.18, "restore_mp_pct": 0.12},
-        "desc": "攻击后回复生命18%与灵力12%，消耗 10 MP"
+        "mp_cost_tier": "basic",
+        "effect": {"attack_multiplier": 1.0, "restore_hp_pct": 0.18, "restore_mp_pct": 0.05},
+        "desc": "攻击后回复生命18%与灵力5%（灵力消耗随境界提升）"
     },
     {
         "id": "mana_convert",
@@ -95,8 +101,9 @@ SKILLS = [
         "cost_gold": 2,
         "cost_copper": 1500,
         "mp_cost": 8,
-        "effect": {"attack_multiplier": 1.2, "convert_hp_to_mp_pct": 0.12},
-        "desc": "造成 120% 伤害，将生命12%转化为灵力，消耗 8 MP"
+        "mp_cost_tier": "basic",
+        "effect": {"attack_multiplier": 1.2, "convert_hp_to_mp_pct": 0.06},
+        "desc": "造成 120% 伤害，将生命6%转化为灵力（灵力消耗随境界提升）"
     },
     {
         "id": "blood_fury",
@@ -107,8 +114,9 @@ SKILLS = [
         "cost_gold": 3,
         "cost_copper": 1800,
         "mp_cost": 16,
+        "mp_cost_tier": "ultimate",
         "effect": {"attack_multiplier": 1.9, "self_damage_pct": 0.10},
-        "desc": "造成 190% 伤害，但自身承受10%生命反噬，消耗 16 MP"
+        "desc": "造成 190% 伤害，但自身承受10%生命反噬（灵力消耗随境界提升）"
     },
 
     # --- Five-elements specializations (流派) ---
@@ -184,8 +192,9 @@ SKILLS = [
         "cost_gold": 2,
         "cost_copper": 1200,
         "mp_cost": 14,
+        "mp_cost_tier": "burst",
         "effect": {"attack_multiplier": 1.55, "ignore_def_pct": 0.30},
-        "desc": "下次攻击造成 155% 伤害，并无视目标30%防御，消耗 14 MP"
+        "desc": "下次攻击造成 155% 伤害，并无视目标30%防御（灵力消耗随境界提升）"
     },
     {
         "id": "wood_bloom",
@@ -197,8 +206,9 @@ SKILLS = [
         "cost_gold": 2,
         "cost_copper": 1200,
         "mp_cost": 12,
+        "mp_cost_tier": "basic",
         "effect": {"attack_multiplier": 1.35, "lifesteal_bonus": 0.10},
-        "desc": "下次攻击造成 135% 伤害，并额外吸血+10%（本次攻击），消耗 12 MP"
+        "desc": "下次攻击造成 135% 伤害，并额外吸血+10%（本次攻击，灵力消耗随境界提升）"
     },
     {
         "id": "water_wave",
@@ -210,8 +220,9 @@ SKILLS = [
         "cost_gold": 2,
         "cost_copper": 1200,
         "mp_cost": 12,
+        "mp_cost_tier": "basic",
         "effect": {"attack_multiplier": 1.45, "crit_rate_bonus": 0.10},
-        "desc": "下次攻击造成 145% 伤害，并提升本次暴击率+10%，消耗 12 MP"
+        "desc": "下次攻击造成 145% 伤害，并提升本次暴击率+10%（灵力消耗随境界提升）"
     },
     {
         "id": "fire_blast",
@@ -223,8 +234,9 @@ SKILLS = [
         "cost_gold": 2,
         "cost_copper": 1200,
         "mp_cost": 16,
+        "mp_cost_tier": "burst",
         "effect": {"attack_multiplier": 1.70},
-        "desc": "下次攻击造成 170% 伤害，消耗 16 MP"
+        "desc": "下次攻击造成 170% 伤害（灵力消耗随境界提升）"
     },
     {
         "id": "earth_quake",
@@ -236,13 +248,72 @@ SKILLS = [
         "cost_gold": 2,
         "cost_copper": 1200,
         "mp_cost": 13,
+        "mp_cost_tier": "basic",
         "effect": {"attack_multiplier": 1.40, "damage_taken_mul": 0.85},
-        "desc": "下次攻击造成 140% 伤害，并在本回合获得15%减伤，消耗 13 MP"
+        "desc": "下次攻击造成 140% 伤害，并在本回合获得15%减伤（灵力消耗随境界提升）"
     },
 ]
 
 SKILL_MAX_LEVEL = 5
 SKILL_LEVEL_STEP = 0.05
+
+_MP_COST_RATIO_DEFAULTS = {
+    "basic": 0.06,
+    "burst": 0.08,
+    "ultimate": 0.10,
+}
+
+
+def _skill_cfg_float(*path: str, default: float) -> float:
+    try:
+        return float(config.get_nested(*path, default=default))
+    except (TypeError, ValueError):
+        return float(default)
+
+
+def _skill_cfg_str(*path: str, default: str) -> str:
+    value = config.get_nested(*path, default=default)
+    return str(value if value is not None else default).strip().lower()
+
+
+def get_skill_mp_cost_ratio(skill: Dict[str, Any]) -> float:
+    explicit_ratio = skill.get("mp_cost_ratio")
+    if explicit_ratio is not None:
+        try:
+            explicit = float(explicit_ratio)
+            if explicit > 0:
+                return explicit
+        except (TypeError, ValueError):
+            pass
+    tier = str(skill.get("mp_cost_tier") or "basic").strip().lower()
+    if tier not in _MP_COST_RATIO_DEFAULTS:
+        tier = "basic"
+    default_ratio = _MP_COST_RATIO_DEFAULTS[tier]
+    configured = _skill_cfg_float("battle", "mp", "cost_ratio_by_tier", tier, default=default_ratio)
+    return max(0.0, float(configured))
+
+
+def compute_skill_mp_cost(skill: Dict[str, Any], max_mp: int) -> int:
+    base_cost = max(0, int(skill.get("mp_cost", 0) or 0))
+    mp_pool = max(0, int(max_mp or 0))
+    ratio = get_skill_mp_cost_ratio(skill)
+    scaled_cost = int(round(mp_pool * ratio))
+    mode = _skill_cfg_str("battle", "mp", "skill_cost_mode", default="max")
+    if mode == "base":
+        return max(0, base_cost)
+    if mode == "scaled":
+        return max(0, scaled_cost)
+    # default: max(base, scaled)
+    return max(base_cost, scaled_cost)
+
+
+def format_skill_mp_cost(skill: Dict[str, Any], *, max_mp: Optional[int] = None) -> str:
+    base_cost = max(0, int(skill.get("mp_cost", 0) or 0))
+    ratio_pct = max(0.0, get_skill_mp_cost_ratio(skill) * 100.0)
+    if max_mp is not None:
+        actual = compute_skill_mp_cost(skill, int(max_mp or 0))
+        return f"{actual}蓝（基础{base_cost}，按最大MP {ratio_pct:.0f}%）"
+    return f"基础{base_cost}蓝（按最大MP {ratio_pct:.0f}% 动态提高）"
 
 
 def scale_skill_effect(skill: Dict[str, Any], level: int) -> Dict[str, Any]:

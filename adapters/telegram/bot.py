@@ -49,7 +49,7 @@ from core.game.realms import (
 from core.game.combat import (
     get_available_monsters, hunt_monster, format_monster_list, get_monster_by_id
 )
-from core.game.skills import get_skill
+from core.game.skills import format_skill_mp_cost, get_skill
 from core.game.secret_realms import get_available_secret_realms
 from core.game.items import (
     get_item_by_id as get_item_def,
@@ -207,6 +207,91 @@ TELEGRAM_POLL_TIMEOUT = max(1, int(os.getenv("TELEGRAM_POLL_TIMEOUT", "3")))
 TELEGRAM_PROXY_URL = (os.getenv("TELEGRAM_PROXY_URL", "") or "").strip() or None
 _HTTP_SESSION: aiohttp.ClientSession | None = None
 _ACTOR_PATH_PATTERNS = compiled_actor_path_patterns()
+
+
+def _cfg_int(*path: str, default: int) -> int:
+    try:
+        return int(config.get_nested(*path, default=default))
+    except (TypeError, ValueError):
+        return int(default)
+
+
+def _cfg_float(*path: str, default: float) -> float:
+    try:
+        return float(config.get_nested(*path, default=default))
+    except (TypeError, ValueError):
+        return float(default)
+
+
+def _vitals_regen_desc() -> str:
+    regen_seconds = max(1, _cfg_int("battle", "mp", "regen_seconds", default=60))
+    regen_pct = max(0.0, _cfg_float("battle", "mp", "regen_pct", default=0.03))
+    pct = regen_pct * 100.0
+    pct_text = f"{int(round(pct))}%" if abs(pct - round(pct)) < 1e-6 else f"{pct:.1f}%"
+    cadence = "每分钟" if regen_seconds == 60 else f"每{regen_seconds}秒"
+    return f"HP/MP {cadence}恢复 {pct_text}"
+
+
+def _gacha_free_daily_limit() -> int:
+    return max(0, _cfg_int("gacha", "free_daily_limit", default=3))
+
+
+def _gacha_paid_daily_limit() -> int:
+    return max(1, _cfg_int("gacha", "paid_daily_limit", default=15))
+
+
+def _gacha_five_pull_count() -> int:
+    return max(2, _cfg_int("gacha", "five_pull_count", default=5))
+
+
+def _gacha_five_pull_price_gold() -> int:
+    return max(1, _cfg_int("gacha", "five_pull_price_gold", default=4))
+
+
+def _gacha_five_pull_stamina() -> int:
+    return max(1, _cfg_int("gacha", "five_pull_stamina", default=4))
+
+
+def _gacha_single_pull_stamina() -> int:
+    return max(0, _cfg_int("gacha", "single_pull_stamina", default=1))
+
+
+def _gacha_five_pull_price_mult_non_gold() -> int:
+    return max(1, _cfg_int("gacha", "five_pull_price_mult_non_gold", default=4))
+
+
+def _sect_text_cfg() -> dict[str, float | int]:
+    return {
+        "create_copper": max(0, _cfg_int("sect", "create_copper", default=5000)),
+        "create_gold": max(0, _cfg_int("sect", "create_gold", default=10)),
+        "base_max_members": max(1, _cfg_int("sect", "base_max_members", default=10)),
+        "branch_max": max(1, _cfg_int("sect", "branch_max", default=5)),
+        "branch_create_copper": max(0, _cfg_int("sect", "branch_create_copper", default=3000)),
+        "branch_create_gold": max(0, _cfg_int("sect", "branch_create_gold", default=3)),
+        "branch_max_members": max(1, _cfg_int("sect", "branch_max_members", default=5)),
+        "branch_buff_rate": max(0.0, _cfg_float("sect", "branch_buff_rate", default=0.9)),
+        "default_cultivation_buff_pct": _cfg_float("sect", "default_cultivation_buff_pct", default=10.0),
+        "default_stat_buff_pct": _cfg_float("sect", "default_stat_buff_pct", default=5.0),
+        "default_battle_reward_buff_pct": _cfg_float("sect", "default_battle_reward_buff_pct", default=10.0),
+    }
+
+
+def _breakthrough_fire_bonus() -> float:
+    return _cfg_float("balance", "breakthrough", "fire_bonus", default=0.03)
+
+
+def _breakthrough_steady_bonus() -> float:
+    return _cfg_float("balance", "breakthrough", "steady_bonus", default=0.10)
+
+
+def _breakthrough_stamina_cost() -> int:
+    return max(1, _cfg_int("balance", "breakthrough", "stamina_cost", default=1))
+
+
+def _breakthrough_protect_material_need(rank: int) -> int:
+    base = max(0, _cfg_int("balance", "breakthrough", "protect_material_base", default=2))
+    per_10 = max(0, _cfg_int("balance", "breakthrough", "protect_material_per_10_rank", default=1))
+    return base + max(0, int(rank or 1) // 10) * per_10
 
 
 def _build_telegram_request(*, for_updates: bool) -> HTTPXRequest:
@@ -1638,13 +1723,24 @@ async def _build_gacha_menu(uid: str | None = None):
         status_resp = await http_get(f"{SERVER_URL}/api/gacha/status/{uid}", timeout=15)
         if status_resp.get("success"):
             status = status_resp.get("status", {})
-    free_remaining = int(status.get("free_remaining", 3) or 0)
-    paid_remaining = int(status.get("paid_remaining", 15) or 0)
+    free_limit = int(status.get("free_limit", _gacha_free_daily_limit()) or _gacha_free_daily_limit())
+    paid_limit = int(status.get("paid_limit", _gacha_paid_daily_limit()) or _gacha_paid_daily_limit())
+    five_pull_count = int(status.get("five_pull_count", _gacha_five_pull_count()) or _gacha_five_pull_count())
+    five_pull_price_gold = int(status.get("five_pull_price_gold", _gacha_five_pull_price_gold()) or _gacha_five_pull_price_gold())
+    five_pull_stamina = int(status.get("five_pull_stamina", _gacha_five_pull_stamina()) or _gacha_five_pull_stamina())
+    single_pull_stamina = int(status.get("single_pull_stamina", _gacha_single_pull_stamina()) or _gacha_single_pull_stamina())
+    five_pull_mult_non_gold = int(
+        status.get("five_pull_price_mult_non_gold", _gacha_five_pull_price_mult_non_gold())
+        or _gacha_five_pull_price_mult_non_gold()
+    )
+    free_remaining = int(status.get("free_remaining", free_limit) or 0)
+    paid_remaining = int(status.get("paid_remaining", paid_limit) or 0)
     text = (
         "🎲 *抽奖*\n\n"
-        f"今日免费：剩余 {free_remaining}/3 次，不消耗精力\n"
-        f"今日付费：剩余 {paid_remaining}/15 次\n"
-        "规则：免费抽奖不耗精力；付费单抽消耗 1 中品灵石 + 1 精力；五连消耗 4 中品灵石 + 4 精力。\n\n"
+        f"今日免费：剩余 {free_remaining}/{free_limit} 次，不消耗精力\n"
+        f"今日付费：剩余 {paid_remaining}/{paid_limit} 次\n"
+        f"规则：免费抽奖不耗精力；付费单抽按卡池价格 + {single_pull_stamina} 精力；"
+        f"{five_pull_count}连消耗 {five_pull_stamina} 精力（中品灵石池默认 {five_pull_price_gold} 中品灵石）。\n\n"
     )
     free_label = "免费1抽" if free_remaining > 0 else "免费已用尽"
     free_callback = "gacha_free_limit" if free_remaining <= 0 else None
@@ -1654,17 +1750,21 @@ async def _build_gacha_menu(uid: str | None = None):
     else:
         for b in banners[:5]:
             currency = b.get("currency", "gold")
-            currency_short = "金" if currency == "gold" else "铜"
+            currency_name = "中品灵石" if currency == "gold" else "下品灵石"
             single_price = int(b.get("price_single", 1) or 1)
-            five_price = 4 if currency == "gold" else single_price * 4
+            five_price = (
+                five_pull_price_gold
+                if currency == "gold"
+                else max(1, single_price * five_pull_mult_non_gold)
+            )
             text += f"• {b.get('title')} (ID {b.get('banner_id')})\n  {b.get('description')}\n\n"
             this_free_callback = free_callback or f"gacha_pull_{b.get('banner_id')}_1"
             keyboard.append([
                 InlineKeyboardButton(free_label, callback_data=this_free_callback),
-                InlineKeyboardButton(f"付费1抽 {single_price}{currency_short}", callback_data=f"gacha_pull_{b.get('banner_id')}_paid1"),
+                InlineKeyboardButton(f"付费1抽 {single_price}{currency_name}", callback_data=f"gacha_pull_{b.get('banner_id')}_paid1"),
             ])
             keyboard.append([
-                InlineKeyboardButton(f"五连 {five_price}{currency_short}", callback_data=f"gacha_pull_{b.get('banner_id')}_5"),
+                InlineKeyboardButton(f"{five_pull_count}连 {five_price}{currency_name}", callback_data=f"gacha_pull_{b.get('banner_id')}_{five_pull_count}"),
             ])
     keyboard.append([InlineKeyboardButton("🔙 返回", callback_data="main_menu")])
     return text, keyboard
@@ -1859,10 +1959,10 @@ def _build_shop_keyboard(category: str, items: list[dict]):
         item_name = str(item.get("name") or _item_display_name(item_id) or item_id or "未知物品")
         price = int(item.get("price", item.get("actual_price", 0)) or 0)
         currency = item.get("currency", "copper")
-        currency_mark = "铜" if currency == "copper" else "金"
+        currency_name = "下品灵石" if currency == "copper" else "中品灵石"
         keyboard.append([
             InlineKeyboardButton(
-                f"购买 {item_name} {price}{currency_mark}",
+                f"购买 {item_name} {price}{currency_name}",
                 callback_data=f"buy_{currency}_{item_id}"
             )
         ])
@@ -2016,10 +2116,11 @@ def _skill_line(skill: dict, *, equipped: bool = False) -> str:
     elem = str(skill.get("element") or "").strip()
     elem_tag = f"[{elem}] " if elem else ""
     if skill.get("type") == "active":
+        mp_cost_text = format_skill_mp_cost(skill)
         return (
             f"  [{sk_type}] {elem_tag}{skill['name']}{eq_tag} - "
             f"{int(round(float((skill.get('effect', {}) or {}).get('attack_multiplier', 1.0) or 1.0) * 100))}%伤害 "
-            f"/ {int(skill.get('mp_cost', 0) or 0)}蓝 - {skill['desc']}\n"
+            f"/ {mp_cost_text} - {skill['desc']}\n"
         )
     return f"  [{sk_type}] {elem_tag}{skill['name']} - {skill['desc']}\n"
 
@@ -2032,7 +2133,7 @@ async def _build_recovery_menu(uid: str, *, return_callback: str = "main_menu"):
         "🩹 *恢复面板*\n\n"
         f"当前 HP: {status.get('hp', 0)}/{status.get('max_hp', 0)}\n"
         f"当前 MP: {status.get('mp', 0)}/{status.get('max_mp', 0)}\n"
-        "自动恢复：HP/MP 每分钟恢复 10%\n\n"
+        f"自动恢复：{_vitals_regen_desc()}\n\n"
     )
     keyboard = []
     items = items_r.get("items", []) if items_r.get("success") else []
@@ -2096,9 +2197,11 @@ def _build_breakthrough_preview(user_data: dict, *, strategy: str = "normal") ->
     base_rate = float(next_realm.get("break_rate", 0.0) or 0.0)
     rate_parts = [f"基础成功率 {int(base_rate * 100)}%"]
     shown_rate = base_rate
+    fire_bonus = _breakthrough_fire_bonus()
+    steady_bonus = _breakthrough_steady_bonus()
     if user_data.get("element") == "火":
-        shown_rate = min(1.0, shown_rate + 0.03)
-        rate_parts.append("火灵根 +3%")
+        shown_rate = min(1.0, shown_rate + fire_bonus)
+        rate_parts.append(f"火灵根 +{int(fire_bonus * 100)}%")
     strategy = (strategy or "normal").strip().lower()
     strategy_name = {
         "normal": "普通冲关",
@@ -2108,11 +2211,11 @@ def _build_breakthrough_preview(user_data: dict, *, strategy: str = "normal") ->
     }.get(strategy, "普通冲关")
     extra_cost_text = "无额外材料"
     if strategy == "steady":
-        shown_rate = min(1.0, shown_rate + 0.10)
-        rate_parts.append("突破丹 +10%")
+        shown_rate = min(1.0, shown_rate + steady_bonus)
+        rate_parts.append(f"突破丹 +{int(steady_bonus * 100)}%")
         extra_cost_text = "额外消耗: 突破丹 x1"
     elif strategy == "protect":
-        need = 2 + max(0, current_rank // 10)
+        need = _breakthrough_protect_material_need(current_rank)
         extra_cost_text = f"额外消耗: 灵石 x{need}"
         rate_parts.append("护脉: 失败不进虚弱")
     elif strategy == "desperate":
@@ -2127,7 +2230,7 @@ def _build_breakthrough_preview(user_data: dict, *, strategy: str = "normal") ->
         f"策略: *{strategy_name}*\n"
         f"你将从 *{current_realm['name']}* 冲击 *{next_realm['name']}*。\n"
         f"消耗: {cost:,} 下品灵石\n"
-        "额外消耗: 1 点精力\n"
+        f"额外消耗: {_breakthrough_stamina_cost()} 点精力\n"
         f"{extra_cost_text}\n"
         f"预计成功率: *{int(shown_rate * 100)}%*\n"
         f"保底进度: {pity}/{threshold}\n"
@@ -2142,12 +2245,14 @@ def _build_breakthrough_strategy_notes(user_data: dict) -> str:
     current_rank = int(user_data.get("rank", 1) or 1)
     next_realm = get_next_realm(current_rank) or {}
     base_rate = float(next_realm.get("break_rate", 0.0) or 0.0)
+    fire_bonus = _breakthrough_fire_bonus()
+    steady_bonus = _breakthrough_steady_bonus()
     if user_data.get("element") == "火":
-        base_rate = min(1.0, base_rate + 0.03)
+        base_rate = min(1.0, base_rate + fire_bonus)
     pity = int(user_data.get("breakthrough_pity", 0) or 0)
     base_rate = min(1.0, base_rate + pity_bonus(pity))
-    protect_need = 2 + max(0, current_rank // 10)
-    steady_rate = min(1.0, base_rate + 0.10)
+    protect_need = _breakthrough_protect_material_need(current_rank)
+    steady_rate = min(1.0, base_rate + steady_bonus)
     protect_rate = base_rate
     desperate_rate = base_rate
     return (
@@ -2537,25 +2642,26 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             if r.get("success"):
                 uid = r["user_id"]
                 info = await http_get(f"{SERVER_URL}/api/sect/member/{uid}", timeout=15)
+                sect_cfg = _sect_text_cfg()
                 if info.get("success"):
                     sect = info.get("sect", {})
                     header = "🏛️ *我的别院*" if sect.get("membership_kind") == "branch" else "🏛️ *我的宗门*"
-                    buff_rate = 0.9 if sect.get("membership_kind") == "branch" else 1.0
+                    buff_rate = float(sect_cfg["branch_buff_rate"]) if sect.get("membership_kind") == "branch" else 1.0
                     branch_line = f"归属别院: {(sect.get('branch') or {}).get('display_name')}\n" if sect.get("membership_kind") == "branch" else ""
                     text = (
                         f"{header}\n\n"
                         f"名称: {sect.get('name')}\n"
                         f"{branch_line}"
                         f"等级: {sect.get('level', 1)}\n"
-                        f"人数上限: {min(int(sect.get('max_members', 0) or 0), 10)}\n"
+                        f"人数上限: {int(sect.get('max_members', sect_cfg['base_max_members']) or sect_cfg['base_max_members'])}\n"
                         f"Buff: 修炼+{int(float(sect.get('cultivation_buff_pct', 10) or 0) * buff_rate)}% ｜ 属性+{int(float(sect.get('stat_buff_pct', 5) or 0) * buff_rate)}% ｜ 战斗收益+{int(float(sect.get('battle_reward_buff_pct', 10) or 0) * buff_rate)}%\n"
-                        f"附属别院: {len(sect.get('branches', []) or [])}/5\n"
-                        f"资金: {sect.get('fund_copper', 0)}铜 / {sect.get('fund_gold', 0)}金\n"
+                        f"附属别院: {len(sect.get('branches', []) or [])}/{int(sect_cfg['branch_max'])}\n"
+                        f"资金: {sect.get('fund_copper', 0)}下品灵石 / {sect.get('fund_gold', 0)}中品灵石\n"
                         f"战绩: {sect.get('war_wins', 0)}胜 {sect.get('war_losses', 0)}负\n\n"
                         "使用命令：\n"
-                        "• 创建消耗：5000 下品灵石 + 10 中品灵石\n"
-                        "• 别院申请：3000 下品灵石 + 3 中品灵石，需宗主同意\n"
-                        "• 每个别院最多 5 人\n"
+                        f"• 创建消耗：{int(sect_cfg['create_copper'])} 下品灵石 + {int(sect_cfg['create_gold'])} 中品灵石\n"
+                        f"• 别院申请：{int(sect_cfg['branch_create_copper'])} 下品灵石 + {int(sect_cfg['branch_create_gold'])} 中品灵石，需宗主同意\n"
+                        f"• 每个别院最多 {int(sect_cfg['branch_max_members'])} 人\n"
                         "• `/sect list` 查看宗门列表\n"
                         "• `/sect branch_join <别院ID>`\n"
                         "• `/sect donate <下品灵石> [中品灵石]` 捐献\n"
@@ -2571,12 +2677,12 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         "🏛️ *宗门系统*\n\n"
                         "你当前未加入宗门。\n\n"
                         "使用命令：\n"
-                        "• 创建消耗：5000 下品灵石 + 10 中品灵石\n"
-                        "• 宗门人数上限：10 人\n"
-                        "• 宗门Buff：修炼+10% ｜ 属性+5% ｜ 战斗收益+10%\n"
-                        "• 每个宗门最多 5 个附属别院\n"
-                        "• 每个别院最多 5 人\n"
-                        "• 别院成员享受宗门 Buff 的 90%\n"
+                        f"• 创建消耗：{int(sect_cfg['create_copper'])} 下品灵石 + {int(sect_cfg['create_gold'])} 中品灵石\n"
+                        f"• 宗门人数上限：{int(sect_cfg['base_max_members'])} 人\n"
+                        f"• 宗门Buff：修炼+{int(float(sect_cfg['default_cultivation_buff_pct']))}% ｜ 属性+{int(float(sect_cfg['default_stat_buff_pct']))}% ｜ 战斗收益+{int(float(sect_cfg['default_battle_reward_buff_pct']))}%\n"
+                        f"• 每个宗门最多 {int(sect_cfg['branch_max'])} 个附属别院\n"
+                        f"• 每个别院最多 {int(sect_cfg['branch_max_members'])} 人\n"
+                        f"• 别院成员享受宗门 Buff 的 {int(round(float(sect_cfg['branch_buff_rate']) * 100))}%\n"
                         "• `/sect create <名称> [描述]`\n"
                         "• `/sect join <宗门ID>`\n"
                         "• `/sect list` 查看宗门列表\n"
@@ -2878,7 +2984,13 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             if r.get("success"):
                 uid = r["user_id"]
                 force_paid = draw_mode == "paid1"
-                count = 5 if draw_mode == "5" else 1
+                if force_paid:
+                    count = 1
+                else:
+                    try:
+                        count = int(draw_mode)
+                    except (TypeError, ValueError):
+                        count = 1
                 request_id = _new_request_id(context)
                 result = await http_post(
                     f"{SERVER_URL}/api/gacha/pull",
@@ -3071,7 +3183,7 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 text = (
                     "🛌 *自动恢复中*\n\n"
                     "你已选择自动恢复。\n"
-                    "HP 和 MP 会按每分钟 10% 自动回复。\n\n"
+                    f"{_vitals_regen_desc()}。\n\n"
                     f"当前 HP: {status.get('hp', 0)}/{status.get('max_hp', 0)}\n"
                     f"当前 MP: {status.get('mp', 0)}/{status.get('max_mp', 0)}"
                 )
@@ -4408,11 +4520,11 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         reward_parts = []
                         for k, v in qdef["rewards"].items():
                             if k == "copper":
-                                reward_parts.append(f"{v}铜")
+                                reward_parts.append(f"{v}下品灵石")
                             elif k == "exp":
                                 reward_parts.append(f"{v}修为")
                             elif k == "gold":
-                                reward_parts.append(f"{v}金")
+                                reward_parts.append(f"{v}中品灵石")
                         reward_str = " ".join(reward_parts)
 
                         if claimed:
@@ -5173,11 +5285,11 @@ async def quest_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 reward_parts = []
                 for k, v in qdef["rewards"].items():
                     if k == "copper":
-                        reward_parts.append(f"{v}铜")
+                        reward_parts.append(f"{v}下品灵石")
                     elif k == "exp":
                         reward_parts.append(f"{v}修为")
                     elif k == "gold":
-                        reward_parts.append(f"{v}金")
+                        reward_parts.append(f"{v}中品灵石")
                 reward_str = " ".join(reward_parts)
 
                 if claimed:
@@ -5367,6 +5479,7 @@ async def chat_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def sect_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     uid = context.user_data["uid"]
     args = context.args or []
+    sect_cfg = _sect_text_cfg()
 
     async def _reply_help(in_sect: bool):
         if in_sect:
@@ -5374,12 +5487,12 @@ async def sect_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 "🏛️ *宗门指令*\n\n"
                 "• `/sect info` 查看宗门信息\n"
                 "• `/sect list [关键字]` 查看宗门列表\n"
-                "• 创建消耗：5000 下品灵石 + 10 中品灵石\n"
-                "• 宗门人数上限：10 人\n"
-                "• 宗门Buff：修炼+10% ｜ 属性+5% ｜ 战斗收益+10%\n"
-                "• 别院申请：3000 下品灵石 + 3 中品灵石，需宗主同意\n"
-                "• 每个别院最多 5 人\n"
-                "• 别院成员享受宗门 Buff 的 90%\n"
+                f"• 创建消耗：{int(sect_cfg['create_copper'])} 下品灵石 + {int(sect_cfg['create_gold'])} 中品灵石\n"
+                f"• 宗门人数上限：{int(sect_cfg['base_max_members'])} 人\n"
+                f"• 宗门Buff：修炼+{int(float(sect_cfg['default_cultivation_buff_pct']))}% ｜ 属性+{int(float(sect_cfg['default_stat_buff_pct']))}% ｜ 战斗收益+{int(float(sect_cfg['default_battle_reward_buff_pct']))}%\n"
+                f"• 别院申请：{int(sect_cfg['branch_create_copper'])} 下品灵石 + {int(sect_cfg['branch_create_gold'])} 中品灵石，需宗主同意\n"
+                f"• 每个别院最多 {int(sect_cfg['branch_max_members'])} 人\n"
+                f"• 别院成员享受宗门 Buff 的 {int(round(float(sect_cfg['branch_buff_rate']) * 100))}%\n"
                 "• `/sect donate <下品灵石> [中品灵石]` 捐献\n"
                 "• `/sect branch_apply <名称> [描述]`\n"
                 "• `/sect branch_join <别院ID>` 加入别院\n"
@@ -5395,12 +5508,12 @@ async def sect_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         else:
             text = (
                 "🏛️ *宗门指令*\n\n"
-                "• 创建消耗：5000 下品灵石 + 10 中品灵石\n"
-                "• 宗门人数上限：10 人\n"
-                "• 宗门Buff：修炼+10% ｜ 属性+5% ｜ 战斗收益+10%\n"
-                "• 每个宗门最多 5 个附属别院\n"
-                "• 每个别院最多 5 人\n"
-                "• 别院成员享受宗门 Buff 的 90%\n"
+                f"• 创建消耗：{int(sect_cfg['create_copper'])} 下品灵石 + {int(sect_cfg['create_gold'])} 中品灵石\n"
+                f"• 宗门人数上限：{int(sect_cfg['base_max_members'])} 人\n"
+                f"• 宗门Buff：修炼+{int(float(sect_cfg['default_cultivation_buff_pct']))}% ｜ 属性+{int(float(sect_cfg['default_stat_buff_pct']))}% ｜ 战斗收益+{int(float(sect_cfg['default_battle_reward_buff_pct']))}%\n"
+                f"• 每个宗门最多 {int(sect_cfg['branch_max'])} 个附属别院\n"
+                f"• 每个别院最多 {int(sect_cfg['branch_max_members'])} 人\n"
+                f"• 别院成员享受宗门 Buff 的 {int(round(float(sect_cfg['branch_buff_rate']) * 100))}%\n"
                 "• `/sect create <名称> [描述]`\n"
                 "• `/sect join <宗门ID>`\n"
                 "• `/sect branch_join <别院ID>`\n"
@@ -5414,7 +5527,7 @@ async def sect_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
             if info.get("success"):
                 sect = info.get("sect", {})
                 header = "🏛️ *我的别院*" if sect.get("membership_kind") == "branch" else "🏛️ *我的宗门*"
-                buff_rate = 0.9 if sect.get("membership_kind") == "branch" else 1.0
+                buff_rate = float(sect_cfg["branch_buff_rate"]) if sect.get("membership_kind") == "branch" else 1.0
                 branch_line = f"归属别院: {(sect.get('branch') or {}).get('display_name')}\n" if sect.get("membership_kind") == "branch" else ""
                 text = (
                     f"{header}\n\n"
@@ -5422,10 +5535,10 @@ async def sect_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f"宗门ID: {sect.get('sect_id')}\n"
                     f"{branch_line}"
                     f"等级: {sect.get('level', 1)}\n"
-                    f"人数上限: {min(int(sect.get('max_members', 0) or 0), 10)}\n"
+                    f"人数上限: {int(sect.get('max_members', sect_cfg['base_max_members']) or sect_cfg['base_max_members'])}\n"
                     f"Buff: 修炼+{int(float(sect.get('cultivation_buff_pct', 10) or 0) * buff_rate)}% ｜ 属性+{int(float(sect.get('stat_buff_pct', 5) or 0) * buff_rate)}% ｜ 战斗收益+{int(float(sect.get('battle_reward_buff_pct', 10) or 0) * buff_rate)}%\n"
-                    f"附属别院: {len(sect.get('branches', []) or [])}/5\n"
-                    f"资金: {sect.get('fund_copper', 0)}铜 / {sect.get('fund_gold', 0)}金\n"
+                    f"附属别院: {len(sect.get('branches', []) or [])}/{int(sect_cfg['branch_max'])}\n"
+                    f"资金: {sect.get('fund_copper', 0)}下品灵石 / {sect.get('fund_gold', 0)}中品灵石\n"
                     f"战绩: {sect.get('war_wins', 0)}胜 {sect.get('war_losses', 0)}负\n"
                 )
                 await update.message.reply_text(text, parse_mode=ParseMode.MARKDOWN)
@@ -5476,7 +5589,10 @@ async def sect_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
             rows = data.get("sects", [])
             text = "🏛️ *宗门列表*\n\n"
             for row in rows[:10]:
-                text += f"• {row.get('name')} ｜ ID {row.get('sect_id')} ｜ Lv.{row.get('level',1)} ｜ 别院{int(row.get('branch_count', 0) or 0)}/5\n"
+                text += (
+                    f"• {row.get('name')} ｜ ID {row.get('sect_id')} ｜ Lv.{row.get('level',1)} ｜ "
+                    f"别院{int(row.get('branch_count', 0) or 0)}/{int(sect_cfg['branch_max'])}\n"
+                )
             await update.message.reply_text(text, parse_mode=ParseMode.MARKDOWN)
             return
         if sub == "info":
@@ -5496,21 +5612,29 @@ async def sect_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f"🏛️ *{sect.get('name')}*\n\n"
                 f"ID: {sect.get('sect_id')}\n"
                 f"等级: {sect.get('level', 1)}\n"
-                f"人数上限: {min(int(sect.get('max_members', 0) or 0), 10)}\n"
+                f"人数上限: {int(sect.get('max_members', sect_cfg['base_max_members']) or sect_cfg['base_max_members'])}\n"
                 f"宗门Buff: 修炼+{int(float(sect.get('cultivation_buff_pct', 10) or 0))}% ｜ 属性+{int(float(sect.get('stat_buff_pct', 5) or 0))}% ｜ 战斗收益+{int(float(sect.get('battle_reward_buff_pct', 10) or 0))}%\n"
-                f"附属别院: {len(sect.get('branches', []) or [])}/5\n"
+                f"附属别院: {len(sect.get('branches', []) or [])}/{int(sect_cfg['branch_max'])}\n"
                 f"战绩: {sect.get('war_wins', 0)}胜 {sect.get('war_losses', 0)}负\n"
             )
             branches = sect.get("branches", []) or []
             if branches:
                 text += "别院：\n"
                 for row in branches[:5]:
-                    text += f"• {row.get('display_name')} ｜ ID {row.get('branch_id')} ｜ {int(row.get('member_count', 0) or 0)}/{int(row.get('max_members', 5) or 5)}人\n"
+                    text += (
+                        f"• {row.get('display_name')} ｜ ID {row.get('branch_id')} ｜ "
+                        f"{int(row.get('member_count', 0) or 0)}/"
+                        f"{int(row.get('max_members', sect_cfg['branch_max_members']) or sect_cfg['branch_max_members'])}人\n"
+                    )
             pending = sect.get("pending_branch_requests", []) or []
             if pending:
                 text += "待审批：\n"
                 for row in pending[:5]:
-                    text += f"• ID {row.get('id')} ｜ {row.get('name')} ｜ 3000铜3金\n"
+                    text += (
+                        f"• ID {row.get('id')} ｜ {row.get('name')} ｜ "
+                        f"{int(row.get('cost_copper', sect_cfg['branch_create_copper']) or sect_cfg['branch_create_copper'])}下品灵石 + "
+                        f"{int(row.get('cost_gold', sect_cfg['branch_create_gold']) or sect_cfg['branch_create_gold'])}中品灵石\n"
+                    )
             await update.message.reply_text(text, parse_mode=ParseMode.MARKDOWN)
             return
         if sub == "donate" and len(args) >= 2:
@@ -5814,11 +5938,23 @@ async def gacha_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
             try:
                 banner_id = int(args[0])
             except (TypeError, ValueError):
-                await update.message.reply_text("❌ 参数错误：/gacha <卡池ID> [1|5|paid1]，卡池ID必须是整数")
+                await update.message.reply_text(
+                    f"❌ 参数错误：/gacha <卡池ID> [1|{_gacha_five_pull_count()}|paid1]，卡池ID必须是整数"
+                )
                 return
             draw_arg = (args[1] if len(args) >= 2 else "1").lower()
             force_paid = draw_arg in ("paid1", "paid", "single")
-            count = 5 if draw_arg in ("5", "five") else 1
+            if force_paid:
+                count = 1
+            else:
+                five_count = _gacha_five_pull_count()
+                if draw_arg in ("5", "five", str(five_count)):
+                    count = five_count
+                else:
+                    try:
+                        count = int(draw_arg)
+                    except (TypeError, ValueError):
+                        count = 1
             result = await http_post(
                 f"{SERVER_URL}/api/gacha/pull",
                 json={

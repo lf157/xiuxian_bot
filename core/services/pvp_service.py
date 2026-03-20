@@ -41,6 +41,20 @@ def _cfg_float(key: str, default: float) -> float:
         return float(default)
 
 
+def _cfg_pair(path: tuple[str, str], default_low: int, default_high: int) -> tuple[int, int]:
+    raw = config.get_nested("pvp", "reward_ranges", path[0], path[1], default=[default_low, default_high])
+    if isinstance(raw, (list, tuple)) and len(raw) >= 2:
+        try:
+            low = int(raw[0])
+            high = int(raw[1])
+            if low > high:
+                low, high = high, low
+            return low, high
+        except (TypeError, ValueError):
+            pass
+    return default_low, default_high
+
+
 PVP_DAILY_LIMIT = _cfg_int("daily_limit", 10)
 PVP_K_FACTOR = _cfg_int("k_factor", 32)
 PVP_RATING_RANGE = _cfg_int("rating_range", 200)
@@ -52,6 +66,19 @@ PVP_DEFENSE_REWARD_EXP = _cfg_int("defense_reward_exp", 10)
 PVP_POWER_RATIO_MIN = _cfg_float("power_ratio_min", 0.75)
 PVP_POWER_RATIO_MAX = _cfg_float("power_ratio_max", 1.33)
 PVP_POWER_OUTSIDE_MODE = str(config.get_nested("pvp", "power_outside_mode", default="friendly") or "friendly").lower()
+PVP_REWARD_WIN_COPPER_RANGE = _cfg_pair(("win", "copper"), 50, 200)
+PVP_REWARD_WIN_EXP_RANGE = _cfg_pair(("win", "exp"), 30, 150)
+PVP_REWARD_LOSS_COPPER_RANGE = _cfg_pair(("loss", "copper"), 10, 30)
+PVP_REWARD_LOSS_EXP_RANGE = _cfg_pair(("loss", "exp"), 10, 30)
+PVP_REWARD_DRAW_COPPER_RANGE = _cfg_pair(("draw", "copper"), 20, 50)
+PVP_REWARD_DRAW_EXP_RANGE = _cfg_pair(("draw", "exp"), 15, 50)
+PVP_EXPECT_WEIGHT_RATING = _cfg_float("expected_win_weight_rating", 0.6)
+PVP_EXPECT_WEIGHT_POWER = _cfg_float("expected_win_weight_power", 0.4)
+PVP_EXPECT_MIN = _cfg_float("expected_win_rate_min", 0.05)
+PVP_EXPECT_MAX = _cfg_float("expected_win_rate_max", 0.95)
+PVP_RISK_ADVANTAGE_THRESHOLD = _cfg_float("risk_label_advantage_threshold", 0.6)
+PVP_RISK_BALANCE_THRESHOLD = _cfg_float("risk_label_balance_threshold", 0.45)
+PVP_STAMINA_COST = max(1, _cfg_int("stamina_cost", 1))
 
 
 def calculate_elo_change(winner_rating: int, loser_rating: int, k: int = PVP_K_FACTOR) -> Tuple[int, int]:
@@ -81,14 +108,14 @@ def _scale_by_rank(rank: int) -> float:
 def _reward_for_result(rank: int, outcome: str) -> Dict[str, int]:
     scale = _scale_by_rank(rank)
     if outcome == "win":
-        copper = int(random.randint(50, 200) * scale)
-        exp = int(random.randint(30, 150) * scale)
+        copper = int(random.randint(*PVP_REWARD_WIN_COPPER_RANGE) * scale)
+        exp = int(random.randint(*PVP_REWARD_WIN_EXP_RANGE) * scale)
     elif outcome == "loss":
-        copper = int(random.randint(10, 30) * scale)
-        exp = int(random.randint(10, 30) * scale)
+        copper = int(random.randint(*PVP_REWARD_LOSS_COPPER_RANGE) * scale)
+        exp = int(random.randint(*PVP_REWARD_LOSS_EXP_RANGE) * scale)
     else:  # draw
-        copper = int(random.randint(20, 50) * scale)
-        exp = int(random.randint(15, 50) * scale)
+        copper = int(random.randint(*PVP_REWARD_DRAW_COPPER_RANGE) * scale)
+        exp = int(random.randint(*PVP_REWARD_DRAW_EXP_RANGE) * scale)
     return {"copper": max(0, copper), "exp": max(0, exp)}
 
 
@@ -114,14 +141,16 @@ def _expected_win_rate(
     rating_expect = 1 / (1 + 10 ** ((opp_rating - my_rating) / 400))
     ratio = _power_ratio(my_power, opp_power)
     power_expect = ratio / (1 + ratio) if ratio > 0 else 0.0
-    expected = rating_expect * 0.6 + power_expect * 0.4
-    return max(0.05, min(0.95, float(expected)))
+    expected = rating_expect * PVP_EXPECT_WEIGHT_RATING + power_expect * PVP_EXPECT_WEIGHT_POWER
+    lo = min(PVP_EXPECT_MIN, PVP_EXPECT_MAX)
+    hi = max(PVP_EXPECT_MIN, PVP_EXPECT_MAX)
+    return max(lo, min(hi, float(expected)))
 
 
 def _risk_label(expected: float) -> str:
-    if expected >= 0.6:
+    if expected >= PVP_RISK_ADVANTAGE_THRESHOLD:
         return "优势"
-    if expected >= 0.45:
+    if expected >= PVP_RISK_BALANCE_THRESHOLD:
         return "均势"
     return "劣势"
 
@@ -306,7 +335,7 @@ def do_pvp_challenge(user_id: str, opponent_id: str, request_id: Optional[str] =
         current_stamina = float(challenger.get("stamina", 0) or 0)
     except (TypeError, ValueError):
         current_stamina = 0.0
-    if current_stamina < 1:
+    if current_stamina < PVP_STAMINA_COST:
         log_event(
             "pvp_challenge",
             user_id=user_id,
@@ -318,9 +347,9 @@ def do_pvp_challenge(user_id: str, opponent_id: str, request_id: Optional[str] =
         return _dedup_return({
             "success": False,
             "code": "INSUFFICIENT_STAMINA",
-            "message": "精力不足，PVP 挑战需要 1 点精力",
+            "message": f"精力不足，PVP 挑战需要 {PVP_STAMINA_COST} 点精力",
             "stamina": format_stamina_value(challenger.get("stamina", 0)),
-            "stamina_cost": 1,
+            "stamina_cost": PVP_STAMINA_COST,
         }, 400)
 
     c_skills = get_user_skills(user_id)
@@ -370,13 +399,14 @@ def do_pvp_challenge(user_id: str, opponent_id: str, request_id: Optional[str] =
             if friendly_mode:
                 cur.execute(
                     """UPDATE users SET
-                       stamina = stamina - 1, stamina_updated_at = ?,
+                       stamina = stamina - ?, stamina_updated_at = ?,
                        pvp_daily_count = (CASE WHEN pvp_daily_reset < ? THEN 0 ELSE pvp_daily_count END) + 1,
                        pvp_daily_reset = CASE WHEN pvp_daily_reset < ? THEN ? ELSE pvp_daily_reset END
                        WHERE user_id = ?
                          AND (CASE WHEN pvp_daily_reset < ? THEN 0 ELSE pvp_daily_count END) < ?
-                         AND stamina >= 1""",
+                         AND stamina >= ?""",
                     (
+                        PVP_STAMINA_COST,
                         now,
                         today_midnight,
                         today_midnight,
@@ -384,6 +414,7 @@ def do_pvp_challenge(user_id: str, opponent_id: str, request_id: Optional[str] =
                         user_id,
                         today_midnight,
                         PVP_DAILY_LIMIT,
+                        PVP_STAMINA_COST,
                     ),
                 )
                 if cur.rowcount == 0:
@@ -413,12 +444,12 @@ def do_pvp_challenge(user_id: str, opponent_id: str, request_id: Optional[str] =
                     """UPDATE users SET
                        pvp_rating = ?, pvp_wins = pvp_wins + ?, pvp_losses = pvp_losses + ?, pvp_draws = pvp_draws + ?,
                        copper = copper + ?, exp = exp + ?,
-                       stamina = stamina - 1, stamina_updated_at = ?,
+                       stamina = stamina - ?, stamina_updated_at = ?,
                        pvp_daily_count = (CASE WHEN pvp_daily_reset < ? THEN 0 ELSE pvp_daily_count END) + 1,
                        pvp_daily_reset = CASE WHEN pvp_daily_reset < ? THEN ? ELSE pvp_daily_reset END
                        WHERE user_id = ?
                          AND (CASE WHEN pvp_daily_reset < ? THEN 0 ELSE pvp_daily_count END) < ?
-                         AND stamina >= 1""",
+                         AND stamina >= ?""",
                     (
                         max(0, c_rating + c_change),
                         1 if outcome == "win" else 0,
@@ -426,6 +457,7 @@ def do_pvp_challenge(user_id: str, opponent_id: str, request_id: Optional[str] =
                         1 if outcome == "draw" else 0,
                         rewards.get("copper", 0),
                         rewards.get("exp", 0),
+                        PVP_STAMINA_COST,
                         now,
                         today_midnight,
                         today_midnight,
@@ -433,6 +465,7 @@ def do_pvp_challenge(user_id: str, opponent_id: str, request_id: Optional[str] =
                         user_id,
                         today_midnight,
                         PVP_DAILY_LIMIT,
+                        PVP_STAMINA_COST,
                     ),
                 )
                 if cur.rowcount == 0:
@@ -491,9 +524,9 @@ def do_pvp_challenge(user_id: str, opponent_id: str, request_id: Optional[str] =
         return _dedup_return({
             "success": False,
             "code": "INSUFFICIENT_STAMINA",
-            "message": "精力不足，PVP 挑战需要 1 点精力",
+            "message": f"精力不足，PVP 挑战需要 {PVP_STAMINA_COST} 点精力",
             "stamina": format_stamina_value(fresh.get("stamina", 0)),
-            "stamina_cost": 1,
+            "stamina_cost": PVP_STAMINA_COST,
         }, 400)
 
     result["rating_change"] = {"challenger": c_change, "defender": d_change}
@@ -530,7 +563,7 @@ def do_pvp_challenge(user_id: str, opponent_id: str, request_id: Optional[str] =
             action="pvp_challenge",
             delta_copper=int(rewards.get("copper", 0) or 0),
             delta_exp=int(rewards.get("exp", 0) or 0),
-            delta_stamina=-1,
+            delta_stamina=-PVP_STAMINA_COST,
             success=True,
             request_id=request_id,
             rank=int(challenger.get("rank", 1) or 1),

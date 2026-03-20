@@ -140,7 +140,8 @@ def test_start_hunt_session_blocks_parallel_session(clean_battle_sessions, test_
     assert status1 == 200
 
     payload2, status2 = tbs.start_hunt_session("u1", "wild_boar", now=now + 1)
-    assert status2 == 409
+    assert status2 == 200
+    assert payload2.get("resumed") is True
     assert payload2.get("session_id") == payload1.get("session_id")
 
 
@@ -185,6 +186,56 @@ def test_action_hunt_session_loads_from_db(monkeypatch, clean_battle_sessions, t
     assert status2 == 200
     assert payload2.get("session_id") == session_id
     assert session_id in tbs._BATTLE_SESSIONS
+
+
+def test_action_hunt_session_finalize_error_clears_session(monkeypatch, clean_battle_sessions, test_db):
+    create_user("u1", "A")
+    now = int(time.time())
+
+    payload, status = tbs.start_hunt_session("u1", "wild_boar", now=now)
+    assert status == 200
+    session_id = payload["session_id"]
+
+    def fake_run_round(session, action, skill_id=None):
+        return {"finished": True, "victory": True, "round": 1, "round_log": ["ok"]}
+
+    def fake_finalize_hunt(session, victory):
+        raise RuntimeError("boom")
+
+    monkeypatch.setattr(tbs, "_run_round", fake_run_round)
+    monkeypatch.setattr(tbs, "_finalize_hunt", fake_finalize_hunt)
+
+    payload2, status2 = tbs.action_hunt_session("u1", session_id, action="attack")
+    assert status2 == 500
+    assert payload2.get("code") == "HUNT_FINALIZE_ERROR"
+
+    payload3, status3 = tbs.start_hunt_session("u1", "wild_boar", now=now + 9999)
+    assert status3 == 200
+    assert payload3.get("session_id") != session_id
+
+
+def test_action_hunt_session_defeat_sets_weak(monkeypatch, clean_battle_sessions, test_db):
+    create_user("u1", "A")
+    now = int(time.time())
+
+    payload, status = tbs.start_hunt_session("u1", "wild_boar", now=now)
+    assert status == 200
+    session_id = payload["session_id"]
+
+    def fake_run_round(session, action, skill_id=None):
+        session["history"] = ["败北"]
+        return {"finished": True, "victory": False, "round": 1, "round_log": ["败北"]}
+
+    monkeypatch.setattr(tbs, "_run_round", fake_run_round)
+
+    payload2, status2 = tbs.action_hunt_session("u1", session_id, action="attack")
+    assert status2 == 200
+    assert payload2.get("victory") is False
+    assert int(payload2.get("weak_seconds", 0) or 0) > 0
+
+    row = fetch_one("SELECT hp, weak_until FROM users WHERE user_id = %s", ("u1",))
+    assert int(row["hp"] or 0) == 1
+    assert int(row["weak_until"] or 0) > now
 
 
 def test_turn_secret_realm_invalid_encounter_no_stamina_spent(monkeypatch, clean_battle_sessions, test_db):

@@ -4,10 +4,18 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional, Tuple
 
+from core.config import config
 from core.game.realms import REALMS
 
 
-EXCHANGE_RATE = 1000
+def _economy_cfg_int(key: str, default: int) -> int:
+    try:
+        return int(config.get_nested("economy", key, default=default))
+    except (TypeError, ValueError):
+        return int(default)
+
+
+EXCHANGE_RATE = max(1, _economy_cfg_int("exchange_rate", 1000))
 
 
 def _stage_min_rank(stage: str, default_rank: int = 1) -> int:

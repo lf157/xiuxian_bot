@@ -1752,6 +1752,33 @@ def refresh_user_vitals(
     if not user:
         return None
     now = int(time.time()) if now is None else int(now)
+    effective_regen_seconds = max(1, int(regen_seconds or DEFAULT_VITALS_REGEN_SECONDS))
+    effective_regen_pct = float(regen_pct or DEFAULT_VITALS_REGEN_PCT)
+    try:
+        from core.config import config as app_config
+
+        if int(regen_seconds or 0) == int(DEFAULT_VITALS_REGEN_SECONDS):
+            effective_regen_seconds = max(
+                1,
+                int(
+                    app_config.get_nested(
+                        "battle",
+                        "mp",
+                        "regen_seconds",
+                        default=effective_regen_seconds,
+                    )
+                    or effective_regen_seconds
+                ),
+            )
+        if float(regen_pct or 0.0) == float(DEFAULT_VITALS_REGEN_PCT):
+            effective_regen_pct = float(
+                app_config.get_nested("battle", "mp", "regen_pct", default=effective_regen_pct)
+                or effective_regen_pct
+            )
+    except Exception:
+        pass
+    effective_regen_pct = max(0.0, effective_regen_pct)
+
     hp = max(0, int(user.get("hp", user.get("max_hp", 100)) or 0))
     mp = max(0, int(user.get("mp", user.get("max_mp", 50)) or 0))
     max_hp = max(1, int(user.get("max_hp", 100) or 100))
@@ -1768,18 +1795,18 @@ def refresh_user_vitals(
         return user
 
     elapsed = max(0, now - updated_at)
-    recovered = elapsed // max(1, regen_seconds)
+    recovered = elapsed // effective_regen_seconds
     if recovered <= 0:
         user["hp"] = hp
         user["mp"] = mp
         user["vitals_updated_at"] = updated_at
         return user
 
-    hp_step = max(1, int(round(max_hp * float(regen_pct or 0.1))))
-    mp_step = max(1, int(round(max_mp * float(regen_pct or 0.1))))
+    hp_step = max(1, int(round(max_hp * effective_regen_pct)))
+    mp_step = max(1, int(round(max_mp * effective_regen_pct)))
     new_hp = min(max_hp, hp + hp_step * int(recovered))
     new_mp = min(max_mp, mp + mp_step * int(recovered))
-    remainder = elapsed % max(1, regen_seconds)
+    remainder = elapsed % effective_regen_seconds
     new_updated_at = now if (new_hp >= max_hp and new_mp >= max_mp) else now - remainder
     execute(
         "UPDATE users SET hp = %s, mp = %s, vitals_updated_at = %s WHERE user_id = %s",

@@ -64,7 +64,14 @@ SECRET_REALMS = [
     },
 ]
 
-DAILY_SECRET_REALM_LIMIT = 3
+def _secret_realm_cfg_int(key: str, default: int) -> int:
+    try:
+        return int(config.get_nested("secret_realm", key, default=default))
+    except (TypeError, ValueError):
+        return int(default)
+
+
+DAILY_SECRET_REALM_LIMIT = max(1, _secret_realm_cfg_int("daily_limit", 3))
 
 SECRET_REALM_PATHS = {
     "safe": {

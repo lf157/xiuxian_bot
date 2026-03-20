@@ -9,6 +9,7 @@ import json
 import datetime
 from typing import Any, Dict, List, Tuple
 
+from core.config import config
 from core.database.connection import (
     fetch_one,
     db_transaction,
@@ -23,7 +24,40 @@ from core.services.metrics_service import log_event, log_economy_ledger
 from core.services.worldboss_fsm import WorldBossFSM, WorldBossSnapshot
 from core.utils.timeutil import midnight_timestamp, local_day_key
 
-BOSS_DAILY_LIMIT = 5
+
+def _wb_cfg_int(key: str, default: int) -> int:
+    try:
+        return int(config.get_nested("events", "world_boss", key, default=default))
+    except (TypeError, ValueError):
+        return int(default)
+
+
+def _wb_cfg_float(key: str, default: float) -> float:
+    try:
+        return float(config.get_nested("events", "world_boss", key, default=default))
+    except (TypeError, ValueError):
+        return float(default)
+
+
+BOSS_DAILY_LIMIT = max(1, _wb_cfg_int("daily_attack_limit", 5))
+BOSS_STAMINA_COST = max(1, _wb_cfg_int("stamina_cost", 1))
+BOSS_DAMAGE_VAR_MIN = _wb_cfg_float("damage_variance_min", 0.8)
+BOSS_DAMAGE_VAR_MAX = _wb_cfg_float("damage_variance_max", 1.2)
+BOSS_REWARD_BASE_COPPER = _wb_cfg_int("attack_reward_base_copper", 50)
+BOSS_REWARD_PER_RANK_COPPER = _wb_cfg_int("attack_reward_per_rank_copper", 8)
+BOSS_REWARD_MIN_COPPER = _wb_cfg_int("attack_reward_min_copper", 80)
+BOSS_REWARD_MAX_COPPER = _wb_cfg_int("attack_reward_max_copper", 260)
+BOSS_REWARD_BASE_EXP = _wb_cfg_int("attack_reward_base_exp", 40)
+BOSS_REWARD_PER_RANK_EXP = _wb_cfg_int("attack_reward_per_rank_exp", 6)
+BOSS_REWARD_MIN_EXP = _wb_cfg_int("attack_reward_min_exp", 60)
+BOSS_REWARD_MAX_EXP = _wb_cfg_int("attack_reward_max_exp", 220)
+BOSS_RARE_DROP_MIN_RANK = _wb_cfg_int("rare_drop_min_rank", 20)
+BOSS_RARE_DROP_CHANCE = max(0.0, min(1.0, _wb_cfg_float("rare_drop_chance", 0.18)))
+BOSS_MID_DROP_MIN_RANK = _wb_cfg_int("mid_drop_min_rank", 10)
+BOSS_MID_DROP_CHANCE = max(0.0, min(1.0, _wb_cfg_float("mid_drop_chance", 0.28)))
+BOSS_DEFEAT_BONUS_RARE_MIN_RANK = _wb_cfg_int("defeat_bonus_rare_min_rank", 20)
+BOSS_DEFEAT_BONUS_RARE_ITEM_ID = str(config.get_nested("events", "world_boss", "defeat_bonus_rare_item_id", default="dragon_scale") or "dragon_scale")
+BOSS_DEFEAT_BONUS_COMMON_ITEM_ID = str(config.get_nested("events", "world_boss", "defeat_bonus_common_item_id", default="demon_core") or "demon_core")
 
 
 def _world_boss() -> Dict[str, Any]:
@@ -637,7 +671,7 @@ def attack_world_boss(user_id: str) -> Tuple[Dict[str, Any], int]:
             )
             return {"success": False, "code": "DEFEATED", "message": "世界BOSS已被击败，请等待刷新"}, 400
         hp = int(snapshot.hp or 0)
-        if not spend_user_stamina_tx(cur, user_id, 1, now=now):
+        if not spend_user_stamina_tx(cur, user_id, BOSS_STAMINA_COST, now=now):
             current = get_user_by_id(user_id) or stamina_user or user
             log_event(
                 "world_boss_attack",
@@ -649,15 +683,17 @@ def attack_world_boss(user_id: str) -> Tuple[Dict[str, Any], int]:
             return {
                 "success": False,
                 "code": "INSUFFICIENT_STAMINA",
-                "message": "精力不足，攻击世界BOSS需要 1 点精力",
+                "message": f"精力不足，攻击世界BOSS需要 {BOSS_STAMINA_COST} 点精力",
                 "stamina": format_stamina_value((current or {}).get("stamina", 0)),
-                "stamina_cost": 1,
+                "stamina_cost": BOSS_STAMINA_COST,
             }, 400
         user = get_user_by_id(user_id) or user
 
         battle_user = apply_sect_stat_buffs(user)
         base = int(battle_user.get("attack", 10) or 10)
-        damage = max(1, int(base * random.uniform(0.8, 1.2)))
+        var_min = min(BOSS_DAMAGE_VAR_MIN, BOSS_DAMAGE_VAR_MAX)
+        var_max = max(BOSS_DAMAGE_VAR_MIN, BOSS_DAMAGE_VAR_MAX)
+        damage = max(1, int(base * random.uniform(var_min, var_max)))
         new_hp = max(0, hp - damage)
 
         cur.execute(
@@ -668,8 +704,14 @@ def attack_world_boss(user_id: str) -> Tuple[Dict[str, Any], int]:
         defeated = new_hp == 0
         rank = int(user.get("rank", 1) or 1)
         rewards = {
-            "copper": max(80, min(260, 50 + rank * 8)),
-            "exp": max(60, min(220, 40 + rank * 6)),
+            "copper": max(
+                BOSS_REWARD_MIN_COPPER,
+                min(BOSS_REWARD_MAX_COPPER, BOSS_REWARD_BASE_COPPER + rank * BOSS_REWARD_PER_RANK_COPPER),
+            ),
+            "exp": max(
+                BOSS_REWARD_MIN_EXP,
+                min(BOSS_REWARD_MAX_EXP, BOSS_REWARD_BASE_EXP + rank * BOSS_REWARD_PER_RANK_EXP),
+            ),
             "gold": 0,
             "items": [],
         }
@@ -677,12 +719,12 @@ def attack_world_boss(user_id: str) -> Tuple[Dict[str, Any], int]:
         rewards["copper"] = int(round(rewards["copper"] * reward_mult))
         rewards["exp"] = int(round(rewards["exp"] * reward_mult))
 
-        if rank >= 20 and random.random() < 0.18:
+        if rank >= BOSS_RARE_DROP_MIN_RANK and random.random() < BOSS_RARE_DROP_CHANCE:
             rare_id = "dragon_scale" if random.random() < 0.5 else "phoenix_feather"
             generated = _grant_generated_item(cur, user_id, rare_id, 1)
             if generated:
                 rewards["items"].append({"item_id": generated["item_id"], "quantity": generated.get("quantity", 1)})
-        elif rank >= 10 and random.random() < 0.28:
+        elif rank >= BOSS_MID_DROP_MIN_RANK and random.random() < BOSS_MID_DROP_CHANCE:
             generated = _grant_generated_item(cur, user_id, "demon_core", 1)
             if generated:
                 rewards["items"].append({"item_id": generated["item_id"], "quantity": generated.get("quantity", 1)})
@@ -700,7 +742,11 @@ def attack_world_boss(user_id: str) -> Tuple[Dict[str, Any], int]:
                 "UPDATE users SET copper = copper + %s, exp = exp + %s, gold = gold + %s WHERE user_id = %s",
                 (boss_cfg["reward_copper"], boss_cfg["reward_exp"], rewards["gold"], user_id),
             )
-            boss_bonus_id = "dragon_scale" if rank >= 20 else "demon_core"
+            boss_bonus_id = (
+                BOSS_DEFEAT_BONUS_RARE_ITEM_ID
+                if rank >= BOSS_DEFEAT_BONUS_RARE_MIN_RANK
+                else BOSS_DEFEAT_BONUS_COMMON_ITEM_ID
+            )
             generated = _grant_generated_item(cur, user_id, boss_bonus_id, 1)
             if generated:
                 rewards["items"].append({"item_id": generated["item_id"], "quantity": generated.get("quantity", 1)})
@@ -736,7 +782,7 @@ def attack_world_boss(user_id: str) -> Tuple[Dict[str, Any], int]:
         delta_copper=int(rewards.get("copper", 0) or 0),
         delta_gold=int(rewards.get("gold", 0) or 0),
         delta_exp=int(rewards.get("exp", 0) or 0),
-        delta_stamina=-1,
+        delta_stamina=-BOSS_STAMINA_COST,
         success=True,
         rank=int(user.get("rank", 1) or 1),
         meta={"defeated": defeated, "damage": damage},

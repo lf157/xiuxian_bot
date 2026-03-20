@@ -46,7 +46,7 @@ from core.game.secret_realms import (
     roll_secret_realm_rewards,
     scale_secret_realm_monster,
 )
-from core.game.skills import get_skill, scale_skill_effect
+from core.game.skills import compute_skill_mp_cost, format_skill_mp_cost, get_skill, scale_skill_effect
 from core.game.elite_affixes import roll_elite_affixes, apply_elite_affixes
 from core.services.balance_service import exp_fatigue_multiplier, fatigue_multiplier, hunt_rewards
 from core.services.codex_service import ensure_item, ensure_monster
@@ -71,6 +71,23 @@ def _session_ttl_seconds() -> int:
         return max(60, int(configured or 900))
     except (TypeError, ValueError):
         return 900
+
+
+def _hunt_defeat_weak_seconds() -> int:
+    configured = config.get_nested("balance", "hunt", "defeat_weak_seconds", default=1800)
+    try:
+        return max(0, int(configured or 0))
+    except (TypeError, ValueError):
+        return 1800
+
+
+def _format_weak_duration(seconds: int) -> str:
+    total = max(0, int(seconds or 0))
+    if total <= 0:
+        return "0秒"
+    if total % 60 == 0:
+        return f"{total // 60}分钟"
+    return f"{total}秒"
 
 
 def _compensate_expired_secret_session(session: Dict[str, Any], now: int) -> None:
@@ -322,14 +339,57 @@ def _active_skills_for_user(user_id: str) -> List[Dict[str, Any]]:
     return active_skills[:2]
 
 
-def _skill_summary(skill: Dict[str, Any]) -> Dict[str, Any]:
+def _hunt_session_payload(session: Dict[str, Any], *, message: Optional[str] = None, resumed: bool = False) -> Dict[str, Any]:
+    player = session.get("player") or {}
+    enemy = session.get("enemy") or {}
+    monster = session.get("monster") or {}
+    max_mp = int(player.get("max_mp", 0) or 0)
+    active_skills = session.get("active_skills") or []
+    return {
+        "success": True,
+        "message": message or ("已恢复进行中的狩猎战斗" if resumed else "战斗开始"),
+        "resumed": bool(resumed),
+        "session_id": session.get("id"),
+        "round": int(session.get("round", 0) or 0),
+        "monster": monster,
+        "player": {
+            "hp": int(player.get("hp", 0) or 0),
+            "max_hp": int(player.get("max_hp", 0) or 0),
+            "mp": int(player.get("mp", 0) or 0),
+            "max_mp": int(player.get("max_mp", 0) or 0),
+            "attack": int(player.get("attack", 0) or 0),
+            "defense": int(player.get("defense", 0) or 0),
+            "name": player.get("name"),
+        },
+        "enemy": {
+            "hp": int(enemy.get("hp", 0) or 0),
+            "max_hp": int(enemy.get("max_hp", 0) or 0),
+            "attack": int(enemy.get("attack", 0) or 0),
+            "defense": int(enemy.get("defense", 0) or 0),
+            "name": enemy.get("name"),
+            "elite_affixes": list(enemy.get("elite_affix_names") or session.get("elite_affix_names") or []),
+        },
+        "active_skills": [_skill_summary(skill, max_mp=max_mp) for skill in active_skills],
+        "element_relation": session.get("element_relation"),
+        "combat_modifiers": session.get("combat_modifiers"),
+    }
+
+
+def _skill_summary(skill: Dict[str, Any], *, max_mp: Optional[int] = None) -> Dict[str, Any]:
     effect = skill.get("effect", {}) or {}
+    if max_mp is None:
+        mp_cost = int(skill.get("mp_cost", 0) or 0)
+        mp_cost_text = format_skill_mp_cost(skill)
+    else:
+        mp_cost = compute_skill_mp_cost(skill, int(max_mp or 0))
+        mp_cost_text = format_skill_mp_cost(skill, max_mp=int(max_mp or 0))
     return {
         "id": skill.get("id"),
         "name": skill.get("name"),
         "desc": skill.get("desc", "主动技能"),
         "damage_pct": int(round(float(effect.get("attack_multiplier", 1.0) or 1.0) * 100)),
-        "mp_cost": int(skill.get("mp_cost", 0) or 0),
+        "mp_cost": int(mp_cost),
+        "mp_cost_text": mp_cost_text,
     }
 
 
@@ -566,11 +626,13 @@ def _run_round(session: Dict[str, Any], action: str, skill_id: Optional[str] = N
     enemy = session["enemy"]
     session["last_active_at"] = int(time.time())
     selected_skill = None
+    selected_skill_mp_cost = 0
     invalid_skill_requested = False
     if action == "skill" and skill_id:
         candidate = next((s for s in session.get("active_skills", []) if s.get("id") == skill_id), None)
         if candidate:
-            mp_cost = int(candidate.get("mp_cost", 0) or 0)
+            max_mp_for_cost = int(player.get("max_mp", player.get("mp", 0)) or 0)
+            mp_cost = compute_skill_mp_cost(candidate, max_mp_for_cost)
             if int(player.get("mp", 0) or 0) < mp_cost:
                 return {
                     "finished": False,
@@ -583,6 +645,7 @@ def _run_round(session: Dict[str, Any], action: str, skill_id: Optional[str] = N
                 }
             player["mp"] = max(0, int(player.get("mp", 0) or 0) - mp_cost)
             selected_skill = candidate
+            selected_skill_mp_cost = mp_cost
         else:
             invalid_skill_requested = True
 
@@ -594,8 +657,8 @@ def _run_round(session: Dict[str, Any], action: str, skill_id: Optional[str] = N
         elite_names = (enemy.get("elite_affix_names") or session.get("elite_affix_names")) if enemy else None
         if elite_names:
             round_logs.append(f"👹 精英词缀: {'、'.join(elite_names)}")
-    if selected_skill and int(selected_skill.get("mp_cost", 0) or 0) > 0:
-        round_logs.append(f"💙 消耗 {int(selected_skill.get('mp_cost', 0) or 0)} MP")
+    if selected_skill and selected_skill_mp_cost > 0:
+        round_logs.append(f"💙 消耗 {selected_skill_mp_cost} MP")
     if selected_skill:
         _apply_skill_utilities(player, selected_skill, round_logs)
 
@@ -841,7 +904,7 @@ def _build_secret_battle_session(
         "monster": monster,
         "player": {"hp": player["hp"], "max_hp": player["max_hp"], "mp": player["mp"], "max_mp": player["max_mp"], "attack": player["attack"], "defense": player["defense"], "name": player["name"]},
         "enemy": {"hp": enemy["hp"], "max_hp": enemy["max_hp"], "attack": enemy["attack"], "defense": enemy["defense"], "name": enemy["name"], "elite_affixes": elite_names},
-        "active_skills": [_skill_summary(skill) for skill in active_skills],
+        "active_skills": [_skill_summary(skill, max_mp=int(player.get("max_mp", 0) or 0)) for skill in active_skills],
         "element_relation": element_relation,
         "combat_modifiers": combat_modifiers,
     }
@@ -894,6 +957,8 @@ def start_hunt_session(user_id: str, monster_id: str, *, now: Optional[int] = No
     user = get_user_by_id(user_id) or user
     existing = _find_active_session_for_user(user_id)
     if existing:
+        if existing.get("kind") == "hunt":
+            return _hunt_session_payload(existing, resumed=True), 200
         return {"success": False, "message": "已有进行中的战斗", "session_id": existing.get("id"), "kind": existing.get("kind")}, 409
     last_hunt = int(user.get("last_hunt_time", 0) or 0)
     remaining = config.hunt_cooldown - (now - last_hunt)
@@ -988,16 +1053,7 @@ def start_hunt_session(user_id: str, monster_id: str, *, now: Optional[int] = No
     }
     _session_put(session_obj)
     _persist_session(session_obj)
-    return {
-        "success": True,
-        "session_id": session_id,
-        "monster": monster,
-        "player": {"hp": player["hp"], "max_hp": player["max_hp"], "mp": player["mp"], "max_mp": player["max_mp"], "attack": player["attack"], "defense": player["defense"], "name": player["name"]},
-        "enemy": {"hp": enemy["hp"], "max_hp": enemy["max_hp"], "attack": enemy["attack"], "defense": enemy["defense"], "name": enemy["name"], "elite_affixes": elite_names},
-        "active_skills": [_skill_summary(skill) for skill in active_skills],
-        "element_relation": element_relation,
-        "combat_modifiers": combat_modifiers,
-    }, 200
+    return _hunt_session_payload(session_obj), 200
 
 
 def _finalize_hunt(session: Dict[str, Any], victory: bool) -> Dict[str, Any]:
@@ -1073,7 +1129,13 @@ def _finalize_hunt(session: Dict[str, Any], victory: bool) -> Dict[str, Any]:
         except Exception:
             pass
     else:
-        execute("UPDATE users SET hp = 1, mp = ?, vitals_updated_at = ? WHERE user_id = ?", (max(0, int(player.get("mp", 0) or 0)), int(time.time()), user_id))
+        now_ts = int(time.time())
+        weak_seconds = _hunt_defeat_weak_seconds()
+        weak_until = max(int(user.get("weak_until", 0) or 0), now_ts + weak_seconds) if weak_seconds > 0 else int(user.get("weak_until", 0) or 0)
+        execute(
+            "UPDATE users SET hp = 1, mp = ?, weak_until = ?, vitals_updated_at = ? WHERE user_id = ?",
+            (max(0, int(player.get("mp", 0) or 0)), weak_until, now_ts, user_id),
+        )
 
     updated = get_user_by_id(user_id) or user
     event_points: List[Dict[str, Any]] = []
@@ -1083,11 +1145,19 @@ def _finalize_hunt(session: Dict[str, Any], victory: bool) -> Dict[str, Any]:
             event_points = grant_event_points_for_action(user_id, "hunt_victory", meta={"monster_id": monster.get("id")})
         except Exception:
             event_points = []
+    weak_seconds_payload = 0
+    if not victory:
+        weak_seconds_payload = max(0, int(_hunt_defeat_weak_seconds() or 0))
+        weak_text = f"，进入虚弱状态 {_format_weak_duration(weak_seconds_payload)}" if weak_seconds_payload > 0 else ""
+        message = f"被【{monster['name']}】击败了...{weak_text}"
+    else:
+        message = f"成功击败【{monster['name']}】！"
+
     payload = {
         "success": True,
         "victory": victory,
         "monster": monster,
-        "message": f"成功击败【{monster['name']}】！" if victory else f"被【{monster['name']}】击败了...",
+        "message": message,
         "failure_reasons": [] if victory else _battle_failure_reasons(session),
         "rewards": rewards,
         "drops": drops,
@@ -1099,6 +1169,8 @@ def _finalize_hunt(session: Dict[str, Any], victory: bool) -> Dict[str, Any]:
             **(session.get("combat_modifiers") or {}),
             "drop_pity": drop_pity_meta,
         },
+        "weak_seconds": weak_seconds_payload,
+        "weak_until": int(updated.get("weak_until", 0) or 0),
     }
     if event_points:
         payload["event_points"] = event_points
@@ -1148,7 +1220,21 @@ def action_hunt_session(
             return _dedup_return({"success": False, "message": "战斗已失效，请重新开始狩猎"}, 404)
         round_result = _run_round(session, action, skill_id)
         if round_result["finished"]:
-            resp = _finalize_hunt(session, bool(round_result["victory"]))
+            try:
+                resp = _finalize_hunt(session, bool(round_result["victory"]))
+            except Exception as exc:
+                logger.exception("hunt_finalize_failed user_id=%s session_id=%s", user_id, session_id)
+                _session_pop(session_id)
+                _delete_session(session_id)
+                return _dedup_return(
+                    {
+                        "success": False,
+                        "message": "战斗结算异常，本场会话已关闭，请重新开始狩猎",
+                        "code": "HUNT_FINALIZE_ERROR",
+                        "detail": type(exc).__name__,
+                    },
+                    500,
+                )
             resp["round_log"] = round_result["round_log"]
             resp["session_id"] = session_id
             _session_pop(session_id)
@@ -1163,7 +1249,10 @@ def action_hunt_session(
             "round_log": round_result["round_log"],
             "player": {"hp": session["player"]["hp"], "max_hp": session["player"]["max_hp"], "mp": session["player"]["mp"], "max_mp": session["player"]["max_mp"], "attack": session["player"]["attack"], "defense": session["player"]["defense"], "name": session["player"]["name"]},
             "enemy": {"hp": session["enemy"]["hp"], "max_hp": session["enemy"]["max_hp"], "attack": session["enemy"]["attack"], "defense": session["enemy"]["defense"], "name": session["enemy"]["name"]},
-            "active_skills": [_skill_summary(skill) for skill in session.get("active_skills", [])],
+            "active_skills": [
+                _skill_summary(skill, max_mp=int(session["player"].get("max_mp", 0) or 0))
+                for skill in session.get("active_skills", [])
+            ],
             "element_relation": session.get("element_relation"),
             "combat_modifiers": session.get("combat_modifiers"),
         }, 200)
@@ -1680,7 +1769,10 @@ def action_secret_session(
             "monster": session["monster"],
             "player": {"hp": session["player"]["hp"], "max_hp": session["player"]["max_hp"], "mp": session["player"]["mp"], "max_mp": session["player"]["max_mp"], "attack": session["player"]["attack"], "defense": session["player"]["defense"], "name": session["player"]["name"]},
             "enemy": {"hp": session["enemy"]["hp"], "max_hp": session["enemy"]["max_hp"], "attack": session["enemy"]["attack"], "defense": session["enemy"]["defense"], "name": session["enemy"]["name"]},
-            "active_skills": [_skill_summary(skill) for skill in session.get("active_skills", [])],
+            "active_skills": [
+                _skill_summary(skill, max_mp=int(session["player"].get("max_mp", 0) or 0))
+                for skill in session.get("active_skills", [])
+            ],
             "element_relation": session.get("element_relation"),
             "combat_modifiers": session.get("combat_modifiers"),
         }, 200)

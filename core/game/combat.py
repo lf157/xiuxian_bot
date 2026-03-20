@@ -8,7 +8,7 @@ import random
 import time
 from .realms import calculate_user_stats, ELEMENT_BONUSES
 from .elements import get_element_relationship
-from .skills import get_skill, scale_skill_effect
+from .skills import compute_skill_mp_cost, get_skill, scale_skill_effect
 from .combat_kernel import (
     LOW_HP_SHIELD_THRESHOLD,
     apply_counter_bonus,
@@ -82,7 +82,8 @@ class Combat:
         skill_multiplier = 1.0
         if attacker is self.attacker and self.active_skill and self.last_skill_round != round_num:
             eff = self.active_skill.get("effect", {}) or {}
-            mp_cost = int(self.active_skill.get("mp_cost", 0) or 0)
+            max_mp_for_cost = int(attacker.get("max_mp", attacker.get("mp", 0)) or 0)
+            mp_cost = compute_skill_mp_cost(self.active_skill, max_mp_for_cost)
             if int(attacker.get("mp", 0) or 0) < mp_cost:
                 self.log.append("💙 灵力不足，主动技能未能施展。")
             else:

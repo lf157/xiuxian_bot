@@ -9,6 +9,7 @@ import threading
 import time
 from typing import Any, Dict, List, Optional, Tuple
 
+from core.config import config
 from core.database.connection import (
     fetch_one,
     fetch_all,
@@ -24,11 +25,21 @@ from core.game.items import get_item_by_id, generate_pill, generate_material, ge
 from core.services.metrics_service import log_event, log_economy_ledger
 from core.utils.timeutil import midnight_timestamp
 
-GACHA_FREE_DAILY_LIMIT = 3
-GACHA_PAID_DAILY_LIMIT = 15
-GACHA_FIVE_PULL_COUNT = 5
-GACHA_FIVE_PULL_PRICE_GOLD = 4
-GACHA_FIVE_PULL_STAMINA = 4
+
+def _gacha_cfg_int(key: str, default: int) -> int:
+    try:
+        return int(config.get_nested("gacha", key, default=default))
+    except (TypeError, ValueError):
+        return int(default)
+
+
+GACHA_FREE_DAILY_LIMIT = max(0, _gacha_cfg_int("free_daily_limit", 3))
+GACHA_PAID_DAILY_LIMIT = max(1, _gacha_cfg_int("paid_daily_limit", 15))
+GACHA_FIVE_PULL_COUNT = max(2, _gacha_cfg_int("five_pull_count", 5))
+GACHA_FIVE_PULL_PRICE_GOLD = max(1, _gacha_cfg_int("five_pull_price_gold", 4))
+GACHA_FIVE_PULL_STAMINA = max(1, _gacha_cfg_int("five_pull_stamina", 4))
+GACHA_SINGLE_PULL_STAMINA = max(0, _gacha_cfg_int("single_pull_stamina", 1))
+GACHA_FIVE_PULL_PRICE_MULT_NON_GOLD = max(1, _gacha_cfg_int("five_pull_price_mult_non_gold", 4))
 _GACHA_TABLES_READY = False
 _GACHA_TABLES_LOCK = threading.Lock()
 
@@ -276,7 +287,17 @@ def get_pity(user_id: str, banner_id: int) -> Dict[str, Any]:
 def get_gacha_status(user_id: str) -> Dict[str, Any]:
     user = get_user_by_id(user_id)
     if not user:
-        return {"free_remaining": GACHA_FREE_DAILY_LIMIT, "paid_remaining": GACHA_PAID_DAILY_LIMIT}
+        return {
+            "free_remaining": GACHA_FREE_DAILY_LIMIT,
+            "paid_remaining": GACHA_PAID_DAILY_LIMIT,
+            "free_limit": GACHA_FREE_DAILY_LIMIT,
+            "paid_limit": GACHA_PAID_DAILY_LIMIT,
+            "five_pull_count": GACHA_FIVE_PULL_COUNT,
+            "five_pull_price_gold": GACHA_FIVE_PULL_PRICE_GOLD,
+            "five_pull_stamina": GACHA_FIVE_PULL_STAMINA,
+            "single_pull_stamina": GACHA_SINGLE_PULL_STAMINA,
+            "five_pull_price_mult_non_gold": GACHA_FIVE_PULL_PRICE_MULT_NON_GOLD,
+        }
     user = _reset_daily_gacha_if_needed(user)
     free_today = int(user.get("gacha_free_today", 0) or 0)
     paid_today = int(user.get("gacha_paid_today", 0) or 0)
@@ -285,6 +306,13 @@ def get_gacha_status(user_id: str) -> Dict[str, Any]:
         "paid_remaining": max(0, GACHA_PAID_DAILY_LIMIT - paid_today),
         "free_used": free_today,
         "paid_used": paid_today,
+        "free_limit": GACHA_FREE_DAILY_LIMIT,
+        "paid_limit": GACHA_PAID_DAILY_LIMIT,
+        "five_pull_count": GACHA_FIVE_PULL_COUNT,
+        "five_pull_price_gold": GACHA_FIVE_PULL_PRICE_GOLD,
+        "five_pull_stamina": GACHA_FIVE_PULL_STAMINA,
+        "single_pull_stamina": GACHA_SINGLE_PULL_STAMINA,
+        "five_pull_price_mult_non_gold": GACHA_FIVE_PULL_PRICE_MULT_NON_GOLD,
     }
 
 
@@ -368,21 +396,25 @@ def pull_gacha(
         return _dedup_return({
             "success": False,
             "code": "FREE_LIMIT",
-            "message": "今日免费抽奖次数已用尽，请使用付费单抽或五连",
+            "message": "今日免费抽奖次数已用尽，请使用付费单抽或连抽",
             "free_remaining": 0,
             "paid_remaining": max(0, GACHA_PAID_DAILY_LIMIT - paid_today),
         }, 400)
     is_free_pull = requested_free_pull and free_today < GACHA_FREE_DAILY_LIMIT
     price_single = int(banner.get("price_single", 1) or 1)
     if count == GACHA_FIVE_PULL_COUNT:
-        price = GACHA_FIVE_PULL_PRICE_GOLD if currency == "gold" else price_single * 4
+        price = (
+            GACHA_FIVE_PULL_PRICE_GOLD
+            if currency == "gold"
+            else max(1, price_single * GACHA_FIVE_PULL_PRICE_MULT_NON_GOLD)
+        )
         stamina_cost = GACHA_FIVE_PULL_STAMINA
     elif is_free_pull:
         price = 0
         stamina_cost = 0
     else:
         price = price_single
-        stamina_cost = 1
+        stamina_cost = GACHA_SINGLE_PULL_STAMINA
 
     paid_increment = 0 if is_free_pull else count
     if paid_today + paid_increment > GACHA_PAID_DAILY_LIMIT:
@@ -559,7 +591,7 @@ def pull_gacha(
             return _dedup_return({
                 "success": False,
                 "code": "FREE_LIMIT",
-                "message": "今日免费抽奖次数已用尽，请使用付费单抽或五连",
+                "message": "今日免费抽奖次数已用尽，请使用付费单抽或连抽",
                 "free_remaining": free_remaining,
                 "paid_remaining": paid_remaining,
             }, 400)

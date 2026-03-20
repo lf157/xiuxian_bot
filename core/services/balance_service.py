@@ -105,7 +105,7 @@ def fatigue_multiplier(hunt_count_today: int, cfg: Dict[str, Any]) -> float:
 
 
 def exp_fatigue_multiplier(hunt_count_today: int, cfg: Dict[str, Any]) -> float:
-    """经验疲劳 - 比铜币疲劳更宽松但仍有上限"""
+    """经验疲劳 - 比下品灵石疲劳更宽松但仍有上限"""
     free = int(cfg.get("exp_fatigue_start", 20))
     step = float(cfg.get("exp_fatigue_step", 0.05))
     min_mult = float(cfg.get("exp_fatigue_min_mult", 0.40))

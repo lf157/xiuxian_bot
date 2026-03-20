@@ -14,6 +14,7 @@
 
 from typing import Dict, Any, Optional, List, Tuple
 import random
+from core.config import config
 
 # ─── 三道亲和常量 ───────────────────────────────────────────────
 DAO_PATHS = {
@@ -239,8 +240,9 @@ def attempt_breakthrough(user_data: Dict[str, Any], use_pill: bool = False, extr
     # 保底加成
     success_rate = min(1.0, success_rate + pity_bonus(current_pity))
 
+    steady_bonus = float(config.get_nested("balance", "breakthrough", "steady_bonus", default=0.10) or 0.10)
     if use_pill:
-        success_rate = min(1.0, success_rate + 0.10)
+        success_rate = min(1.0, success_rate + steady_bonus)
 
     if extra_bonus:
         success_rate = min(1.0, success_rate + float(extra_bonus))
@@ -248,9 +250,10 @@ def attempt_breakthrough(user_data: Dict[str, Any], use_pill: bool = False, extr
     # 五行影响
     element = user_data.get("element")
     if element and element in ELEMENT_BONUSES:
-        # 火属性突破成功率+3%（从+5%降至+3%，见FIX-A1）
+        fire_bonus = float(config.get_nested("balance", "breakthrough", "fire_bonus", default=0.03) or 0.03)
+        # 火属性突破成功率加成（可在配置中调整）
         if element == "火":
-            success_rate = min(1.0, success_rate + 0.03)
+            success_rate = min(1.0, success_rate + fire_bonus)
 
     # 随机判定
     success = random.random() < success_rate
@@ -258,7 +261,8 @@ def attempt_breakthrough(user_data: Dict[str, Any], use_pill: bool = False, extr
     if success:
         return True, f"恭喜！突破成功，进入【{next_realm['name']}】境界！"
     else:
-        return False, "突破失败，损失10%修为，进入虚弱状态1小时"
+        # 失败惩罚由结算层按配置和策略动态计算，避免文案与实际数值漂移。
+        return False, "突破失败。"
 
 
 def calculate_user_stats(user_data: Dict[str, Any]) -> Dict[str, int]:

@@ -5,8 +5,22 @@ from __future__ import annotations
 import random
 from typing import Any, Dict, List, Optional, Tuple
 
+from core.config import config
 
-LOW_HP_SHIELD_THRESHOLD = 0.3
+
+def _kernel_cfg_float(key: str, default: float) -> float:
+    try:
+        return float(config.get_nested("battle", "kernel", key, default=default))
+    except (TypeError, ValueError):
+        return float(default)
+
+
+LOW_HP_SHIELD_THRESHOLD = _kernel_cfg_float("low_hp_shield_threshold", 0.3)
+DAMAGE_VARIANCE_MIN = _kernel_cfg_float("damage_variance_min", 0.85)
+DAMAGE_VARIANCE_MAX = _kernel_cfg_float("damage_variance_max", 1.15)
+DEF_IGNORE_CAP = _kernel_cfg_float("ignore_def_cap", 0.95)
+DEFAULT_CRIT_RATE = _kernel_cfg_float("default_crit_rate", 0.05)
+DEFAULT_CRIT_DMG = _kernel_cfg_float("default_crit_dmg", 1.5)
 
 
 def calc_base_damage(
@@ -21,10 +35,12 @@ def calc_base_damage(
     def_val = max(0, int(defense or 0))
     ig = float(ignore_def_pct or 0.0)
     if ig > 0:
-        def_val = int(def_val * max(0.0, 1.0 - min(0.95, ig)))
+        def_val = int(def_val * max(0.0, 1.0 - min(max(0.0, DEF_IGNORE_CAP), ig)))
     effective_def = def_val * 0.8
     base = max(1, int(atk_val * atk_val / max(1, atk_val + effective_def)))
-    roll = random.uniform(0.85, 1.15) if variance_roll is None else float(variance_roll)
+    var_min = min(DAMAGE_VARIANCE_MIN, DAMAGE_VARIANCE_MAX)
+    var_max = max(DAMAGE_VARIANCE_MIN, DAMAGE_VARIANCE_MAX)
+    roll = random.uniform(var_min, var_max) if variance_roll is None else float(variance_roll)
     return max(1, int(base * roll)), roll
 
 
@@ -45,11 +61,11 @@ def apply_critical(
     crit_roll: Optional[float] = None,
     logs: Optional[List[str]] = None,
 ) -> Tuple[int, bool, float]:
-    rate = max(0.0, float(attacker.get("crit_rate", 0.05) or 0.05) + float(extra_crit_rate or 0.0))
+    rate = max(0.0, float(attacker.get("crit_rate", DEFAULT_CRIT_RATE) or DEFAULT_CRIT_RATE) + float(extra_crit_rate or 0.0))
     roll = random.random() if crit_roll is None else float(crit_roll)
     crit = roll < rate
     if crit:
-        crit_dmg = max(1.1, float(attacker.get("crit_dmg", 1.5) or 1.5))
+        crit_dmg = max(1.1, float(attacker.get("crit_dmg", DEFAULT_CRIT_DMG) or DEFAULT_CRIT_DMG))
         damage = int(damage * crit_dmg)
         if logs is not None:
             logs.append("💥 暴击！")
