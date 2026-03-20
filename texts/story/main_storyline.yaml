@@ -1,0 +1,353 @@
+# 主线剧情 · 十卷故事大纲
+# 每个章节对应游戏内的触发条件和剧情事件
+# 剧情通过蝴蝶效应标签驱动推进
+
+# ============================================================
+# 卷一：苍澜风云（练气-筑基圆满）
+# 核心主题：废灵根少年的崛起
+# ============================================================
+
+volume_1:
+  title: "卷一：苍澜风云"
+  realm_range: [1, 9]
+  main_npcs: [mc_shen_wuji, mentor_old_beggar, villager_shi_bo, merchant_wang, herb_ling_er, hunter_zhangda, hermit_lin, pet_xiaojin, dan_master_chen, liu_qingzhu]
+
+  chapters:
+    ch01_awakening:
+      title: "第一章：灵根测试"
+      trigger: {type: "prologue"}
+      summary: "灵根测试，沈无极被判废灵根，玩家被判下等灵根。两人结识，沈无极分享功法。"
+
+    ch02_first_steps:
+      title: "第二章：踏上修途"
+      trigger: {type: "realm_reach", realm: 2}
+      scenes:
+        - type: narration
+          text: |
+            你按照沈无极抄给你的引气入体法修炼了数日，
+            灵气虽然微弱，但一丝一缕地积聚在丹田中，
+            你的修为终于从凡人跨入了练气初期。
+
+            这一天，你在苍澜城东门遇到了沈无极。
+        - type: dialogue
+          lines:
+            - speaker: 沈无极
+              text: "你也突破了？不错，速度比我预想的快。"
+            - speaker: null
+              text: 你注意到他的气息也有了变化，似乎比你更快。
+            - speaker: 沈无极
+              text: "城东有片灵林，里面有些低阶灵兽。想去试试吗？反正在城里修炼也没多大长进。"
+
+    ch03_east_forest:
+      title: "第三章：东郊灵林"
+      trigger: {type: "first_visit", map: "east_forest"}
+      scenes:
+        - type: narration
+          text: |
+            东郊灵林比你想象的更大，也更危险。
+
+            古木参天，灌木丛生，偶尔有灵兽的嘶鸣从深处传来。
+            你握紧了手中的木杖——这是你目前唯一的武器。
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                一个中年猎户扛着一头灰狼的尸体从林中走出，
+                看到你时，咧嘴一笑。
+            - speaker: 张大
+              text: "小兄弟！头一回来？别往深处走，那边有筑基级的灵兽。"
+            - speaker: 张大
+              text: "先在外围练练手。这片林子的灵鼠最适合新手——皮薄肉多，还给经验。"
+
+    ch05_hermit:
+      title: "第五章：林中隐者"
+      trigger: {type: "cultivate_count", count: 3}
+      scenes:
+        - type: narration
+          text: |
+            连续修炼三次后，你发现自己的功法运转出了问题——
+            灵气在经脉中走的路径似乎有偏差，越修炼越不舒服。
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                正当你苦恼时，一个声音从树梢传来。
+            - speaker: 林中老人
+              text: "你的功法……不对。气走偏了半寸。"
+            - speaker: null
+              text: |
+                你抬头，一个白发老者坐在粗壮的树枝上，
+                手中握着一壶酒，神态悠闲。
+            - speaker: 林中老人
+              text: "过来，我教你调息。免费的——算是看在你还算努力的份上。"
+            - speaker: null
+              text: |
+                老者指点了你半个时辰，效果立竿见影。
+                修正后的功法运转顺畅了数倍，修炼效率明显提升。
+            - speaker: 林中老人
+              text: "记住，修行之道在于恒心。水滴石穿，看似慢，实则最快。"
+
+    ch08_spirit_egg:
+      title: "第八章：灵宠蛋"
+      trigger: {type: "explore_count", map: "north_mountain", count: 5}
+      scenes:
+        - type: narration
+          text: |
+            在北山探索时，你在一处隐蔽的洞穴中发现了一颗拳头大小的金色蛋。
+
+            蛋的表面布满细密的纹路，散发着微弱但温暖的光芒。
+            你伸手碰触的瞬间，金蛋猛然一颤——
+
+            它在回应你。
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                你将金蛋小心翼翼地收入怀中。
+                它轻轻震动着，像是一颗正在跳动的心脏。
+
+                你不知道这颗蛋里面是什么，
+                但你能感觉到——它选择了你。
+      rewards:
+        items: [{id: "spirit_egg_golden", qty: 1}]
+        tags: ["灵宠蛋"]
+
+    ch12_pill_master:
+      title: "第十二章：丹道入门"
+      trigger: {type: "realm_reach", realm: 5, tags: ["灵宠蛋"]}
+      scenes:
+        - type: narration
+          text: |
+            修为积累到筑基前夕，你意识到仅凭打坐修炼已经不够了。
+            你需要丹药的辅助，才能更高效地积累灵力。
+
+            在药灵儿的介绍下，你找到了落霞谷的陈丹师。
+        - type: dialogue
+          lines:
+            - speaker: 陈丹师
+              text: "你想学炼丹？先去认识一百种灵草再来。"
+            - speaker: null
+              text: 你张了张嘴，想说什么，但看到陈丹师那张不容反驳的脸，只好闭嘴。
+            - speaker: 陈丹师
+              text: "灵草图谱在药灵儿那里，去借。三天后来找我，少一种都不行。"
+
+    ch18_liu_qingzhu:
+      title: "第十八章：海上遇险"
+      trigger: {type: "realm_reach", realm: 7, map: "chaos_sea"}
+      scenes:
+        - type: narration
+          text: |
+            乱星海外海，风浪如山。
+
+            你乘坐的小舟在灵暴中剧烈摇晃，
+            就在你以为自己要被卷入海底的时候——
+
+            你看到了另一艘船，也在风暴中挣扎。
+            船上只有一个人，一个身着白衣的女修。
+
+            她受伤了，灵力几乎耗尽，
+            却还在拼命维持船只的防护阵法。
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: 你来不及多想，催动遁光靠了过去。
+            - speaker: 柳清竹
+              text: "……你是谁？"
+            - speaker: null
+              text: |
+                她的声音很轻，像是快要支撑不住了。
+                你没有回答，先帮她稳住了船。
+            - speaker: 柳清竹
+              text: "……谢谢你。如果不是你，我可能就……"
+            - speaker: null
+              text: |
+                风暴过后，你们在一座无名小岛上歇息。
+                她说她叫柳清竹，是个散修，来乱星海寻找一种灵药。
+
+                但你从她的眼神中看到了一些她没有说出口的东西——
+                某种深藏在平静表面下的复杂情绪。
+      rewards:
+        tags: ["道侣相遇", "柳清竹初遇"]
+
+# ============================================================
+# 卷二：天渊风云（金丹初期-金丹圆满）
+# 核心主题：宗门历练与三女主登场
+# ============================================================
+
+volume_2:
+  title: "卷二：天渊风云"
+  realm_range: [10, 13]
+  main_npcs: [xiao_han_cang, chu_qianshang, wang_ni, xing_xuan, qin_xinghe, mo_wuchang, elder_xingtang, sword_master_li, pill_master_pavilion]
+
+  chapters:
+    ch01_sect_entry:
+      title: "第一章：宗门之路"
+      trigger: {type: "join_sect"}
+      summary: "加入宗门后，开始宗门生活。认识韩苍等同门。"
+
+    ch05_han_cang:
+      title: "第五章：铁憨憨韩苍"
+      trigger: {type: "sect_quest_complete", count: 3}
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: 韩苍
+              text: "师弟！食堂今天有红烧妖肉！走走走！"
+            - speaker: null
+              text: |
+                韩苍是你在宗门认识的第一个真朋友。
+                他是个大块头，修为比你高一个小境界，
+                但性格憨厚得让人心疼——
+                有人欺负他，他都只会嘿嘿一笑。
+            - speaker: 韩苍
+              text: "师弟，你有没有觉得……修炼其实挺孤独的？"
+            - speaker: 韩苍
+              text: "但有朋友就不一样了。以后我罩着你！"
+
+    ch12_chu_qianshang:
+      title: "第十二章：剑峰初遇"
+      trigger: {type: "first_visit", map: "sword_peak"}
+      scenes:
+        - type: narration
+          text: |
+            剑峰。万剑嗡鸣之地。
+
+            你登上剑峰是为了历练，
+            但你遇到了一个人，一个让你永远无法忘记的人。
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                她一袭黑衣，长发如瀑，手持一把没有剑鞘的长剑，
+                站在悬崖边上，与山风对峙。
+            - speaker: 楚千殇
+              text: "你的剑，太慢了。"
+            - speaker: null
+              text: 你还没反应过来，一道剑光已经掠过你的衣袖——不伤人，只裁衣。
+            - speaker: 楚千殇
+              text: "如果这是生死搏杀，你已经死了三次。"
+            - speaker: null
+              text: |
+                你握紧了手中的剑，心中升起一股不服输的意志。
+                她的眼中闪过一丝意外。
+            - speaker: 楚千殇
+              text: "……不错，至少你没跑。下次再来时，让我看看你进步了多少。"
+      rewards:
+        tags: ["楚千殇初遇"]
+
+    ch20_wang_ni:
+      title: "第二十章：逆天殿少主"
+      trigger: {type: "sect_tournament_advance"}
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                试剑大会上，你连胜数场，进入前十。
+                但在半决赛，你的对手是一个气息极为压抑的年轻人。
+            - speaker: 王逆
+              text: "你就是那个下等灵根？有意思。"
+            - speaker: 王逆
+              text: "我听说你和沈无极是朋友。那个废灵根身上有些有趣的东西。"
+            - speaker: null
+              text: |
+                你皱起了眉。他知道沈无极？
+                而且他用的词是「有趣的东西」——他知道鸿蒙珠？
+            - speaker: 王逆
+              text: "别紧张。我对他没兴趣。我只对强者有兴趣。来吧，让我看看你有多少本事。"
+
+    ch38_xing_xuan:
+      title: "第三十八章：星辰圣女"
+      trigger: {type: "first_visit", map: "star_fall_sea", tags: ["星力觉醒"]}
+      scenes:
+        - type: narration
+          text: |
+            星陨之海。
+
+            这里是天元大陆最神秘的区域之一，
+            天空中永远飘着星辰碎片，
+            海面折射出五颜六色的光芒。
+
+            在这里，你遇见了她。
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                她站在一块浮空的星石上，银色长发在星光中飘动。
+                她没有看你，而是看着天空，像是在与星辰对话。
+            - speaker: 星璇
+              text: "你的眼中……有星光。和我一样。"
+            - speaker: null
+              text: 她转过身来，面容绝美，但眼神中有一种超越年龄的通透。
+            - speaker: 星璇
+              text: "星辰运行有迹可循，你我的相遇，也是。"
+      rewards:
+        tags: ["星璇初遇"]
+
+    ch45_mo_wuchang:
+      title: "第四十五章：失败者的忠告"
+      trigger: {type: "explore_complete", map: "ancient_battlefield", tags: ["枯骨玉佩"]}
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                古战场遗迹深处，你遇到了一个苍老的修士。
+                他坐在一块巨石上，浑身散发着三种截然不同的道韵——
+                恒、逆、衍，三道并存，却又相互撕扯。
+            - speaker: 墨无常
+              text: "三道融合……你也想走这条路？"
+            - speaker: 墨无常
+              text: "看看我。这就是三道融合失败的下场。"
+            - speaker: null
+              text: |
+                他的身体在缓慢地崩溃——三种道韵在体内打架，
+                每时每刻都在消耗他的生命。
+            - speaker: 墨无常
+              text: "那个叫沈无极的小子……他或许能成功。因为他有鸿蒙珠。"
+            - speaker: 墨无常
+              text: "但你不一样。你没有鸿蒙珠。所以——别走这条路。选一条道，走到底。"
+
+# ============================================================
+# 卷三-五（纲要，后续扩展）
+# ============================================================
+
+volume_3:
+  title: "卷三：乱星风暴"
+  realm_range: [14, 17]
+  summary: "元婴期，乱星海秘境大开，各方势力角逐。玩家在宗门战争中选边站，与沈无极的命运线逐渐分化。"
+
+volume_4:
+  title: "卷四：灵界新生"
+  realm_range: [18, 21]
+  summary: "渡劫飞升灵界。新世界的规则、幽冥鬼帝的因果、灵界的宗门政治。"
+
+volume_5:
+  title: "卷五：真界之争"
+  realm_range: [22, 25]
+  summary: "进入真界，法则可感可触。天书线索，轮回真相，真界三大势力角力。"
+
+volume_6:
+  title: "卷六：仙界风云"
+  realm_range: [26, 29]
+  summary: "仙界四大天域，仙王之争。太初仙帝的阴谋，三女主感情线高潮。"
+
+volume_7:
+  title: "卷七：诸神黄昏"
+  realm_range: [30, 31]
+  summary: "天道化身现身，三卷天书集齐，最终大战的前奏。"
+
+volume_8:
+  title: "卷八：造化工坊"
+  realm_range: [31, 32]
+  summary: "进入造化宇宙，开辟自己的世界。与混沌力量的第一次接触。"
+
+volume_9:
+  title: "卷九：鸿蒙之战"
+  realm_range: [32, 32]
+  summary: "回归鸿蒙本源，面对混沌主。沈无极的最终抉择。"
+
+volume_10:
+  title: "卷十：三界归源"
+  realm_range: [32, 32]
+  summary: "超脱天道，重塑万界。所有伏笔回收，所有因果终结。新纪元的开端。"
