@@ -159,7 +159,8 @@ def convert_resources(
     rank = int(user.get("rank", 1) or 1)
     min_rank = int(target_cfg.get("min_rank", 1) or 1)
     if rank < min_rank:
-        return _dedup_return({"success": False, "code": "FORBIDDEN", "message": f"境界不足，需要 Lv.{min_rank}"}, 400)
+        from core.game.realms import format_realm_display
+        return _dedup_return({"success": False, "code": "FORBIDDEN", "message": f"境界不足，需要{format_realm_display(min_rank)}"}, 400)
 
     try:
         qty = int(quantity)

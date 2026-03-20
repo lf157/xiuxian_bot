@@ -64,7 +64,8 @@ def equip_item():
     base_item = get_item_by_id(item.get("item_id"))
     min_rank = int((base_item or {}).get("min_rank", 1) or 1)
     if int(user.get("rank", 1) or 1) < min_rank:
-        return error("ERROR", f"境界不足，需达到 Lv.{min_rank} 才能装备该物品", 400)
+        from core.game.realms import format_realm_display
+        return error("ERROR", f"境界不足，需达到{format_realm_display(min_rank)}才能装备该物品", 400)
 
     # 确定装备槽位
     slot_map = {

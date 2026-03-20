@@ -345,6 +345,58 @@ def get_stage(realm_id: int) -> Optional[str]:
     return _STAGE_NAMES.get(realm["stage"])
 
 
+# sub_level → 中文阶段名映射
+_SUB_LEVEL_NAMES: Dict[int, str] = {
+    0: "",       # 凡人/大乘/渡劫/真仙 等无细分
+    1: "初期",
+    2: "中期",
+    3: "后期",
+    4: "圆满",
+}
+
+
+def format_realm_display(realm_id: int) -> str:
+    """统一境界显示格式。
+
+    示例:
+        realm_id=1  -> '凡人'
+        realm_id=2  -> '练气期（初期）'
+        realm_id=9  -> '筑基期（圆满）'
+        realm_id=10 -> '金丹期（初期）'
+        realm_id=30 -> '大乘期'
+        realm_id=32 -> '真仙'
+
+    所有 UI 层应使用此函数替代 'Lv.X' 格式。
+    """
+    realm = get_realm_by_id(realm_id)
+    if realm is None:
+        return f"未知境界"
+
+    stage_name = _STAGE_NAMES.get(realm["stage"], "未知")
+    sub = realm.get("sub_level", 0)
+    sub_name = _SUB_LEVEL_NAMES.get(sub, "")
+
+    # 凡人/真仙 等无细分的直接返回
+    if not sub_name:
+        # 大乘期/渡劫期 这种单阶段加"期"
+        if stage_name in ("大乘", "渡劫"):
+            return f"{stage_name}期"
+        return stage_name
+
+    return f"{stage_name}期（{sub_name}）"
+
+
+def format_realm_rank(realm_id: int) -> str:
+    """返回简短的境界标识，用于排行榜等紧凑场景。
+
+    示例: '筑基圆满', '金丹初期', '凡人'
+    """
+    realm = get_realm_by_id(realm_id)
+    if realm is None:
+        return "未知"
+    return realm.get("name", "未知")
+
+
 def get_cultivate_cd(realm_id: int) -> int:
     """返回该境界的修炼冷却秒数。找不到时回退到默认 300s。"""
     realm = get_realm_by_id(realm_id)

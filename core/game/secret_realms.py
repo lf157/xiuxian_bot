@@ -153,7 +153,8 @@ def can_explore_secret_realm(user: Dict[str, Any], realm_id: str) -> (bool, str)
     if not realm:
         return False, "秘境不存在"
     if user.get("rank", 1) < realm["min_rank"]:
-        return False, f"需要达到境界 Lv.{realm['min_rank']} 才能进入"
+        from core.game.realms import format_realm_display
+        return False, f"需要达到{format_realm_display(realm['min_rank'])}才能进入"
     if get_secret_realm_attempts_left(user) <= 0:
         return False, "今日秘境次数已用尽"
     if user.get("state"):

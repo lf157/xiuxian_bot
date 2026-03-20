@@ -918,7 +918,8 @@ def can_buy_item(
         price = int(offer["price"])
         min_rank = int(offer.get("min_rank", 1) or 1)
         if user_rank < min_rank:
-            return False, currency, f"境界不足，需达到 Lv.{min_rank} 才可购买"
+            from core.game.realms import format_realm_display
+            return False, currency, f"境界不足，需达到{format_realm_display(min_rank)}才可购买"
         if currency == "gold":
             try:
                 import json, os
@@ -927,7 +928,8 @@ def can_buy_item(
             except Exception:
                 gold_min_rank = 8
             if user_rank < gold_min_rank:
-                return False, "gold", f"境界不足，需达到 Lv.{gold_min_rank} 才可使用中品灵石商店"
+                from core.game.realms import format_realm_display
+                return False, "gold", f"境界不足，需达到{format_realm_display(gold_min_rank)}才可使用中品灵石商店"
             total_price = int(price) * max(1, int(quantity or 1))
             if user_gold >= total_price:
                 return True, "gold", f"需要 {total_price} 中品灵石"

@@ -153,7 +153,8 @@ def brew_pill(user_id: str, recipe_id: str, request_id: Optional[str] = None) ->
             reason="FORBIDDEN",
             meta={"recipe_id": recipe_id},
         )
-        return _dedup_return({"success": False, "code": "FORBIDDEN", "message": f"境界不足，需要 Lv.{min_rank}"}, 400)
+        from core.game.realms import format_realm_display
+        return _dedup_return({"success": False, "code": "FORBIDDEN", "message": f"境界不足，需要{format_realm_display(min_rank)}"}, 400)
 
     cost = int(recipe.get("copper_cost", 0) or 0)
     if user.get("copper", 0) < cost:

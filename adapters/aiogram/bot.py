@@ -133,7 +133,7 @@ async def cmd_start(message: Message):
         s = stat.get("status", {})
         text = (
             "👤 修仙状态\n"
-            f"境界: Lv.{s.get('rank', 1)}\n"
+            f"境界: {s.get('realm_name', '凡人')}\n"
             f"修为: {s.get('exp', 0)}\n"
             f"下品灵石: {s.get('copper', 0)}\n"
             f"中品灵石: {s.get('gold', 0)}"
@@ -304,7 +304,7 @@ async def cb_status(query: CallbackQuery):
     s = stat.get("status", {})
     text = (
         "📊 状态\n"
-        f"境界: Lv.{s.get('rank', 1)}\n"
+        f"境界: {s.get('realm_name', '凡人')}\n"
         f"修为: {s.get('exp', 0)}\n"
         f"下品灵石: {s.get('copper', 0)}\n"
         f"中品灵石: {s.get('gold', 0)}"

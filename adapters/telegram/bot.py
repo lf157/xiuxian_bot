@@ -1259,7 +1259,7 @@ def _format_post_battle_status(status: dict | None) -> str:
         f"• HP: {status.get('hp', 0)} / {status.get('max_hp', 0)}\n"
         f"• MP: {status.get('mp', 0)} / {status.get('max_mp', 0)}\n"
         f"• 精力: {status.get('stamina', 0)} / {status.get('max_stamina', 24)}\n"
-        f"• 境界: Lv.{status.get('rank', 1)}\n"
+        f"• 境界: {status.get('realm_name', '凡人')}\n"
         f"• 攻击: {status.get('attack', 0)}\n"
         f"• 防御: {status.get('defense', 0)}\n"
         f"• 修为: {status.get('exp', 0):,}\n"
@@ -1407,7 +1407,7 @@ async def _build_pvp_menu(uid: str):
     keyboard = []
     for op in opponents:
         name = op.get("username", "未知修士")
-        text += f"• {name} ｜ Lv.{op.get('rank', 1)} ｜ ELO {op.get('pvp_rating', 1000)}\n"
+        text += f"• {name} ｜ {op.get('realm_name', '凡人')} ｜ ELO {op.get('pvp_rating', 1000)}\n"
         keyboard.append([InlineKeyboardButton(f"⚔️ {name}", callback_data=f"pvp_challenge_{op.get('user_id')}")])
     keyboard.append([
         InlineKeyboardButton("📋 记录", callback_data="pvp_records"),
@@ -1470,13 +1470,13 @@ def _format_leaderboard_text(mode: str, entries: list[dict], stage_goal: dict | 
         text += "\n\n"
     text += f"🏆 *{title_map.get(mode, '战力')}排行榜*\n\n"
     for idx, row in enumerate(entries[:10], 1):
-        extra = f"Lv.{row['rank']} ｜ 战力{row['power']} ｜ 修为{row['exp']} ｜ 狩猎{row['dy_times']}"
+        extra = f"{row.get('realm_name','凡人')} ｜ 战力{row['power']} ｜ 修为{row['exp']} ｜ 狩猎{row['dy_times']}"
         if mode == "realm_loot":
-            extra = f"Lv.{row['rank']} ｜ 秘境分 {row.get('realm_loot', 0)} ｜ 战力{row['power']}"
+            extra = f"{row.get('realm_name','凡人')} ｜ 秘境分 {row.get('realm_loot', 0)} ｜ 战力{row['power']}"
         elif mode == "alchemy_output":
-            extra = f"Lv.{row['rank']} ｜ 炼丹分 {row.get('alchemy_output', 0)} ｜ 修为{row['exp']}"
+            extra = f"{row.get('realm_name','凡人')} ｜ 炼丹分 {row.get('alchemy_output', 0)} ｜ 修为{row['exp']}"
         elif mode in ("exp", "exp_growth"):
-            extra = f"Lv.{row['rank']} ｜ 修为{row['exp']} ｜ 战力{row['power']} ｜ 秘境{row.get('realm_loot', 0)}"
+            extra = f"{row.get('realm_name','凡人')} ｜ 修为{row['exp']} ｜ 战力{row['power']} ｜ 秘境{row.get('realm_loot', 0)}"
         text += f"{idx}. {row['name']}\n   {extra}\n"
     return text
 
@@ -1587,7 +1587,8 @@ async def _build_convert_menu(uid: str):
 
     text += "当前没有可转化目标。\n"
     if next_unlock_rank and rank < int(next_unlock_rank):
-        text += f"你当前境界为 Lv.{rank}，达到 Lv.{int(next_unlock_rank)} 后可解锁转化目标。\n"
+        from core.game.realms import format_realm_display
+        text += f"你当前境界为{format_realm_display(rank)}，达到{format_realm_display(int(next_unlock_rank))}后可解锁转化目标。\n"
     elif configured_target_count <= 0:
         text += "当前转化目标配置为空或无效，请联系管理员检查配置。\n"
     else:
@@ -1619,7 +1620,8 @@ async def _build_convert_route(uid: str, route: str):
     if not targets:
         text += "当前没有可转化目标。\n"
         if next_unlock_rank and rank < int(next_unlock_rank):
-            text += f"你当前境界为 Lv.{rank}，达到 Lv.{int(next_unlock_rank)} 后可解锁目标。\n"
+            from core.game.realms import format_realm_display
+            text += f"你当前境界为{format_realm_display(rank)}，达到{format_realm_display(int(next_unlock_rank))}后可解锁目标。\n"
         elif configured_target_count <= 0:
             text += "当前转化目标配置为空或无效，请联系管理员检查配置。\n"
         else:
@@ -1705,7 +1707,7 @@ async def _build_forge_menu(uid: str):
     if catalog_items:
         text += "图鉴定向锻造:\n"
         for row in catalog_items[:4]:
-            text += f"• {row.get('name')} ｜ Lv.{row.get('min_rank', 1)} ｜ 已获得 {row.get('obtained', 0)} 次\n"
+            text += f"• {row.get('name')} ｜ 需{row.get('realm_name','凡人')} ｜ 已获得 {row.get('obtained', 0)} 次\n"
             keyboard.append([InlineKeyboardButton(f"🎯 定向 {row.get('name')}", callback_data=f"forge_target_{row.get('item_id')}")])
     else:
         text += "图鉴尚未收录装备，先去狩猎或秘境拿到一件再回来定向。\n"
@@ -1946,7 +1948,8 @@ def _build_shop_text(items: list[dict], *, rank: int = 1, category: str = "all")
         if stage_hint:
             text += f"  阶段: {stage_hint}\n"
         if min_rank > 1:
-            text += f"  要求: Lv.{min_rank}\n"
+            from core.game.realms import format_realm_display
+            text += f"  要求: {format_realm_display(min_rank)}\n"
         if remaining_limit is not None:
             text += f"  限购剩余: {remaining_limit}\n"
     return text
@@ -5390,7 +5393,8 @@ async def secret_realms_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
             for realm in realms[:8]:
                 exp_range = realm.get("rewards", {}).get("exp", (0, 0))
                 copper_range = realm.get("rewards", {}).get("copper", (0, 0))
-                text += f"▸ *{realm['name']}* ｜ 需求 Lv.{realm['min_rank']}\n"
+                from core.game.realms import format_realm_display
+                text += f"▸ *{realm['name']}* ｜ 需求 {format_realm_display(realm['min_rank'])}\n"
                 text += f"  {realm['flavor']}\n"
                 text += f"  奖励: {exp_range[0]}-{exp_range[1]}修为 {copper_range[0]}-{copper_range[1]}下品灵石\n\n"
                 if attempts_left > 0:
@@ -5590,7 +5594,7 @@ async def sect_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text = "🏛️ *宗门列表*\n\n"
             for row in rows[:10]:
                 text += (
-                    f"• {row.get('name')} ｜ ID {row.get('sect_id')} ｜ Lv.{row.get('level',1)} ｜ "
+                    f"• {row.get('name')} ｜ ID {row.get('sect_id')} ｜ 等级{row.get('level',1)} ｜ "
                     f"别院{int(row.get('branch_count', 0) or 0)}/{int(sect_cfg['branch_max'])}\n"
                 )
             await update.message.reply_text(text, parse_mode=ParseMode.MARKDOWN)

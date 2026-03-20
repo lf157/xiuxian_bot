@@ -5,7 +5,7 @@
 import logging
 import time
 from core.database.connection import fetch_one, refresh_user_stamina, refresh_user_vitals, DEFAULT_STAMINA_MAX
-from core.game.realms import get_realm_by_id, get_next_realm, format_realm_progress
+from core.game.realms import get_realm_by_id, get_next_realm, format_realm_progress, format_realm_display
 from core.game.currency import wallet_from_user
 from core.services.sect_service import apply_sect_stat_buffs, get_user_sect_buffs
 
@@ -164,7 +164,7 @@ def format_status_text(status_info, lang="CHS", platform=None, equipped_items=No
 ╔══════════════════════╗
 ║  *{status_info.get('in_game_username', '未知')}*
 ╠══════════════════════╣
-├ 🔮 境界: {status_info.get('realm_name', '凡人')} (Lv.{status_info.get('rank', 1)})
+├ 🔮 境界: {format_realm_display(status_info.get('rank', 1))}
 ├ 🌟 五行: {status_info.get('element', '无')}
 ├ 💰 下品灵石: {status_info.get('copper', 0):,}
 ├ 💎 中品灵石: {status_info.get('gold', 0):,}
