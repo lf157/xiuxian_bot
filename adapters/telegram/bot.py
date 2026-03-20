@@ -2798,73 +2798,109 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             if r.get("success"):
                 uid = r["user_id"]
                 info = await http_get(f"{SERVER_URL}/api/sect/member/{uid}", timeout=15)
-                sect_cfg = _sect_text_cfg()
                 if info.get("success"):
                     sect = info.get("sect", {})
-                    header = "🏛️ *我的别院*" if sect.get("membership_kind") == "branch" else "🏛️ *我的宗门*"
-                    buff_rate = float(sect_cfg["branch_buff_rate"]) if sect.get("membership_kind") == "branch" else 1.0
-                    branch_line = f"归属别院: {(sect.get('branch') or {}).get('display_name')}\n" if sect.get("membership_kind") == "branch" else ""
+                    header = "🏛️ *我的宗门*"
                     text = (
                         f"{header}\n\n"
                         f"名称: {sect.get('name')}\n"
-                        f"{branch_line}"
                         f"等级: {sect.get('level', 1)}\n"
-                        f"人数上限: {int(sect.get('max_members', sect_cfg['base_max_members']) or sect_cfg['base_max_members'])}\n"
-                        f"Buff: 修炼+{int(float(sect.get('cultivation_buff_pct', 10) or 0) * buff_rate)}% ｜ 属性+{int(float(sect.get('stat_buff_pct', 5) or 0) * buff_rate)}% ｜ 战斗收益+{int(float(sect.get('battle_reward_buff_pct', 10) or 0) * buff_rate)}%\n"
-                        f"附属别院: {len(sect.get('branches', []) or [])}/{int(sect_cfg['branch_max'])}\n"
-                        f"资金: {sect.get('fund_copper', 0)}下品灵石 / {sect.get('fund_gold', 0)}中品灵石\n"
-                        f"战绩: {sect.get('war_wins', 0)}胜 {sect.get('war_losses', 0)}负\n\n"
-                        "使用命令：\n"
-                        f"• 创建消耗：{int(sect_cfg['create_copper'])} 下品灵石 + {int(sect_cfg['create_gold'])} 中品灵石\n"
-                        f"• 别院申请：{int(sect_cfg['branch_create_copper'])} 下品灵石 + {int(sect_cfg['branch_create_gold'])} 中品灵石，需宗主同意\n"
-                        f"• 每个别院最多 {int(sect_cfg['branch_max_members'])} 人\n"
-                        "• `/sect list` 查看宗门列表\n"
-                        "• `/sect branch_join <别院ID>`\n"
-                        "• `/sect donate <下品灵石> [中品灵石]` 捐献\n"
-                        "• `/sect branch_apply <名称> [描述]`\n"
-                        "• `/sect branch_approve <申请ID>`\n"
-                        "• `/sect branch_reject <申请ID>`\n"
+                        f"阵营: {sect.get('faction', '未知')}\n"
+                        f"人数: {sect.get('current_members', 0)}/{sect.get('max_members', 50)}\n"
+                        f"修炼加成: +{int(float(sect.get('cultivation_bonus', 10) or 0) * 100)}%\n"
+                        f"宗门贡献: {sect.get('contribution', 0)}\n\n"
+                        "操作：\n"
+                        "• `/sect daily` 领取每日修炼资源\n"
                         "• `/sect quests` 查看宗门任务\n"
-                        "• `/sect war <宗门ID>` 发起战争\n"
                         "• `/sect leave` 退出宗门\n"
                     )
+                    keyboard = [
+                        [InlineKeyboardButton("📦 领取每日资源", callback_data="sect_daily_claim")],
+                        [InlineKeyboardButton("🔙 返回", callback_data="main_menu")],
+                    ]
                 else:
+                    # 未加入宗门：列出预设的12个宗门
                     text = (
                         "🏛️ *宗门系统*\n\n"
-                        "你当前未加入宗门。\n\n"
-                        "使用命令：\n"
-                        f"• 创建消耗：{int(sect_cfg['create_copper'])} 下品灵石 + {int(sect_cfg['create_gold'])} 中品灵石\n"
-                        f"• 宗门人数上限：{int(sect_cfg['base_max_members'])} 人\n"
-                        f"• 宗门Buff：修炼+{int(float(sect_cfg['default_cultivation_buff_pct']))}% ｜ 属性+{int(float(sect_cfg['default_stat_buff_pct']))}% ｜ 战斗收益+{int(float(sect_cfg['default_battle_reward_buff_pct']))}%\n"
-                        f"• 每个宗门最多 {int(sect_cfg['branch_max'])} 个附属别院\n"
-                        f"• 每个别院最多 {int(sect_cfg['branch_max_members'])} 人\n"
-                        f"• 别院成员享受宗门 Buff 的 {int(round(float(sect_cfg['branch_buff_rate']) * 100))}%\n"
-                        "• `/sect create <名称> [描述]`\n"
-                        "• `/sect join <宗门ID>`\n"
-                        "• `/sect list` 查看宗门列表\n"
+                        "你当前未加入任何宗门。\n\n"
+                        "各大宗门会不定期开放招聘会，届时全服通知。\n"
+                        "满足条件的修士方可申请加入。\n\n"
+                        "━━━ 正道五宗 ━━━\n"
+                        "🔹 太清宗 ｜ 恒道传承，第一大派\n"
+                        "    入门：筑基期（初期）+ 不限灵根\n"
+                        "🔹 天剑门 ｜ 剑修圣地\n"
+                        "    入门：筑基期（初期）+ 不限灵根\n"
+                        "🔹 丹鼎阁 ｜ 丹道至尊\n"
+                        "    入门：练气期（后期）+ 不限灵根\n"
+                        "🔹 万法宗 ｜ 博采众长\n"
+                        "    入门：练气期（中期）+ 不限灵根\n"
+                        "🔹 灵兽谷 ｜ 驭兽世家\n"
+                        "    入门：练气期（中期）+ 不限灵根\n\n"
+                        "━━━ 邪道四宗 ━━━\n"
+                        "🔻 逆天殿 ｜ 逆道传承，亦正亦邪\n"
+                        "    入门：筑基期（圆满）+ 不限灵根\n"
+                        "🔻 血煞宗 ｜ 嗜血修炼\n"
+                        "    入门：筑基期（初期）+ 不限灵根\n"
+                        "🔻 万鬼门 ｜ 鬼修传承\n"
+                        "    入门：筑基期（初期）+ 不限灵根\n"
+                        "🔻 天魔教 ｜ 魔道至尊\n"
+                        "    入门：金丹期（初期）+ 不限灵根\n\n"
+                        "━━━ 中立三方 ━━━\n"
+                        "🔸 星辰阁 ｜ 衍道传承，百年开门一次\n"
+                        "    入门：金丹期（后期）+ 需「星力觉醒」标签\n"
+                        "🔸 乱星海散修联盟 ｜ 散修互助\n"
+                        "    入门：练气期（初期）+ 不限\n"
+                        "🔸 蛮荒妖族联盟 ｜ 妖修联盟\n"
+                        "    入门：练气期（后期）+ 不限灵根\n\n"
+                        "💡 提示：等待宗门招聘会开放通知，或达到足够境界后主动申请。"
                     )
-                keyboard = []
-                if not info.get("success"):
-                    keyboard.append([InlineKeyboardButton("🏛️ 创建宗门", callback_data="sect_create_prompt")])
-                keyboard.append([InlineKeyboardButton("🔙 返回", callback_data="main_menu")])
+                    keyboard = [
+                        [InlineKeyboardButton("🔙 返回", callback_data="main_menu")],
+                    ]
                 await _safe_edit(text, parse_mode=ParseMode.MARKDOWN, reply_markup=InlineKeyboardMarkup(keyboard))
             else:
-                await _safe_edit("❌ 未找到账号，请先注册或稍后重试", reply_markup=get_main_menu_keyboard())
+                await _safe_edit("❌ 未找到账号，请先注册", reply_markup=get_main_menu_keyboard())
         except Exception as e:
             logger.error(f"sect menu error: {e}")
-            await _safe_edit("❌ 宗门面板加载失败，请稍后重试", reply_markup=get_main_menu_keyboard())
+            await _safe_edit("❌ 宗门面板加载失败", reply_markup=get_main_menu_keyboard())
         return
 
-    if data == "sect_create_prompt":
+    if data == "sect_daily_claim":
         try:
-            prompt = await query.message.reply_text(
-                "请输入宗门名称与描述（回复此消息）：\n示例：风霜宗 坚许风霜罢了",
-                reply_markup=ForceReply(selective=True),
+            r = await http_get(
+                f"{SERVER_URL}/api/user/lookup",
+                params={"platform": "telegram", "platform_id": user_id},
+                timeout=15,
             )
-            _set_pending_action(context, action="sect_create", prompt_message=prompt, user_id=user_id)
+            if r.get("success"):
+                uid = r["user_id"]
+                claim_r = await http_post(
+                    f"{SERVER_URL}/api/sect/daily_claim",
+                    json={"user_id": uid},
+                    timeout=15,
+                )
+                if claim_r.get("success"):
+                    rewards = claim_r.get("rewards", {})
+                    text = (
+                        "📦 *每日宗门资源已领取*\n\n"
+                        f"• 下品灵石: +{rewards.get('copper', 0)}\n"
+                        f"• 修为: +{rewards.get('exp', 0)}\n"
+                    )
+                    items = rewards.get("items", [])
+                    for item in items:
+                        text += f"• {item.get('name', '物品')}: +{item.get('qty', 1)}\n"
+                    if rewards.get("mentality_cost"):
+                        text += f"\n⚠️ 宗门压榨：心境 -{rewards['mentality_cost']}"
+                else:
+                    text = f"❌ {claim_r.get('message', '领取失败')}"
+            else:
+                text = "❌ 未找到账号"
+            keyboard = [[InlineKeyboardButton("🔙 宗门", callback_data="sect_menu")]]
+            await _safe_edit(text, parse_mode=ParseMode.MARKDOWN, reply_markup=InlineKeyboardMarkup(keyboard))
         except Exception as e:
-            logger.error(f"sect create prompt error: {e}")
-            await _safe_edit("❌ 无法发起创建流程，请稍后重试", reply_markup=get_main_menu_keyboard())
+            logger.error(f"sect daily claim error: {e}")
+            await _safe_edit("❌ 领取失败", reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton("🔙 宗门", callback_data="sect_menu")]]))
         return
 
     if data == "currency_menu":
