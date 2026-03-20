@@ -2495,7 +2495,16 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return True
     
     data = query.data
-    
+
+    # 序章剧情翻页
+    if data.startswith("prologue_next_"):
+        try:
+            page = int(data.split("_")[-1])
+        except (ValueError, IndexError):
+            page = 0
+        await _send_prologue_page(update, context, page)
+        return
+
     # 主菜单
     if data == "main_menu":
         _clear_pending_action(context)
@@ -2522,6 +2531,47 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception as e:
             logger.error(f"main menu status error: {e}")
             await _safe_edit("选择下方按钮继续：", reply_markup=get_main_menu_keyboard())
+        return
+
+    # 大地图
+    if data == "world_map":
+        try:
+            r = await http_get(
+                f"{SERVER_URL}/api/user/lookup",
+                params={"platform": "telegram", "platform_id": user_id},
+                timeout=15,
+            )
+            if r.get("success"):
+                uid = r["user_id"]
+                stat_r = await http_get(f"{SERVER_URL}/api/stat/{uid}", timeout=15)
+                if stat_r.get("success"):
+                    status = stat_r["status"]
+                    current_map = status.get("current_map", "canglan_city")
+                    rank = int(status.get("rank", 1) or 1)
+                    dao_h = float(status.get("dao_heng", 0) or 0)
+                    dao_n = float(status.get("dao_ni", 0) or 0)
+                    dao_y = float(status.get("dao_yan", 0) or 0)
+                    try:
+                        from core.game.maps import format_world_map
+                        map_text = format_world_map(current_map, rank, dao_h, dao_n, dao_y)
+                    except Exception as me:
+                        logger.error(f"format_world_map error: {me}")
+                        map_text = f"🗺️ 当前位置：{current_map}\n（地图渲染失败）"
+                    keyboard = [[InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")]]
+                    try:
+                        await _safe_edit(map_text, reply_markup=InlineKeyboardMarkup(keyboard))
+                    except Exception:
+                        await query.message.reply_text(map_text, reply_markup=InlineKeyboardMarkup(keyboard))
+                    return
+            await _safe_edit("❌ 请先注册角色", reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")]]))
+        except Exception as e:
+            logger.error(f"world_map error: {e}")
+            try:
+                await _safe_edit("❌ 地图加载失败，请稍后重试", reply_markup=InlineKeyboardMarkup(
+                    [[InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")]]))
+            except Exception:
+                await query.message.reply_text("❌ 地图加载失败，请稍后重试")
         return
 
     # PVP 菜单
