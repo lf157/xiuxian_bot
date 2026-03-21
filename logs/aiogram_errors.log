@@ -1,0 +1,2 @@
+2026-03-21 09:45:47,671 - telegram - ERROR - start error: Cannot connect to host 127.0.0.1:11450 ssl:default [Connect call failed ('127.0.0.1', 11450)]
+2026-03-21 10:23:44,633 - telegram - ERROR - hunt mode select error: Cannot connect to host 127.0.0.1:11450 ssl:default [Connect call failed ('127.0.0.1', 11450)]

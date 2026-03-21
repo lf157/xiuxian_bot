@@ -1,10 +1,27 @@
 # 项目变更日志（Changelog）
 
-- 最后更新：2026-03-21 02:07 (UTC+8)
-- 本轮修复完成时间：2026-03-21 02:07 (UTC+8)
+- 最后更新：2026-03-21 10:23 (UTC+8)
+- 本轮修复完成时间：2026-03-21 10:23 (UTC+8)
 - 维护规则：新记录写在最前；每条记录必须包含“记录时间、影响范围、修改摘要”。
 
 ## 2026-03-21
+
+### [31] Telegram 面板所有权校验加固（修复可点击他人面板）
+- 记录时间：2026-03-21 10:23 (UTC+8)
+- 影响范围：`adapters/telegram/bot.py`、`tests/test_telegram_panel_ownership.py`。
+- 修改摘要：
+  - 回调入口新增“无缓存时的面板 owner 推断”（优先用 `reply_to_message.from_user.id`，私聊回退 `chat.id`）。
+  - owner 推断成功后立即绑定到 `panel_owners`，并在回调处理前统一拒绝非 owner 点击。
+  - `_safe_edit` 成功编辑后同步回填 owner 绑定，避免消息编辑链路丢失权限信息。
+  - 新增 3 条测试覆盖 owner 推断与越权点击拦截。
+
+### [30] Core 启动导入错误修复（恢复 execute_query 兼容别名）
+- 记录时间：2026-03-21 10:07 (UTC+8)
+- 影响范围：`core/database/connection.py`。
+- 修改摘要：
+  - 补回 `execute_query` 兼容函数并复用现有 `execute` 实现，修复路由模块导入时的符号缺失。
+  - 消除 `cannot import name 'execute_query' from core.database.connection` 导致的 Core 启动失败。
+  - 让 `travel/sect/audit` 路由注册可正常完成，避免 Telegram 侧出现 `127.0.0.1:11450` 连接失败连锁报错。
 
 ### [29] 商店支持输入数量批量购买
 - 记录时间：2026-03-21 02:07 (UTC+8)

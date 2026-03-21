@@ -412,6 +412,30 @@ def _get_panel_owner(context: ContextTypes.DEFAULT_TYPE, message) -> str | None:
     return owners.get(_panel_key(message.chat_id, message.message_id))
 
 
+def _infer_panel_owner_from_message(message) -> str | None:
+    """Infer panel owner when runtime cache misses (e.g. process restart)."""
+    if not message:
+        return None
+
+    # In group chats, panel messages are typically replies to the command sender.
+    reply_to = getattr(message, "reply_to_message", None)
+    reply_from = getattr(reply_to, "from_user", None)
+    if reply_from is not None and not bool(getattr(reply_from, "is_bot", False)):
+        inferred = str(getattr(reply_from, "id", "") or "").strip()
+        if inferred:
+            return inferred
+
+    # In private chat, chat id is the owner id.
+    chat = getattr(message, "chat", None)
+    chat_type = str(getattr(chat, "type", "") or "").lower()
+    if chat_type == "private":
+        private_owner = str(getattr(chat, "id", "") or "").strip()
+        if private_owner:
+            return private_owner
+
+    return None
+
+
 def _set_pending_action(
     context: ContextTypes.DEFAULT_TYPE,
     *,
@@ -2845,6 +2869,10 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             logger.warning(f"callback answer skipped: {e}")
 
     panel_owner = _get_panel_owner(context, query.message)
+    if panel_owner is None:
+        panel_owner = _infer_panel_owner_from_message(query.message)
+        if panel_owner:
+            _bind_panel_owner(context, query.message, panel_owner)
     if panel_owner and panel_owner != user_id:
         await _safe_answer("这不是你的操作面板", show_alert=True)
         return
@@ -2854,9 +2882,13 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Prefer editing the original message; fall back gracefully if Markdown parsing fails."""
         try:
             await query.edit_message_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+            if reply_markup is not None:
+                _bind_panel_owner(context, query.message, panel_owner or user_id)
         except Exception:
             try:
                 await query.edit_message_text(text, reply_markup=reply_markup)
+                if reply_markup is not None:
+                    _bind_panel_owner(context, query.message, panel_owner or user_id)
             except Exception:
                 try:
                     sent = await query.message.reply_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
@@ -6998,4 +7030,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

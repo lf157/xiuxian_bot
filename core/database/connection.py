@@ -224,6 +224,11 @@ def execute(query: str, params: tuple = ()) -> int:
     return row_id or 0
 
 
+def execute_query(query: str, params: tuple = ()) -> int:
+    """Legacy alias kept for routes/services that still import execute_query."""
+    return execute(query, params)
+
+
 def _ensure_user_platform_columns(conn: Optional[object] = None) -> None:
     if conn is None:
         conn = get_sqlite()

@@ -1,0 +1,45 @@
+2026-03-21 09:45:44,754 - core - ERROR - Core server error: cannot import name 'execute_query' from 'core.database.connection' (/root/xiuxian_bot/core/database/connection.py)
+2026-03-21 09:45:44,754 - core - ERROR - Core server failed to bind: cannot import name 'execute_query' from 'core.database.connection' (/root/xiuxian_bot/core/database/connection.py)
+2026-03-21 10:06:45,589 - core - ERROR - Failed to initialise core components: 
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/core/server.py", line 118, in initialize_core_components
+    connect_sqlite()
+    ~~~~~~~~~~~~~~^^
+  File "/root/xiuxian_bot/core/database/connection.py", line 101, in connect_sqlite
+    _pool = psycopg2.pool.ThreadedConnectionPool(min_conn, max_conn, dsn)
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/psycopg2/pool.py", line 161, in __init__
+    AbstractConnectionPool.__init__(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, minconn, maxconn, *args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/psycopg2/pool.py", line 59, in __init__
+    self._connect()
+    ~~~~~~~~~~~~~^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/psycopg2/pool.py", line 63, in _connect
+    conn = psycopg2.connect(*self._args, **self._kwargs)
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/psycopg2/__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError
+2026-03-21 10:06:45,591 - core - CRITICAL - Aborting: cannot start on a broken schema or missing components.
+2026-03-21 10:20:40,922 - core - ERROR - Unhandled core exception path=/api/travel method=POST
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/core/routes/travel.py", line 86, in travel
+    cur = conn.cursor()
+          ^^^^^^^^^^^
+  File "/root/xiuxian_bot/core/database/connection.py", line 88, in __getattr__
+    return getattr(self._cursor, item)
+AttributeError: 'DictCursor' object has no attribute 'cursor'
+2026-03-21 10:23:04,126 - AlchemyService - ERROR - brew_pill unexpected error user_id=1000009 recipe_id=recipe_breakthrough request_id=769215d5-c1c4-4979-8149-967566f41f83
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/core/services/alchemy_service.py", line 259, in brew_pill
+    _deduct_material(cur, user_id, mat["item_id"], int(mat.get("quantity", 0) or 0))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/core/services/alchemy_service.py", line 146, in _deduct_material
+    ).fetchall()
+      ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'fetchall'
