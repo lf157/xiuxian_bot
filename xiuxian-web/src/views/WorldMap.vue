@@ -32,6 +32,7 @@ interface MapNode {
 }
 
 const player = usePlayerStore()
+const router = useRouter()
 const loading = ref(false)
 const movingTo = ref('')
 const errorText = ref('')
@@ -304,6 +305,28 @@ async function travelTo(node: MapNode) {
     movingTo.value = ''
   }
 }
+
+const ACTION_ROUTES: Record<string, string> = {
+  shop: '/mall',
+  auction: '/mall',
+  hunt: '/hunt',
+  explore: '/hunt',
+  cultivate_bonus: '/cultivate',
+  npc_talk: '/story',
+  quest: '/more',
+  gather_herb: '/hunt',
+  gather_ore: '/hunt',
+  sect_recruit: '/sect',
+  trade: '/mall',
+  fish: '/hunt',
+}
+
+function handleAction(action: string) {
+  const route = ACTION_ROUTES[action]
+  if (route) {
+    router.push(route)
+  }
+}
 </script>
 
 <template>
@@ -366,6 +389,17 @@ async function travelTo(node: MapNode) {
           <IcRoute class="icon" />
           {{ movingTo === selectedNode.id ? '前往中...' : selectedNode.is_current ? '已在此地' : '前往此地' }}
         </button>
+
+        <!-- 当前位置的区域操作 -->
+        <div v-if="selectedNode.is_current && selectedNode.actions?.length" class="node-actions">
+          <button
+            v-for="a in selectedNode.actions" :key="a.action"
+            class="btn btn-ghost"
+            @click="handleAction(a.action)"
+          >
+            {{ a.label }}
+          </button>
+        </div>
       </div>
 
       <div class="card map-legend">
@@ -407,6 +441,9 @@ async function travelTo(node: MapNode) {
 .node-panel__title { display: flex; align-items: center; justify-content: space-between; font-size: 0.95rem; font-weight: 700; color: var(--ink-dark); }
 .node-panel__desc { margin-top: var(--space-xs); color: var(--ink-mid); font-size: 0.78rem; line-height: 1.5; }
 .node-panel__meta { margin: var(--space-sm) 0; display: flex; justify-content: space-between; gap: var(--space-sm); color: var(--ink-light); font-size: 0.72rem; }
+
+.node-actions { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-top: var(--space-sm); }
+.node-actions .btn { font-size: 0.78rem; padding: 6px 12px; }
 
 .map-legend { display: flex; justify-content: space-between; gap: var(--space-sm); padding: var(--space-sm) var(--space-md); color: var(--ink-mid); font-size: 0.72rem; }
 .map-legend span { display: inline-flex; align-items: center; gap: 6px; }

@@ -1238,12 +1238,14 @@ async def start_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     story_hint = f"\n📜 *{title}*\n{detail}\n"
             except Exception:
                 story_hint = ""
+            miniapp_hint = ""
+            if MINIAPP_URL:
+                miniapp_hint = "\n🏯 点击下方「进入修仙世界」打开沉浸式修仙界面\n"
             text = f"""
 👋 欢迎回来，*{r.get('username', user_name)}*！
 
 🕯️ 修仙之路漫漫，吾将上下而求索。
-{location_hint}
-
+{location_hint}{miniapp_hint}
 选择下方按钮开始你的修仙之旅：
 {story_hint}
 """

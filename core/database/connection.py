@@ -1864,9 +1864,20 @@ def add_item(user_id: str, item: Dict[str, Any]) -> int:
 
 
 def get_user_items(user_id: str) -> List[Dict[str, Any]]:
-    """获取用户所有物品"""
-    # Newest-first so newly obtained shop/gacha items appear on the first bag page.
-    return fetch_all("SELECT * FROM items WHERE user_id = %s ORDER BY id DESC", (user_id,))
+    """获取用户所有物品，关联物品定义补充中文名和描述"""
+    rows = fetch_all("SELECT * FROM items WHERE user_id = %s ORDER BY id DESC", (user_id,))
+    try:
+        from core.game.items import get_item_by_id
+        for row in rows:
+            defn = get_item_by_id(row.get("item_id", ""))
+            if defn:
+                row.setdefault("name", defn.get("name", ""))
+                row.setdefault("desc", defn.get("desc", defn.get("description", "")))
+                row.setdefault("rarity", defn.get("rarity", "common"))
+                row.setdefault("item_type", defn.get("type", ""))
+    except Exception:
+        pass
+    return rows
 
 
 def get_user_skills(user_id: str) -> List[Dict[str, Any]]:
