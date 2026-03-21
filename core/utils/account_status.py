@@ -53,6 +53,15 @@ def get_user_status(user_id):
         rank = user.get('rank', 1)
         realm = get_realm_by_id(rank)
         next_realm = get_next_realm(rank)
+        current_map = str(user.get("current_map") or "canglan_city")
+        current_map_name = current_map
+        try:
+            from core.game.maps import get_map
+            map_info = get_map(current_map)
+            if map_info:
+                current_map_name = str(map_info.get("name") or current_map)
+        except Exception:
+            pass
         weak_until = int(user.get("weak_until", 0) or 0)
         weak_remaining_seconds = max(0, weak_until - int(time.time()))
         is_weak = bool(user.get("is_weak", False) or weak_remaining_seconds > 0)
@@ -70,6 +79,8 @@ def get_user_status(user_id):
             'exp': current_exp,
             'next_exp': next_exp,
             'element': element,
+            'current_map': current_map,
+            'current_map_name': current_map_name,
             'copper': user.get('copper', 0),
             'gold': user.get('gold', 0),
             'spirit_stone_low': wallet.get('spirit_low', 0),
@@ -171,6 +182,7 @@ def format_status_text(status_info, lang="CHS", platform=None, equipped_items=No
 ├ 🕐 {game_time['display']}
 ├ 🔮 境界: {format_realm_display(status_info.get('rank', 1))}
 ├ 🌟 五行: {status_info.get('element', '无')}
+├ 📍 所在地: {status_info.get('current_map_name') or status_info.get('current_map', '苍澜城')}
 ├ 💰 下品灵石: {status_info.get('copper', 0):,}
 ├ 💎 中品灵石: {status_info.get('gold', 0):,}
 ├ ⚡ 精力: {_format_stamina_value(status_info.get('stamina', DEFAULT_STAMINA_MAX))} / {status_info.get('max_stamina', DEFAULT_STAMINA_MAX)}

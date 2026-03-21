@@ -12,7 +12,10 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-import yaml
+try:
+    import yaml  # type: ignore
+except Exception:
+    yaml = None
 
 _VOLUMES_DIR = Path(__file__).resolve().parent.parent.parent / "texts" / "story" / "volumes"
 
@@ -23,6 +26,8 @@ _VOLUMES_DIR = Path(__file__).resolve().parent.parent.parent / "texts" / "story"
 def _load_all_volumes() -> Dict[str, Any]:
     """Load every volume_*.yaml and return {volume_key: parsed_dict}."""
     result: Dict[str, Any] = {}
+    if yaml is None:
+        return result
     if not _VOLUMES_DIR.is_dir():
         return result
     for fpath in sorted(_VOLUMES_DIR.glob("volume_*.yaml")):

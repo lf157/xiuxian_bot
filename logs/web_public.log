@@ -4163,3 +4163,55 @@
  * Running on http://127.0.0.1:11452
 2026-03-21 11:10:11,110 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
 2026-03-21 11:10:11,110 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-21 11:24:17,453 - web_public - INFO - runtime_logging_enabled pid=46663 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 11:24:17,457 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-21 11:24:17,458 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-21 11:24:17,462 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-21 11:24:17,463 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-21 11:24:17,463 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-21 11:24:17,463 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-21 11:26:37,488 - xiuxianbot - INFO - Received SIGTERM. Shutting down...
+2026-03-21 11:26:38,477 - xiuxianbot - INFO - aiogram adapter already stopped
+2026-03-21 11:26:38,477 - xiuxianbot - INFO - XiuXianBot stopped
+2026-03-21 11:26:40,751 - web_public - INFO - runtime_logging_enabled pid=46949 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 11:26:40,754 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-21 11:26:40,754 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-21 11:26:40,759 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-21 11:26:40,759 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-21 11:26:40,759 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-21 11:26:40,759 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-21 11:29:10,001 - xiuxianbot - INFO - Received SIGTERM. Shutting down...
+2026-03-21 11:29:10,771 - xiuxianbot - INFO - aiogram adapter already stopped
+2026-03-21 11:29:10,771 - xiuxianbot - INFO - XiuXianBot stopped
+2026-03-21 11:29:13,065 - web_public - INFO - runtime_logging_enabled pid=47271 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 11:29:13,069 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-21 11:29:13,069 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-21 11:29:13,072 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-21 11:29:13,072 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-21 11:29:13,072 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-21 11:29:13,073 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-21 11:32:10,895 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-21 11:32:13,004 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-21 11:32:13,066 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-21 11:33:27,896 - xiuxianbot - INFO - Received SIGTERM. Shutting down...
+2026-03-21 11:33:28,097 - xiuxianbot - INFO - Stopping aiogram adapter (PID 47278)
+2026-03-21 11:33:28,462 - xiuxianbot - INFO - aiogram adapter stopped
+2026-03-21 11:33:28,462 - xiuxianbot - INFO - XiuXianBot stopped
+2026-03-21 11:33:30,717 - web_public - INFO - runtime_logging_enabled pid=47509 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 11:33:30,718 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-21 11:33:30,718 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-21 11:33:30,722 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-21 11:33:30,722 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-21 11:33:30,722 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-21 11:33:30,722 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-21 11:36:28,572 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-21 11:36:30,667 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-21 11:36:30,719 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}

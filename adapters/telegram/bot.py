@@ -68,6 +68,11 @@ LOG_DIR = os.path.abspath(os.path.join(ROOT_DIR, "logs"))
 os.makedirs(LOG_DIR, exist_ok=True)
 PANEL_OWNER_CACHE_PATH = os.path.join(LOG_DIR, "panel_owners.json")
 PANEL_OWNER_CACHE_LIMIT = 5000
+FEATURE_INTRO_CACHE_PATH = os.path.join(LOG_DIR, "feature_intro_seen.json")
+FEATURE_INTRO_USER_LIMIT = 50000
+FEATURE_INTRO_VERSION = 2
+_FEATURE_INTRO_KEYS = frozenset({"shop_all", "cultivate", "sect_menu", "world_map"})
+_FEATURE_INTRO_TEXTS: dict[str, str] | None = None
 
 _LOG_HANDLERS = [logging.StreamHandler()]
 if os.getenv("XIUXIAN_CAPTURED_STDIO") != "1":
@@ -461,6 +466,299 @@ def _get_panel_owner(context: ContextTypes.DEFAULT_TYPE, message) -> str | None:
     return owners.get(_panel_key(message.chat_id, message.message_id))
 
 
+def _load_feature_intro_seen_from_disk() -> dict[str, dict[str, int]]:
+    try:
+        with open(FEATURE_INTRO_CACHE_PATH, "r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except FileNotFoundError:
+        return {}
+    except Exception as exc:
+        logger.warning("failed to load feature intro cache: %s", exc)
+        return {}
+
+    if not isinstance(payload, dict):
+        return {}
+
+    cleaned: dict[str, dict[str, int]] = {}
+    for raw_uid, raw_flags in payload.items():
+        uid = str(raw_uid or "").strip()
+        if not uid:
+            continue
+        if not isinstance(raw_flags, dict):
+            continue
+        flags: dict[str, int] = {}
+        for raw_key, raw_val in raw_flags.items():
+            key = str(raw_key or "").strip()
+            if key not in _FEATURE_INTRO_KEYS:
+                continue
+            version = 0
+            if isinstance(raw_val, bool):
+                version = 1 if raw_val else 0
+            else:
+                try:
+                    version = int(raw_val or 0)
+                except Exception:
+                    version = 0
+            if version > 0:
+                flags[key] = version
+        if flags:
+            cleaned[uid] = flags
+    while len(cleaned) > FEATURE_INTRO_USER_LIMIT:
+        cleaned.pop(next(iter(cleaned)))
+    return cleaned
+
+
+def _persist_feature_intro_seen(state: dict[str, dict[str, int]]) -> None:
+    try:
+        tmp_path = f"{FEATURE_INTRO_CACHE_PATH}.tmp"
+        with open(tmp_path, "w", encoding="utf-8") as handle:
+            json.dump(state, handle, ensure_ascii=False, separators=(",", ":"))
+        os.replace(tmp_path, FEATURE_INTRO_CACHE_PATH)
+    except Exception as exc:
+        logger.warning("failed to persist feature intro cache: %s", exc)
+
+
+def _feature_intro_seen(context: ContextTypes.DEFAULT_TYPE) -> dict[str, dict[str, int]]:
+    state = context.application.bot_data.get("feature_intro_seen")
+    if isinstance(state, dict):
+        return state
+    state = _load_feature_intro_seen_from_disk()
+    context.application.bot_data["feature_intro_seen"] = state
+    return state
+
+
+def _has_seen_feature_intro(context: ContextTypes.DEFAULT_TYPE, user_id: str, feature_key: str) -> bool:
+    state = _feature_intro_seen(context)
+    return int(state.get(str(user_id), {}).get(feature_key, 0) or 0) >= FEATURE_INTRO_VERSION
+
+
+def _mark_feature_intro_seen(context: ContextTypes.DEFAULT_TYPE, user_id: str, feature_key: str) -> None:
+    if feature_key not in _FEATURE_INTRO_KEYS:
+        return
+    state = _feature_intro_seen(context)
+    uid = str(user_id)
+    user_flags = state.setdefault(uid, {})
+    if int(user_flags.get(feature_key, 0) or 0) >= FEATURE_INTRO_VERSION:
+        return
+    user_flags[feature_key] = int(FEATURE_INTRO_VERSION)
+    while len(state) > FEATURE_INTRO_USER_LIMIT:
+        state.pop(next(iter(state)))
+    _persist_feature_intro_seen(state)
+
+
+def _extract_story_excerpt(text: str, *, max_lines: int = 4) -> str:
+    lines = [line.strip() for line in str(text or "").splitlines() if str(line or "").strip()]
+    if not lines:
+        return ""
+    return "\n".join(lines[:max(1, int(max_lines))])
+
+
+def _load_feature_intro_texts() -> dict[str, str]:
+    base_dir = os.path.abspath(os.path.join(ROOT_DIR, "texts"))
+    result: dict[str, str] = {}
+
+    def _extract_feature_intro_block(raw_text: str, key: str) -> str:
+        lines = str(raw_text or "").splitlines()
+        in_section = False
+        idx = 0
+        while idx < len(lines):
+            line = lines[idx]
+            stripped = line.strip()
+            if stripped == "feature_intro:":
+                in_section = True
+                idx += 1
+                continue
+            if in_section and stripped and not line.startswith("  "):
+                break
+            if in_section and stripped == f"{key}: |":
+                block: list[str] = []
+                idx += 1
+                while idx < len(lines):
+                    body = lines[idx]
+                    if body.startswith("    "):
+                        block.append(body[4:])
+                        idx += 1
+                        continue
+                    if not body.strip():
+                        block.append("")
+                        idx += 1
+                        continue
+                    break
+                return "\n".join(block).strip()
+            idx += 1
+        return ""
+
+    def _extract_prologue_scene_text(raw_text: str, scene_id: str) -> str:
+        lines = str(raw_text or "").splitlines()
+        marker = f"- id: {scene_id}"
+        idx = 0
+        while idx < len(lines):
+            if lines[idx].strip() == marker:
+                probe = idx + 1
+                while probe < len(lines):
+                    line = lines[probe]
+                    if probe > idx + 1 and line.startswith("    - id: "):
+                        break
+                    if line.strip() == "text: |":
+                        block: list[str] = []
+                        probe += 1
+                        while probe < len(lines):
+                            body = lines[probe]
+                            if body.startswith("        "):
+                                block.append(body[8:])
+                                probe += 1
+                                continue
+                            if not body.strip():
+                                block.append("")
+                                probe += 1
+                                continue
+                            break
+                        return "\n".join(block).strip()
+                    probe += 1
+            idx += 1
+        return ""
+
+    def _extract_market_intro(raw_text: str) -> str:
+        lines = str(raw_text or "").splitlines()
+        idx = 0
+        in_vendor = False
+        in_atmosphere = False
+        while idx < len(lines):
+            line = lines[idx]
+            stripped = line.strip()
+            if stripped == "mystery_vendor:":
+                in_vendor = True
+                in_atmosphere = False
+                idx += 1
+                continue
+            if in_vendor and not line.startswith("  ") and stripped:
+                break
+            if in_vendor and stripped == "atmosphere:":
+                in_atmosphere = True
+                idx += 1
+                continue
+            if in_vendor and in_atmosphere and stripped == "- |":
+                block: list[str] = []
+                idx += 1
+                while idx < len(lines):
+                    body = lines[idx]
+                    if body.startswith("      "):
+                        block.append(body[6:])
+                        idx += 1
+                        continue
+                    if not body.strip():
+                        block.append("")
+                        idx += 1
+                        continue
+                    break
+                return "\n".join(block).strip()
+            idx += 1
+        return ""
+
+    # 优先读取专用“首次功能剧情”文本（更长、更聚焦关键人物）
+    try:
+        feature_intro_path = os.path.join(base_dir, "story", "feature_first_click.yaml")
+        with open(feature_intro_path, "r", encoding="utf-8") as handle:
+            feature_intro_raw = handle.read()
+        for feature_key in ("shop_all", "cultivate", "sect_menu", "world_map"):
+            block = _extract_feature_intro_block(feature_intro_raw, feature_key)
+            if block:
+                result[feature_key] = _extract_story_excerpt(block, max_lines=12)
+    except Exception:
+        pass
+
+    try:
+        prologue_path = os.path.join(base_dir, "story", "prologue.yaml")
+        with open(prologue_path, "r", encoding="utf-8") as handle:
+            prologue_raw = handle.read()
+        if not result.get("cultivate"):
+            result["cultivate"] = _extract_story_excerpt(
+                _extract_prologue_scene_text(prologue_raw, "scene_07_first_cultivation"),
+                max_lines=6,
+            )
+        if not result.get("world_map"):
+            result["world_map"] = _extract_story_excerpt(
+                _extract_prologue_scene_text(prologue_raw, "scene_08_system_unlock"),
+                max_lines=6,
+            )
+        if not result.get("sect_menu"):
+            result["sect_menu"] = _extract_story_excerpt(
+                _extract_prologue_scene_text(prologue_raw, "scene_09_hint"),
+                max_lines=5,
+            )
+    except Exception as exc:
+        logger.warning("failed to extract prologue intro snippets: %s", exc)
+
+    try:
+        market_path = os.path.join(base_dir, "social", "market_trade.yaml")
+        with open(market_path, "r", encoding="utf-8") as handle:
+            market_raw = handle.read()
+        if not result.get("shop_all"):
+            result["shop_all"] = _extract_story_excerpt(_extract_market_intro(market_raw), max_lines=6)
+    except Exception as exc:
+        logger.warning("failed to extract market intro snippets: %s", exc)
+
+    try:
+        import yaml  # type: ignore
+    except Exception:
+        yaml = None
+
+    if yaml is not None:
+        # 修炼 / 世界地图 / 宗门：来自序章剧情
+        try:
+            prologue_path = os.path.join(base_dir, "story", "prologue.yaml")
+            with open(prologue_path, "r", encoding="utf-8") as handle:
+                prologue_data = yaml.safe_load(handle) or {}
+            scenes = (((prologue_data.get("prologue") or {}).get("scenes")) or [])
+            scene_map = {str(scene.get("id", "")): scene for scene in scenes if isinstance(scene, dict)}
+            if not result.get("cultivate"):
+                result["cultivate"] = _extract_story_excerpt(
+                    str((scene_map.get("scene_07_first_cultivation") or {}).get("text", "")),
+                    max_lines=6,
+                )
+            if not result.get("world_map"):
+                result["world_map"] = _extract_story_excerpt(
+                    str((scene_map.get("scene_08_system_unlock") or {}).get("text", "")),
+                    max_lines=6,
+                )
+            if not result.get("sect_menu"):
+                result["sect_menu"] = _extract_story_excerpt(
+                    str((scene_map.get("scene_09_hint") or {}).get("text", "")),
+                    max_lines=5,
+                )
+        except Exception as exc:
+            logger.warning("failed to load prologue intro snippets: %s", exc)
+
+        # 万宝楼：来自坊市交易文本
+        try:
+            market_path = os.path.join(base_dir, "social", "market_trade.yaml")
+            with open(market_path, "r", encoding="utf-8") as handle:
+                market_data = yaml.safe_load(handle) or {}
+            atmosphere = (((market_data.get("mystery_vendor") or {}).get("atmosphere")) or [])
+            if not result.get("shop_all") and isinstance(atmosphere, list) and atmosphere:
+                result["shop_all"] = _extract_story_excerpt(str(atmosphere[0]), max_lines=6)
+        except Exception as exc:
+            logger.warning("failed to load market intro snippets: %s", exc)
+
+    defaults = {
+        "shop_all": "你踏入坊市深处，灵光闪动，奇货可居。万宝楼的掌柜抬眼一笑：“道友，今日想看点什么？”",
+        "cultivate": "你盘膝而坐，呼吸吐纳之间，第一缕灵气沿经脉缓缓流转。修行之路，从这一息开始。",
+        "sect_menu": "宗门不会主动来找你。唯有修为、道心与机缘并进，方能叩开山门。",
+        "world_map": "天地辽阔，诸域相连。先看清你脚下这一城一地，再谈远行万里。",
+    }
+    for key, value in defaults.items():
+        if key not in result or not result[key]:
+            result[key] = value
+    return result
+
+
+def _get_feature_intro_text(feature_key: str) -> str:
+    global _FEATURE_INTRO_TEXTS
+    if _FEATURE_INTRO_TEXTS is None:
+        _FEATURE_INTRO_TEXTS = _load_feature_intro_texts()
+    return _FEATURE_INTRO_TEXTS.get(feature_key, "")
+
+
 def _is_message_not_modified_error(exc: Exception) -> bool:
     return "not modified" in str(exc or "").lower()
 
@@ -558,6 +856,7 @@ async def _reply_text(update_or_query, text: str, **kwargs):
 async def _on_app_init(_app: Application) -> None:
     install_asyncio_exception_logging("telegram")
     _app.bot_data["panel_owners"] = _load_panel_owners_from_disk()
+    _app.bot_data["feature_intro_seen"] = _load_feature_intro_seen_from_disk()
     await _get_http_session()
     try:
         await _app.bot.set_my_commands([
@@ -896,8 +1195,22 @@ async def start_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if r.get("success"):
             # 已注册，显示主菜单
             story_hint = ""
+            location_hint = ""
+            uid = r.get("user_id")
             try:
-                story_r = await http_get(f"{SERVER_URL}/api/story/{r['user_id']}", timeout=15)
+                if uid:
+                    stat_r = await http_get(f"{SERVER_URL}/api/stat/{uid}", timeout=15)
+                    if stat_r.get("success"):
+                        status = stat_r.get("status") or {}
+                        location = status.get("current_map_name") or status.get("current_map")
+                        if location:
+                            location_hint = f"\n📍 *所在地*：{location}\n"
+            except Exception:
+                location_hint = ""
+            try:
+                if not uid:
+                    raise RuntimeError("missing user_id for story hint")
+                story_r = await http_get(f"{SERVER_URL}/api/story/{uid}", timeout=15)
                 pending = ((story_r or {}).get("story") or {}).get("pending_claims") or []
                 if pending:
                     first_chapter = pending[0]
@@ -910,6 +1223,7 @@ async def start_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 👋 欢迎回来，*{r.get('username', user_name)}*！
 
 🕯️ 修仙之路漫漫，吾将上下而求索。
+{location_hint}
 
 选择下方按钮开始你的修仙之旅：
 {story_hint}
@@ -2986,8 +3300,39 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup(keyboard),
         )
         return True
+
+    async def _show_feature_intro_once(feature_key: str, panel_title: str, continue_callback: str) -> bool:
+        if _has_seen_feature_intro(context, user_id, feature_key):
+            return False
+        _mark_feature_intro_seen(context, user_id, feature_key)
+        intro_text = _get_feature_intro_text(feature_key)
+        text = (
+            f"📜 {panel_title} · 初见\n\n"
+            f"{intro_text}\n\n"
+            "（该剧情仅首次显示）"
+        )
+        await _safe_edit(
+            text,
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(f"➡️ 进入{panel_title}", callback_data=continue_callback)],
+                [InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")],
+            ]),
+        )
+        return True
     
     data = query.data
+
+    intro_targets = {
+        "shop_all": ("shop_all", "万宝楼"),
+        "cultivate": ("cultivate", "修炼"),
+        "sect_menu": ("sect_menu", "宗门"),
+        "world_map": ("world_map", "世界地图"),
+    }
+    intro_conf = intro_targets.get(data)
+    if intro_conf:
+        feature_key, panel_title = intro_conf
+        if await _show_feature_intro_once(feature_key, panel_title, data):
+            return
 
     # 序章剧情翻页
     if data.startswith("prologue_next_"):
