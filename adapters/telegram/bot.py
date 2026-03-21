@@ -66,6 +66,8 @@ CORE_VERSION = os.getenv("CORE_VERSION", "DEV")
 
 LOG_DIR = os.path.abspath(os.path.join(ROOT_DIR, "logs"))
 os.makedirs(LOG_DIR, exist_ok=True)
+PANEL_OWNER_CACHE_PATH = os.path.join(LOG_DIR, "panel_owners.json")
+PANEL_OWNER_CACHE_LIMIT = 5000
 
 _LOG_HANDLERS = [logging.StreamHandler()]
 if os.getenv("XIUXIAN_CAPTURED_STDIO") != "1":
@@ -396,44 +398,87 @@ def _panel_key(chat_id: int, message_id: int) -> str:
     return f"{chat_id}:{message_id}"
 
 
+def _load_panel_owners_from_disk() -> dict[str, str]:
+    try:
+        with open(PANEL_OWNER_CACHE_PATH, "r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except FileNotFoundError:
+        return {}
+    except Exception as exc:
+        logger.warning("failed to load panel owner cache: %s", exc)
+        return {}
+
+    if not isinstance(payload, dict):
+        return {}
+
+    owners: dict[str, str] = {}
+    for raw_key, raw_owner in payload.items():
+        key = str(raw_key or "").strip()
+        owner = str(raw_owner or "").strip()
+        if key and owner:
+            owners[key] = owner
+    while len(owners) > PANEL_OWNER_CACHE_LIMIT:
+        owners.pop(next(iter(owners)))
+    return owners
+
+
+def _persist_panel_owners(owners: dict[str, str]) -> None:
+    try:
+        tmp_path = f"{PANEL_OWNER_CACHE_PATH}.tmp"
+        with open(tmp_path, "w", encoding="utf-8") as handle:
+            json.dump(owners, handle, ensure_ascii=False, separators=(",", ":"))
+        os.replace(tmp_path, PANEL_OWNER_CACHE_PATH)
+    except Exception as exc:
+        logger.warning("failed to persist panel owner cache: %s", exc)
+
+
+def _panel_owners(context: ContextTypes.DEFAULT_TYPE) -> dict[str, str]:
+    owners = context.application.bot_data.get("panel_owners")
+    if isinstance(owners, dict):
+        return owners
+    owners = _load_panel_owners_from_disk()
+    context.application.bot_data["panel_owners"] = owners
+    return owners
+
+
 def _bind_panel_owner(context: ContextTypes.DEFAULT_TYPE, message, owner_id: str) -> None:
     if not message:
         return
-    owners = context.application.bot_data.setdefault("panel_owners", {})
-    owners[_panel_key(message.chat_id, message.message_id)] = str(owner_id)
-    if len(owners) > 5000:
+    owner = str(owner_id or "").strip()
+    if not owner:
+        return
+    owners = _panel_owners(context)
+    owners[_panel_key(message.chat_id, message.message_id)] = owner
+    while len(owners) > PANEL_OWNER_CACHE_LIMIT:
         owners.pop(next(iter(owners)))
+    _persist_panel_owners(owners)
 
 
 def _get_panel_owner(context: ContextTypes.DEFAULT_TYPE, message) -> str | None:
     if not message:
         return None
-    owners = context.application.bot_data.get("panel_owners", {})
+    owners = _panel_owners(context)
     return owners.get(_panel_key(message.chat_id, message.message_id))
 
 
-def _infer_panel_owner_from_message(message) -> str | None:
-    """Infer panel owner when runtime cache misses (e.g. process restart)."""
+def _is_message_not_modified_error(exc: Exception) -> bool:
+    return "not modified" in str(exc or "").lower()
+
+
+def _is_private_panel_message(message) -> bool:
     if not message:
-        return None
-
-    # In group chats, panel messages are typically replies to the command sender.
-    reply_to = getattr(message, "reply_to_message", None)
-    reply_from = getattr(reply_to, "from_user", None)
-    if reply_from is not None and not bool(getattr(reply_from, "is_bot", False)):
-        inferred = str(getattr(reply_from, "id", "") or "").strip()
-        if inferred:
-            return inferred
-
-    # In private chat, chat id is the owner id.
+        return False
     chat = getattr(message, "chat", None)
     chat_type = str(getattr(chat, "type", "") or "").lower()
     if chat_type == "private":
-        private_owner = str(getattr(chat, "id", "") or "").strip()
-        if private_owner:
-            return private_owner
-
-    return None
+        return True
+    chat_id = getattr(message, "chat_id", None)
+    if chat_id is None and chat is not None:
+        chat_id = getattr(chat, "id", None)
+    try:
+        return int(chat_id) > 0
+    except Exception:
+        return False
 
 
 def _set_pending_action(
@@ -512,6 +557,7 @@ async def _reply_text(update_or_query, text: str, **kwargs):
 
 async def _on_app_init(_app: Application) -> None:
     install_asyncio_exception_logging("telegram")
+    _app.bot_data["panel_owners"] = _load_panel_owners_from_disk()
     await _get_http_session()
     try:
         await _app.bot.set_my_commands([
@@ -1347,7 +1393,10 @@ async def cultivate_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 点击下方按钮结束修炼
 """
-                keyboard = [[InlineKeyboardButton("⏹️ 结束修炼", callback_data="cultivate_end")]]
+                keyboard = [
+                    [InlineKeyboardButton("⏹️ 结束修炼", callback_data="cultivate_end")],
+                    [InlineKeyboardButton("🔙 返回", callback_data="main_menu")],
+                ]
                 await _reply_with_owned_panel(
                     update,
                     context,
@@ -1376,6 +1425,7 @@ async def cultivate_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 keyboard = [
                     [InlineKeyboardButton("📊 查看进度", callback_data="cultivate_stat")],
                     [InlineKeyboardButton("⏹️ 结束修炼", callback_data="cultivate_end")],
+                    [InlineKeyboardButton("🔙 返回", callback_data="main_menu")],
                 ]
                 await _reply_with_owned_panel(
                     update,
@@ -2858,23 +2908,40 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = str(query.from_user.id)
     callback_request_id = f"tgcb:{query.id}"
 
-    async def _safe_answer(text=None, show_alert=False):
+    async def _safe_answer(text=None, show_alert=False) -> bool:
         try:
             if text is None:
                 await query.answer()
             else:
                 await query.answer(text, show_alert=show_alert)
+            return True
         except Exception as e:
             # Ignore stale/invalid callback answers to avoid aborting the whole handler.
             logger.warning(f"callback answer skipped: {e}")
+            return False
 
     panel_owner = _get_panel_owner(context, query.message)
     if panel_owner is None:
-        panel_owner = _infer_panel_owner_from_message(query.message)
-        if panel_owner:
-            _bind_panel_owner(context, query.message, panel_owner)
+        # Group/supergroup callbacks must have an explicit owner binding.
+        if not _is_private_panel_message(query.message):
+            deny_text = "面板已失效，请输入 /xian_start 打开自己的面板"
+            answered = await _safe_answer(deny_text, show_alert=True)
+            if not answered:
+                try:
+                    await query.message.reply_text(f"⚠️ {deny_text}")
+                except Exception:
+                    pass
+            return
+        panel_owner = user_id
+        _bind_panel_owner(context, query.message, panel_owner)
     if panel_owner and panel_owner != user_id:
-        await _safe_answer("这不是你的操作面板", show_alert=True)
+        deny_text = "这不是你的操作面板"
+        answered = await _safe_answer(deny_text, show_alert=True)
+        if not answered:
+            try:
+                await query.message.reply_text(f"⚠️ {deny_text}")
+            except Exception:
+                pass
         return
     await _safe_answer()
 
@@ -2889,7 +2956,10 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await query.edit_message_text(text, reply_markup=reply_markup)
                 if reply_markup is not None:
                     _bind_panel_owner(context, query.message, panel_owner or user_id)
-            except Exception:
+            except Exception as edit_exc:
+                # Benign case: Telegram rejects idempotent edits.
+                if _is_message_not_modified_error(edit_exc):
+                    return
                 try:
                     sent = await query.message.reply_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
                     if reply_markup is not None:
@@ -3113,6 +3183,51 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             logger.error(f"travel error: {e}")
             await _safe_edit("❌ 移动失败，请稍后重试", reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")]]))
+        return
+
+    if data.startswith("area_action_"):
+        action = data[len("area_action_"):]
+        redirect_map = {
+            "shop": "shop_all",
+            "auction": "shop_all",
+            "trade": "shop_all",
+            "quest": "quests",
+            "sect_recruit": "sect_menu",
+            "sect_daily": "sect_daily_claim",
+            "hunt": "hunt",
+            "boss": "worldboss_menu",
+            "cultivate_bonus": "cultivate",
+            "skill_learn": "skills",
+            "treasure_hunt": "secret_realms",
+            "explore": "secret_realms",
+        }
+        if action == "npc_talk":
+            await _safe_edit(
+                "💬 当前区域暂未开放可交谈 NPC 事件，请先进行修炼/历练。",
+                reply_markup=InlineKeyboardMarkup([
+                    [InlineKeyboardButton("🗺️ 返回地图", callback_data="world_map")],
+                    [InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")],
+                ]),
+            )
+            return
+        target_callback = redirect_map.get(action)
+        if target_callback:
+            await _safe_edit(
+                "✅ 已为你切换到对应功能面板。",
+                reply_markup=InlineKeyboardMarkup([
+                    [InlineKeyboardButton("➡️ 继续", callback_data=target_callback)],
+                    [InlineKeyboardButton("🗺️ 返回地图", callback_data="world_map")],
+                    [InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")],
+                ]),
+            )
+        else:
+            await _safe_edit(
+                "❌ 该区域动作暂未开放。",
+                reply_markup=InlineKeyboardMarkup([
+                    [InlineKeyboardButton("🗺️ 返回地图", callback_data="world_map")],
+                    [InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")],
+                ]),
+            )
         return
 
     # PVP 菜单
@@ -4106,6 +4221,7 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     keyboard = [
                         [InlineKeyboardButton("📊 查看进度", callback_data="cultivate_stat")],
                         [InlineKeyboardButton("⏹️ 结束修炼", callback_data="cultivate_end")],
+                        [InlineKeyboardButton("🔙 返回", callback_data="main_menu")],
                     ]
                     await _safe_edit(
                         "🧘 开始修炼！",
@@ -4150,7 +4266,10 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     )
                     return
                 current = status.get("current_gain", 0)
-                keyboard = [[InlineKeyboardButton("⏹️ 结束修炼", callback_data="cultivate_end")]]
+                keyboard = [
+                    [InlineKeyboardButton("⏹️ 结束修炼", callback_data="cultivate_end")],
+                    [InlineKeyboardButton("🔙 返回", callback_data="main_menu")],
+                ]
                 text = f"🧘 已获得 {current:,} 修为"
                 if status.get("is_capped"):
                     text += "\n修炼经验已满，请及时结算。"

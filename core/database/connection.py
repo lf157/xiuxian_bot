@@ -639,6 +639,8 @@ def create_tables(conn: Optional[object] = None) -> None:
             state INTEGER DEFAULT 0,
             exp INTEGER DEFAULT 0,
             rank INTEGER DEFAULT 1,
+            current_map TEXT DEFAULT 'canglan_city',
+            visited_maps TEXT DEFAULT '[]',
             dy_times INTEGER DEFAULT 0,
             copper INTEGER DEFAULT 0,
             gold INTEGER DEFAULT 0,
@@ -837,6 +839,8 @@ def create_tables(conn: Optional[object] = None) -> None:
         ("secret_loot_score", "ALTER TABLE users ADD COLUMN secret_loot_score INTEGER DEFAULT 0"),
         ("alchemy_output_score", "ALTER TABLE users ADD COLUMN alchemy_output_score INTEGER DEFAULT 0"),
         ("pvp_season_id", "ALTER TABLE users ADD COLUMN pvp_season_id TEXT"),
+        ("current_map", "ALTER TABLE users ADD COLUMN current_map TEXT DEFAULT 'canglan_city'"),
+        ("visited_maps", "ALTER TABLE users ADD COLUMN visited_maps TEXT DEFAULT '[]'"),
         ("stamina", f"ALTER TABLE users ADD COLUMN stamina INTEGER DEFAULT {DEFAULT_STAMINA_MAX}"),
         ("stamina_updated_at", "ALTER TABLE users ADD COLUMN stamina_updated_at INTEGER DEFAULT 0"),
         ("vitals_updated_at", "ALTER TABLE users ADD COLUMN vitals_updated_at INTEGER DEFAULT 0"),
@@ -1607,6 +1611,7 @@ def get_user_by_username(username: str) -> Optional[Dict[str, Any]]:
 # 允许通过 update_user() 修改的列（白名单防止SQL注入）
 VALID_USER_COLUMNS = frozenset({
     "in_game_username", "lang", "state", "exp", "rank", "dy_times",
+    "current_map", "visited_maps",
     "copper", "gold", "spirit_high", "spirit_exquisite", "spirit_supreme",
     "immortal_flawed", "immortal_low", "immortal_mid", "immortal_high", "immortal_supreme",
     "asc_reduction", "sign", "element",

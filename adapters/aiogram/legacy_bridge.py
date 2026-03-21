@@ -80,6 +80,7 @@ class _CompatMessage:
         chat: Any | None = None,
         from_user: Any | None = None,
         text: str | None = None,
+        reply_to_message: Any | None = None,
     ) -> None:
         self._bot = bot
         self._raw = message
@@ -90,6 +91,11 @@ class _CompatMessage:
             self.message_thread_id = int(getattr(message, "message_thread_id", 0) or 0)
             self.from_user = message.from_user
             self.text = message.text
+            raw_reply = getattr(message, "reply_to_message", None)
+            if isinstance(raw_reply, Message):
+                self.reply_to_message = _CompatMessage(bot, raw_reply)
+            else:
+                self.reply_to_message = raw_reply
             return
 
         self.chat = chat
@@ -99,6 +105,7 @@ class _CompatMessage:
         self.message_thread_id = int(message_thread_id or 0)
         self.from_user = from_user
         self.text = text
+        self.reply_to_message = reply_to_message
 
     async def reply_text(self, text: str, **kwargs):
         payload = _normalize_message_kwargs(kwargs)
@@ -122,6 +129,7 @@ class _CompatCallbackQuery:
             fallback_chat_id = int(getattr(fallback_chat, "id", 0) or 0)
             fallback_mid = int(getattr(query.message, "message_id", 0) or 0)
             fallback_thread_id = int(getattr(query.message, "message_thread_id", 0) or 0)
+            fallback_reply = getattr(query.message, "reply_to_message", None)
             self.message = _CompatMessage(
                 bot,
                 None,
@@ -131,6 +139,7 @@ class _CompatCallbackQuery:
                 chat=fallback_chat,
                 from_user=query.from_user,
                 text=None,
+                reply_to_message=fallback_reply,
             )
         else:
             self.message = _CompatMessage(

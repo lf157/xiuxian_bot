@@ -43,3 +43,73 @@ Traceback (most recent call last):
     ).fetchall()
       ^^^^^^^^
 AttributeError: 'NoneType' object has no attribute 'fetchall'
+2026-03-21 10:30:10,710 - core.forge - ERROR - forge unexpected error user_id=1000009 mode=normal request_id=15472271-1d3c-4c55-acd7-da0278c7c725
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/core/services/forge_service.py", line 342, in forge
+    _deduct_material(cur, user_id, mat_id, mat_need)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/core/services/forge_service.py", line 202, in _deduct_material
+    ).fetchall()
+      ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'fetchall'
+2026-03-21 10:30:19,256 - core.forge - ERROR - forge unexpected error user_id=1000009 mode=normal request_id=d5b7f751-0b22-48ac-aaa7-121f88795605
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/core/services/forge_service.py", line 342, in forge
+    _deduct_material(cur, user_id, mat_id, mat_need)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/core/services/forge_service.py", line 202, in _deduct_material
+    ).fetchall()
+      ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'fetchall'
+2026-03-21 11:06:10,572 - core - ERROR - Unhandled core exception path=/api/travel method=POST
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/core/routes/travel.py", line 86, in travel
+    cur.execute(
+    ~~~~~~~~~~~^
+        "UPDATE users SET current_map = %s, stamina = stamina - %s WHERE user_id = %s",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        (to_map_id, cost["stamina_cost"], user_id)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/root/xiuxian_bot/core/database/connection.py", line 82, in execute
+    return self._cursor.execute(_normalize_query_placeholders(query), params)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/psycopg2/extras.py", line 146, in execute
+    return super().execute(query, vars)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column "current_map" of relation "users" does not exist
+LINE 1: UPDATE users SET current_map = 'east_forest', stamina = stam...
+                         ^
+
+2026-03-21 11:06:49,041 - core - ERROR - Unhandled core exception path=/api/travel method=POST
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/core/routes/travel.py", line 86, in travel
+    cur.execute(
+    ~~~~~~~~~~~^
+        "UPDATE users SET current_map = %s, stamina = stamina - %s WHERE user_id = %s",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        (to_map_id, cost["stamina_cost"], user_id)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/root/xiuxian_bot/core/database/connection.py", line 82, in execute
+    return self._cursor.execute(_normalize_query_placeholders(query), params)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/psycopg2/extras.py", line 146, in execute
+    return super().execute(query, vars)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column "current_map" of relation "users" does not exist
+LINE 1: UPDATE users SET current_map = 'north_mountain', stamina = s...
+                         ^
+

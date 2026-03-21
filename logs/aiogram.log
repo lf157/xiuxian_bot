@@ -1764,3 +1764,2080 @@ Original description: Too Many Requests: retry after 9
 2026-03-21 10:29:31,723 - aiogram.event - INFO - Update id=261501164 is handled. Duration 709 ms by bot id=8749053931
 2026-03-21 10:29:43,592 - aiogram.event - INFO - Update id=261501165 is handled. Duration 661 ms by bot id=8749053931
 2026-03-21 10:29:43,592 - aiogram.event - INFO - Update id=261501165 is handled. Duration 661 ms by bot id=8749053931
+2026-03-21 10:29:47,873 - aiogram.event - INFO - Update id=261501166 is handled. Duration 527 ms by bot id=8749053931
+2026-03-21 10:29:47,873 - aiogram.event - INFO - Update id=261501166 is handled. Duration 527 ms by bot id=8749053931
+2026-03-21 10:29:48,266 - aiogram.event - INFO - Update id=261501167 is handled. Duration 726 ms by bot id=8749053931
+2026-03-21 10:29:48,266 - aiogram.event - INFO - Update id=261501167 is handled. Duration 726 ms by bot id=8749053931
+2026-03-21 10:29:53,431 - aiogram.event - INFO - Update id=261501168 is handled. Duration 717 ms by bot id=8749053931
+2026-03-21 10:29:53,431 - aiogram.event - INFO - Update id=261501168 is handled. Duration 717 ms by bot id=8749053931
+2026-03-21 10:30:00,622 - aiogram.event - INFO - Update id=261501169 is handled. Duration 652 ms by bot id=8749053931
+2026-03-21 10:30:00,622 - aiogram.event - INFO - Update id=261501169 is handled. Duration 652 ms by bot id=8749053931
+2026-03-21 10:30:11,105 - aiogram.event - INFO - Update id=261501170 is handled. Duration 547 ms by bot id=8749053931
+2026-03-21 10:30:11,105 - aiogram.event - INFO - Update id=261501170 is handled. Duration 547 ms by bot id=8749053931
+2026-03-21 10:30:14,681 - aiogram.event - INFO - Update id=261501171 is handled. Duration 558 ms by bot id=8749053931
+2026-03-21 10:30:14,681 - aiogram.event - INFO - Update id=261501171 is handled. Duration 558 ms by bot id=8749053931
+2026-03-21 10:30:16,911 - aiogram.event - INFO - Update id=261501172 is handled. Duration 533 ms by bot id=8749053931
+2026-03-21 10:30:16,911 - aiogram.event - INFO - Update id=261501172 is handled. Duration 533 ms by bot id=8749053931
+2026-03-21 10:30:19,656 - aiogram.event - INFO - Update id=261501173 is handled. Duration 550 ms by bot id=8749053931
+2026-03-21 10:30:19,656 - aiogram.event - INFO - Update id=261501173 is handled. Duration 550 ms by bot id=8749053931
+2026-03-21 10:30:30,443 - aiogram.event - INFO - Update id=261501174 is handled. Duration 673 ms by bot id=8749053931
+2026-03-21 10:30:30,443 - aiogram.event - INFO - Update id=261501174 is handled. Duration 673 ms by bot id=8749053931
+2026-03-21 10:30:51,260 - aiogram.event - INFO - Update id=261501175 is handled. Duration 658 ms by bot id=8749053931
+2026-03-21 10:30:51,260 - aiogram.event - INFO - Update id=261501175 is handled. Duration 658 ms by bot id=8749053931
+2026-03-21 10:30:52,825 - aiogram.event - INFO - Update id=261501176 is handled. Duration 533 ms by bot id=8749053931
+2026-03-21 10:30:52,825 - aiogram.event - INFO - Update id=261501176 is handled. Duration 533 ms by bot id=8749053931
+2026-03-21 10:30:56,435 - aiogram.event - INFO - Update id=261501177 is handled. Duration 695 ms by bot id=8749053931
+2026-03-21 10:30:56,435 - aiogram.event - INFO - Update id=261501177 is handled. Duration 695 ms by bot id=8749053931
+2026-03-21 10:30:58,040 - aiogram.event - INFO - Update id=261501178 is handled. Duration 531 ms by bot id=8749053931
+2026-03-21 10:30:58,040 - aiogram.event - INFO - Update id=261501178 is handled. Duration 531 ms by bot id=8749053931
+2026-03-21 10:31:00,005 - telegram.runtime - INFO - runtime_stats uptime_s=360 total_records=52 total_exceptions=0 levels={'INFO': 52}
+2026-03-21 10:31:00,005 - telegram.runtime - INFO - runtime_stats uptime_s=360 total_records=52 total_exceptions=0 levels={'INFO': 52}
+2026-03-21 10:31:00,008 - aiogram.runtime - INFO - runtime_stats uptime_s=360 total_records=52 total_exceptions=0 levels={'INFO': 52}
+2026-03-21 10:31:00,008 - aiogram.runtime - INFO - runtime_stats uptime_s=360 total_records=52 total_exceptions=0 levels={'INFO': 52}
+2026-03-21 10:31:01,687 - aiogram.event - INFO - Update id=261501179 is handled. Duration 545 ms by bot id=8749053931
+2026-03-21 10:31:01,687 - aiogram.event - INFO - Update id=261501179 is handled. Duration 545 ms by bot id=8749053931
+2026-03-21 10:31:08,488 - aiogram.event - INFO - Update id=261501180 is handled. Duration 706 ms by bot id=8749053931
+2026-03-21 10:31:08,488 - aiogram.event - INFO - Update id=261501180 is handled. Duration 706 ms by bot id=8749053931
+2026-03-21 10:31:11,226 - aiogram.event - INFO - Update id=261501181 is handled. Duration 790 ms by bot id=8749053931
+2026-03-21 10:31:11,226 - aiogram.event - INFO - Update id=261501181 is handled. Duration 790 ms by bot id=8749053931
+2026-03-21 10:31:24,488 - aiogram.event - INFO - Update id=261501182 is handled. Duration 799 ms by bot id=8749053931
+2026-03-21 10:31:24,488 - aiogram.event - INFO - Update id=261501182 is handled. Duration 799 ms by bot id=8749053931
+2026-03-21 10:31:29,170 - aiogram.event - INFO - Update id=261501183 is handled. Duration 819 ms by bot id=8749053931
+2026-03-21 10:31:29,170 - aiogram.event - INFO - Update id=261501183 is handled. Duration 819 ms by bot id=8749053931
+2026-03-21 10:33:00,006 - telegram.runtime - INFO - runtime_stats uptime_s=480 total_records=59 total_exceptions=0 levels={'INFO': 59}
+2026-03-21 10:33:00,006 - telegram.runtime - INFO - runtime_stats uptime_s=480 total_records=59 total_exceptions=0 levels={'INFO': 59}
+2026-03-21 10:33:00,008 - aiogram.runtime - INFO - runtime_stats uptime_s=480 total_records=59 total_exceptions=0 levels={'INFO': 59}
+2026-03-21 10:33:00,008 - aiogram.runtime - INFO - runtime_stats uptime_s=480 total_records=59 total_exceptions=0 levels={'INFO': 59}
+2026-03-21 10:35:00,006 - telegram.runtime - INFO - runtime_stats uptime_s=600 total_records=61 total_exceptions=0 levels={'INFO': 61}
+2026-03-21 10:35:00,006 - telegram.runtime - INFO - runtime_stats uptime_s=600 total_records=61 total_exceptions=0 levels={'INFO': 61}
+2026-03-21 10:35:00,008 - aiogram.runtime - INFO - runtime_stats uptime_s=600 total_records=61 total_exceptions=0 levels={'INFO': 61}
+2026-03-21 10:35:00,008 - aiogram.runtime - INFO - runtime_stats uptime_s=600 total_records=61 total_exceptions=0 levels={'INFO': 61}
+2026-03-21 10:37:00,007 - telegram.runtime - INFO - runtime_stats uptime_s=720 total_records=63 total_exceptions=0 levels={'INFO': 63}
+2026-03-21 10:37:00,007 - telegram.runtime - INFO - runtime_stats uptime_s=720 total_records=63 total_exceptions=0 levels={'INFO': 63}
+2026-03-21 10:37:00,008 - aiogram.runtime - INFO - runtime_stats uptime_s=720 total_records=63 total_exceptions=0 levels={'INFO': 63}
+2026-03-21 10:37:00,008 - aiogram.runtime - INFO - runtime_stats uptime_s=720 total_records=63 total_exceptions=0 levels={'INFO': 63}
+2026-03-21 10:39:00,007 - telegram.runtime - INFO - runtime_stats uptime_s=840 total_records=65 total_exceptions=0 levels={'INFO': 65}
+2026-03-21 10:39:00,007 - telegram.runtime - INFO - runtime_stats uptime_s=840 total_records=65 total_exceptions=0 levels={'INFO': 65}
+2026-03-21 10:39:00,010 - aiogram.runtime - INFO - runtime_stats uptime_s=840 total_records=65 total_exceptions=0 levels={'INFO': 65}
+2026-03-21 10:39:00,010 - aiogram.runtime - INFO - runtime_stats uptime_s=840 total_records=65 total_exceptions=0 levels={'INFO': 65}
+2026-03-21 10:41:00,009 - telegram.runtime - INFO - runtime_stats uptime_s=960 total_records=67 total_exceptions=0 levels={'INFO': 67}
+2026-03-21 10:41:00,009 - telegram.runtime - INFO - runtime_stats uptime_s=960 total_records=67 total_exceptions=0 levels={'INFO': 67}
+2026-03-21 10:41:00,010 - aiogram.runtime - INFO - runtime_stats uptime_s=960 total_records=67 total_exceptions=0 levels={'INFO': 67}
+2026-03-21 10:41:00,010 - aiogram.runtime - INFO - runtime_stats uptime_s=960 total_records=67 total_exceptions=0 levels={'INFO': 67}
+2026-03-21 10:43:00,009 - telegram.runtime - INFO - runtime_stats uptime_s=1080 total_records=69 total_exceptions=0 levels={'INFO': 69}
+2026-03-21 10:43:00,010 - aiogram.runtime - INFO - runtime_stats uptime_s=1080 total_records=68 total_exceptions=0 levels={'INFO': 68}
+2026-03-21 10:43:00,009 - telegram.runtime - INFO - runtime_stats uptime_s=1080 total_records=69 total_exceptions=0 levels={'INFO': 69}
+2026-03-21 10:43:00,010 - aiogram.runtime - INFO - runtime_stats uptime_s=1080 total_records=68 total_exceptions=0 levels={'INFO': 68}
+2026-03-21 10:45:00,010 - telegram.runtime - INFO - runtime_stats uptime_s=1200 total_records=71 total_exceptions=0 levels={'INFO': 71}
+2026-03-21 10:45:00,010 - telegram.runtime - INFO - runtime_stats uptime_s=1200 total_records=71 total_exceptions=0 levels={'INFO': 71}
+2026-03-21 10:45:00,011 - aiogram.runtime - INFO - runtime_stats uptime_s=1200 total_records=71 total_exceptions=0 levels={'INFO': 71}
+2026-03-21 10:45:00,011 - aiogram.runtime - INFO - runtime_stats uptime_s=1200 total_records=71 total_exceptions=0 levels={'INFO': 71}
+2026-03-21 10:47:00,011 - aiogram.runtime - INFO - runtime_stats uptime_s=1320 total_records=72 total_exceptions=0 levels={'INFO': 72}
+2026-03-21 10:47:00,011 - telegram.runtime - INFO - runtime_stats uptime_s=1320 total_records=73 total_exceptions=0 levels={'INFO': 73}
+2026-03-21 10:47:00,011 - aiogram.runtime - INFO - runtime_stats uptime_s=1320 total_records=72 total_exceptions=0 levels={'INFO': 72}
+2026-03-21 10:47:00,011 - telegram.runtime - INFO - runtime_stats uptime_s=1320 total_records=73 total_exceptions=0 levels={'INFO': 73}
+2026-03-21 10:49:00,011 - aiogram.runtime - INFO - runtime_stats uptime_s=1440 total_records=74 total_exceptions=0 levels={'INFO': 74}
+2026-03-21 10:49:00,012 - telegram.runtime - INFO - runtime_stats uptime_s=1440 total_records=75 total_exceptions=0 levels={'INFO': 75}
+2026-03-21 10:49:00,011 - aiogram.runtime - INFO - runtime_stats uptime_s=1440 total_records=74 total_exceptions=0 levels={'INFO': 74}
+2026-03-21 10:49:00,012 - telegram.runtime - INFO - runtime_stats uptime_s=1440 total_records=75 total_exceptions=0 levels={'INFO': 75}
+2026-03-21 10:51:00,012 - aiogram.runtime - INFO - runtime_stats uptime_s=1560 total_records=76 total_exceptions=0 levels={'INFO': 76}
+2026-03-21 10:51:00,012 - telegram.runtime - INFO - runtime_stats uptime_s=1560 total_records=77 total_exceptions=0 levels={'INFO': 77}
+2026-03-21 10:51:00,012 - aiogram.runtime - INFO - runtime_stats uptime_s=1560 total_records=76 total_exceptions=0 levels={'INFO': 76}
+2026-03-21 10:51:00,012 - telegram.runtime - INFO - runtime_stats uptime_s=1560 total_records=77 total_exceptions=0 levels={'INFO': 77}
+2026-03-21 10:51:49,142 - aiogram.event - INFO - Update id=261501184 is handled. Duration 688 ms by bot id=8749053931
+2026-03-21 10:51:49,142 - aiogram.event - INFO - Update id=261501184 is handled. Duration 688 ms by bot id=8749053931
+2026-03-21 10:52:58,856 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 10:52:58,856 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 10:52:58,858 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 10:52:58,858 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 10:52:58,859 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 10:52:58,859 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 10:52:59,110 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 10:52:59,110 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 10:53:00,800 - telegram - INFO - runtime_logging_enabled pid=44306 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 10:53:00,803 - aiogram - INFO - runtime_logging_enabled pid=44306 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 10:53:00,803 - aiogram - INFO - runtime_logging_enabled pid=44306 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 10:53:00,811 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 10:53:00,811 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 10:53:00,811 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 10:53:00,811 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 10:53:00,879 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 10:53:00,879 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 10:53:01,713 - aiogram.event - INFO - Update id=261501185 is handled. Duration 178 ms by bot id=8749053931
+2026-03-21 10:53:01,713 - aiogram.event - INFO - Update id=261501185 is handled. Duration 178 ms by bot id=8749053931
+2026-03-21 10:53:14,242 - aiogram.event - INFO - Update id=261501186 is handled. Duration 506 ms by bot id=8749053931
+2026-03-21 10:53:14,242 - aiogram.event - INFO - Update id=261501186 is handled. Duration 506 ms by bot id=8749053931
+2026-03-21 10:53:15,901 - aiogram.event - INFO - Update id=261501187 is handled. Duration 541 ms by bot id=8749053931
+2026-03-21 10:53:15,901 - aiogram.event - INFO - Update id=261501187 is handled. Duration 541 ms by bot id=8749053931
+2026-03-21 10:53:57,185 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 10:53:57,185 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 10:53:57,186 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 10:53:57,186 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 10:53:57,186 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 10:53:57,186 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 10:53:57,436 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 10:53:57,436 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 10:53:58,766 - telegram - INFO - runtime_logging_enabled pid=44386 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 10:53:58,768 - aiogram - INFO - runtime_logging_enabled pid=44386 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 10:53:58,768 - aiogram - INFO - runtime_logging_enabled pid=44386 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 10:53:58,782 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 10:53:58,782 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 10:53:58,783 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 10:53:58,783 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 10:54:24,471 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 10:54:24,471 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 10:54:31,155 - telegram - WARNING - callback answer skipped: Telegram server says - Bad Request: query is too old and response timeout expired or query ID is invalid
+2026-03-21 10:54:31,155 - telegram - WARNING - callback answer skipped: Telegram server says - Bad Request: query is too old and response timeout expired or query ID is invalid
+2026-03-21 10:54:31,155 - aiogram.event - INFO - Update id=261501189 is handled. Duration 5571 ms by bot id=8749053931
+2026-03-21 10:54:31,155 - aiogram.event - INFO - Update id=261501189 is handled. Duration 5571 ms by bot id=8749053931
+2026-03-21 10:54:44,166 - telegram - WARNING - callback answer skipped: Telegram server says - Bad Request: query is too old and response timeout expired or query ID is invalid
+2026-03-21 10:54:44,166 - telegram - WARNING - callback answer skipped: Telegram server says - Bad Request: query is too old and response timeout expired or query ID is invalid
+2026-03-21 10:54:44,166 - aiogram.event - INFO - Update id=261501188 is handled. Duration 18583 ms by bot id=8749053931
+2026-03-21 10:54:44,166 - aiogram.event - INFO - Update id=261501188 is handled. Duration 18583 ms by bot id=8749053931
+2026-03-21 10:54:47,463 - telegram - WARNING - callback answer skipped: Telegram server says - Bad Request: query is too old and response timeout expired or query ID is invalid
+2026-03-21 10:54:47,463 - telegram - WARNING - callback answer skipped: Telegram server says - Bad Request: query is too old and response timeout expired or query ID is invalid
+2026-03-21 10:54:47,463 - aiogram.event - INFO - Update id=261501190 is handled. Duration 21878 ms by bot id=8749053931
+2026-03-21 10:54:47,463 - aiogram.event - INFO - Update id=261501190 is handled. Duration 21878 ms by bot id=8749053931
+2026-03-21 10:55:58,766 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=11 total_exceptions=0 levels={'INFO': 8, 'WARNING': 3}
+2026-03-21 10:55:58,766 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=11 total_exceptions=0 levels={'INFO': 8, 'WARNING': 3}
+2026-03-21 10:55:58,769 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=11 total_exceptions=0 levels={'INFO': 8, 'WARNING': 3}
+2026-03-21 10:55:58,769 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=11 total_exceptions=0 levels={'INFO': 8, 'WARNING': 3}
+2026-03-21 10:56:02,171 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 10:56:02,171 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 10:56:02,172 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 10:56:02,172 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 10:56:02,172 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 10:56:02,172 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 10:56:02,422 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 10:56:02,422 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 10:56:04,092 - telegram - INFO - runtime_logging_enabled pid=44507 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 10:56:04,094 - aiogram - INFO - runtime_logging_enabled pid=44507 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 10:56:04,094 - aiogram - INFO - runtime_logging_enabled pid=44507 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 10:56:04,103 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 10:56:04,103 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 10:56:04,103 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 10:56:04,103 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 10:56:04,170 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 10:56:04,170 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 10:56:04,605 - aiogram.event - INFO - Update id=261501191 is handled. Duration 179 ms by bot id=8749053931
+2026-03-21 10:56:04,605 - aiogram.event - INFO - Update id=261501191 is handled. Duration 179 ms by bot id=8749053931
+2026-03-21 10:56:08,544 - aiogram.event - INFO - Update id=261501192 is handled. Duration 140 ms by bot id=8749053931
+2026-03-21 10:56:08,544 - aiogram.event - INFO - Update id=261501192 is handled. Duration 140 ms by bot id=8749053931
+2026-03-21 10:56:21,025 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 10:56:21,025 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 10:56:21,026 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 10:56:21,026 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 10:56:21,026 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 10:56:21,026 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 10:56:21,032 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 10:56:21,032 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 10:56:21,277 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 10:56:21,277 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 10:56:22,993 - telegram - INFO - runtime_logging_enabled pid=44550 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 10:56:22,997 - aiogram - INFO - runtime_logging_enabled pid=44550 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 10:56:22,997 - aiogram - INFO - runtime_logging_enabled pid=44550 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 10:56:23,004 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 10:56:23,004 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 10:56:23,005 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 10:56:23,005 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 10:56:23,068 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 10:56:23,068 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 10:58:22,973 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 10:58:22,973 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 10:58:22,974 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 10:58:22,974 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 10:58:22,974 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 10:58:22,974 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 10:58:22,993 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=8 total_exceptions=0 levels={'INFO': 7, 'WARNING': 1}
+2026-03-21 10:58:22,993 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=8 total_exceptions=0 levels={'INFO': 7, 'WARNING': 1}
+2026-03-21 10:58:22,997 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=8 total_exceptions=0 levels={'INFO': 7, 'WARNING': 1}
+2026-03-21 10:58:22,997 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=8 total_exceptions=0 levels={'INFO': 7, 'WARNING': 1}
+2026-03-21 10:58:23,225 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 10:58:23,225 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 10:58:25,390 - telegram - INFO - runtime_logging_enabled pid=44723 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 10:58:25,392 - aiogram - INFO - runtime_logging_enabled pid=44723 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 10:58:25,392 - aiogram - INFO - runtime_logging_enabled pid=44723 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 10:58:25,401 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 10:58:25,401 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 10:58:25,402 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 10:58:25,402 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 10:58:25,468 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 10:58:25,468 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 10:58:31,700 - aiogram.event - INFO - Update id=261501193 is handled. Duration 182 ms by bot id=8749053931
+2026-03-21 10:58:31,700 - aiogram.event - INFO - Update id=261501193 is handled. Duration 182 ms by bot id=8749053931
+2026-03-21 10:58:38,029 - aiogram.event - INFO - Update id=261501194 is handled. Duration 141 ms by bot id=8749053931
+2026-03-21 10:58:38,029 - aiogram.event - INFO - Update id=261501194 is handled. Duration 141 ms by bot id=8749053931
+2026-03-21 10:58:42,306 - aiogram.event - INFO - Update id=261501195 is handled. Duration 154 ms by bot id=8749053931
+2026-03-21 10:58:42,306 - aiogram.event - INFO - Update id=261501195 is handled. Duration 154 ms by bot id=8749053931
+2026-03-21 11:00:25,390 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=8 total_exceptions=0 levels={'INFO': 8}
+2026-03-21 11:00:25,390 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=8 total_exceptions=0 levels={'INFO': 8}
+2026-03-21 11:00:25,392 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=8 total_exceptions=0 levels={'INFO': 8}
+2026-03-21 11:00:25,392 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=8 total_exceptions=0 levels={'INFO': 8}
+2026-03-21 11:02:25,390 - telegram.runtime - INFO - runtime_stats uptime_s=240 total_records=10 total_exceptions=0 levels={'INFO': 10}
+2026-03-21 11:02:25,390 - telegram.runtime - INFO - runtime_stats uptime_s=240 total_records=10 total_exceptions=0 levels={'INFO': 10}
+2026-03-21 11:02:25,392 - aiogram.runtime - INFO - runtime_stats uptime_s=240 total_records=10 total_exceptions=0 levels={'INFO': 10}
+2026-03-21 11:02:25,392 - aiogram.runtime - INFO - runtime_stats uptime_s=240 total_records=10 total_exceptions=0 levels={'INFO': 10}
+2026-03-21 11:02:32,979 - aiogram.event - INFO - Update id=261501196 is handled. Duration 147 ms by bot id=8749053931
+2026-03-21 11:02:32,979 - aiogram.event - INFO - Update id=261501196 is handled. Duration 147 ms by bot id=8749053931
+2026-03-21 11:04:14,133 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 11:04:14,133 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 11:04:14,133 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 11:04:14,133 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 11:04:14,134 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 11:04:14,134 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 11:04:14,278 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 11:04:14,278 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 11:04:14,385 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 11:04:14,385 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 11:04:16,185 - telegram - INFO - runtime_logging_enabled pid=45186 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 11:04:16,187 - aiogram - INFO - runtime_logging_enabled pid=45186 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 11:04:16,187 - aiogram - INFO - runtime_logging_enabled pid=45186 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 11:04:16,194 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 11:04:16,194 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 11:04:16,194 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 11:04:16,194 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 11:04:16,274 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 11:04:16,274 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 11:04:25,785 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 11:04:25,785 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 11:04:25,785 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 11:04:25,785 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 11:04:25,786 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 11:04:25,786 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 11:04:25,940 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 11:04:25,940 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 11:04:26,037 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 11:04:26,037 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 11:04:27,805 - telegram - INFO - runtime_logging_enabled pid=45242 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 11:04:27,807 - aiogram - INFO - runtime_logging_enabled pid=45242 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 11:04:27,807 - aiogram - INFO - runtime_logging_enabled pid=45242 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 11:04:27,815 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 11:04:27,815 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 11:04:27,815 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 11:04:27,815 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 11:04:27,877 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 11:04:27,877 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 11:04:28,079 - aiogram.event - INFO - Update id=261501197 is handled. Duration 177 ms by bot id=8749053931
+2026-03-21 11:04:28,079 - aiogram.event - INFO - Update id=261501197 is handled. Duration 177 ms by bot id=8749053931
+2026-03-21 11:04:30,551 - aiogram.event - INFO - Update id=261501198 is handled. Duration 466 ms by bot id=8749053931
+2026-03-21 11:04:30,551 - aiogram.event - INFO - Update id=261501198 is handled. Duration 466 ms by bot id=8749053931
+2026-03-21 11:04:32,349 - aiogram.event - INFO - Update id=261501199 is handled. Duration 538 ms by bot id=8749053931
+2026-03-21 11:04:32,349 - aiogram.event - INFO - Update id=261501199 is handled. Duration 538 ms by bot id=8749053931
+2026-03-21 11:04:34,906 - aiogram.event - INFO - Update id=261501200 is handled. Duration 588 ms by bot id=8749053931
+2026-03-21 11:04:34,906 - aiogram.event - INFO - Update id=261501200 is handled. Duration 588 ms by bot id=8749053931
+2026-03-21 11:04:37,146 - aiogram.event - INFO - Update id=261501201 is handled. Duration 550 ms by bot id=8749053931
+2026-03-21 11:04:37,146 - aiogram.event - INFO - Update id=261501201 is handled. Duration 550 ms by bot id=8749053931
+2026-03-21 11:04:43,489 - aiogram.event - INFO - Update id=261501202 is handled. Duration 529 ms by bot id=8749053931
+2026-03-21 11:04:43,489 - aiogram.event - INFO - Update id=261501202 is handled. Duration 529 ms by bot id=8749053931
+2026-03-21 11:04:51,726 - aiogram.event - INFO - Update id=261501203 is handled. Duration 575 ms by bot id=8749053931
+2026-03-21 11:04:51,726 - aiogram.event - INFO - Update id=261501203 is handled. Duration 575 ms by bot id=8749053931
+2026-03-21 11:04:54,829 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 11:04:54,829 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 11:04:54,829 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 11:04:54,829 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 11:04:54,829 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 11:04:54,829 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 11:04:55,080 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 11:04:55,080 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 11:04:56,897 - telegram - INFO - runtime_logging_enabled pid=45342 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 11:04:56,900 - aiogram - INFO - runtime_logging_enabled pid=45342 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 11:04:56,900 - aiogram - INFO - runtime_logging_enabled pid=45342 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 11:04:56,907 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 11:04:56,907 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 11:04:56,907 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 11:04:56,907 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 11:04:56,973 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 11:04:56,973 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 11:04:58,080 - aiogram.event - INFO - Update id=261501204 is handled. Duration 565 ms by bot id=8749053931
+2026-03-21 11:04:58,080 - aiogram.event - INFO - Update id=261501204 is handled. Duration 565 ms by bot id=8749053931
+2026-03-21 11:05:00,172 - aiogram.event - INFO - Update id=261501205 is handled. Duration 545 ms by bot id=8749053931
+2026-03-21 11:05:00,172 - aiogram.event - INFO - Update id=261501205 is handled. Duration 545 ms by bot id=8749053931
+2026-03-21 11:05:13,466 - aiogram.event - INFO - Update id=261501206 is handled. Duration 138 ms by bot id=8749053931
+2026-03-21 11:05:13,466 - aiogram.event - INFO - Update id=261501206 is handled. Duration 138 ms by bot id=8749053931
+2026-03-21 11:05:31,086 - aiogram.event - INFO - Update id=261501207 is handled. Duration 139 ms by bot id=8749053931
+2026-03-21 11:05:31,086 - aiogram.event - INFO - Update id=261501207 is handled. Duration 139 ms by bot id=8749053931
+2026-03-21 11:05:51,035 - aiogram.event - INFO - Update id=261501208 is handled. Duration 571 ms by bot id=8749053931
+2026-03-21 11:05:51,035 - aiogram.event - INFO - Update id=261501208 is handled. Duration 571 ms by bot id=8749053931
+2026-03-21 11:05:53,790 - aiogram.event - INFO - Update id=261501209 is handled. Duration 561 ms by bot id=8749053931
+2026-03-21 11:05:53,790 - aiogram.event - INFO - Update id=261501209 is handled. Duration 561 ms by bot id=8749053931
+2026-03-21 11:05:57,311 - aiogram.event - INFO - Update id=261501210 is handled. Duration 539 ms by bot id=8749053931
+2026-03-21 11:05:57,311 - aiogram.event - INFO - Update id=261501210 is handled. Duration 539 ms by bot id=8749053931
+2026-03-21 11:06:09,754 - aiogram.event - INFO - Update id=261501211 is handled. Duration 135 ms by bot id=8749053931
+2026-03-21 11:06:09,754 - aiogram.event - INFO - Update id=261501211 is handled. Duration 135 ms by bot id=8749053931
+2026-03-21 11:06:10,963 - aiogram.event - INFO - Update id=261501212 is handled. Duration 537 ms by bot id=8749053931
+2026-03-21 11:06:10,963 - aiogram.event - INFO - Update id=261501212 is handled. Duration 537 ms by bot id=8749053931
+2026-03-21 11:06:15,449 - aiogram.event - INFO - Update id=261501213 is handled. Duration 142 ms by bot id=8749053931
+2026-03-21 11:06:15,449 - aiogram.event - INFO - Update id=261501213 is handled. Duration 142 ms by bot id=8749053931
+2026-03-21 11:06:25,376 - aiogram.event - INFO - Update id=261501214 is handled. Duration 547 ms by bot id=8749053931
+2026-03-21 11:06:25,376 - aiogram.event - INFO - Update id=261501214 is handled. Duration 547 ms by bot id=8749053931
+2026-03-21 11:06:30,166 - aiogram.event - INFO - Update id=261501215 is handled. Duration 529 ms by bot id=8749053931
+2026-03-21 11:06:30,166 - aiogram.event - INFO - Update id=261501215 is handled. Duration 529 ms by bot id=8749053931
+2026-03-21 11:06:37,007 - aiogram.event - INFO - Update id=261501216 is handled. Duration 553 ms by bot id=8749053931
+2026-03-21 11:06:37,007 - aiogram.event - INFO - Update id=261501216 is handled. Duration 553 ms by bot id=8749053931
+2026-03-21 11:06:39,284 - aiogram.event - INFO - Update id=261501217 is handled. Duration 533 ms by bot id=8749053931
+2026-03-21 11:06:39,284 - aiogram.event - INFO - Update id=261501217 is handled. Duration 533 ms by bot id=8749053931
+2026-03-21 11:06:46,220 - aiogram.event - INFO - Update id=261501218 is handled. Duration 545 ms by bot id=8749053931
+2026-03-21 11:06:46,220 - aiogram.event - INFO - Update id=261501218 is handled. Duration 545 ms by bot id=8749053931
+2026-03-21 11:06:47,421 - aiogram.event - INFO - Update id=261501219 is handled. Duration 530 ms by bot id=8749053931
+2026-03-21 11:06:47,421 - aiogram.event - INFO - Update id=261501219 is handled. Duration 530 ms by bot id=8749053931
+2026-03-21 11:06:48,892 - aiogram.event - INFO - Update id=261501220 is handled. Duration 535 ms by bot id=8749053931
+2026-03-21 11:06:48,892 - aiogram.event - INFO - Update id=261501220 is handled. Duration 535 ms by bot id=8749053931
+2026-03-21 11:06:49,480 - aiogram.event - INFO - Update id=261501221 is handled. Duration 630 ms by bot id=8749053931
+2026-03-21 11:06:49,480 - aiogram.event - INFO - Update id=261501221 is handled. Duration 630 ms by bot id=8749053931
+2026-03-21 11:06:50,991 - aiogram.event - INFO - Update id=261501222 is handled. Duration 550 ms by bot id=8749053931
+2026-03-21 11:06:50,991 - aiogram.event - INFO - Update id=261501222 is handled. Duration 550 ms by bot id=8749053931
+2026-03-21 11:06:51,214 - aiogram.event - INFO - Update id=261501223 is handled. Duration 579 ms by bot id=8749053931
+2026-03-21 11:06:51,214 - aiogram.event - INFO - Update id=261501223 is handled. Duration 579 ms by bot id=8749053931
+2026-03-21 11:06:52,785 - aiogram.event - INFO - Update id=261501224 is handled. Duration 519 ms by bot id=8749053931
+2026-03-21 11:06:52,785 - aiogram.event - INFO - Update id=261501224 is handled. Duration 519 ms by bot id=8749053931
+2026-03-21 11:06:54,037 - aiogram.event - INFO - Update id=261501225 is handled. Duration 548 ms by bot id=8749053931
+2026-03-21 11:06:54,037 - aiogram.event - INFO - Update id=261501225 is handled. Duration 548 ms by bot id=8749053931
+2026-03-21 11:06:55,407 - aiogram.event - INFO - Update id=261501226 is handled. Duration 541 ms by bot id=8749053931
+2026-03-21 11:06:55,407 - aiogram.event - INFO - Update id=261501226 is handled. Duration 541 ms by bot id=8749053931
+2026-03-21 11:06:56,898 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=28 total_exceptions=0 levels={'INFO': 28}
+2026-03-21 11:06:56,898 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=28 total_exceptions=0 levels={'INFO': 28}
+2026-03-21 11:06:56,900 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=28 total_exceptions=0 levels={'INFO': 28}
+2026-03-21 11:06:56,900 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=28 total_exceptions=0 levels={'INFO': 28}
+2026-03-21 11:06:57,225 - aiogram.event - INFO - Update id=261501227 is handled. Duration 528 ms by bot id=8749053931
+2026-03-21 11:06:57,225 - aiogram.event - INFO - Update id=261501227 is handled. Duration 528 ms by bot id=8749053931
+2026-03-21 11:07:01,097 - aiogram.event - INFO - Update id=261501228 is handled. Duration 531 ms by bot id=8749053931
+2026-03-21 11:07:01,097 - aiogram.event - INFO - Update id=261501228 is handled. Duration 531 ms by bot id=8749053931
+2026-03-21 11:07:04,595 - aiogram.event - INFO - Update id=261501229 is handled. Duration 664 ms by bot id=8749053931
+2026-03-21 11:07:04,595 - aiogram.event - INFO - Update id=261501229 is handled. Duration 664 ms by bot id=8749053931
+2026-03-21 11:07:06,420 - aiogram.event - INFO - Update id=261501230 is handled. Duration 547 ms by bot id=8749053931
+2026-03-21 11:07:06,420 - aiogram.event - INFO - Update id=261501230 is handled. Duration 547 ms by bot id=8749053931
+2026-03-21 11:07:07,492 - aiogram.event - INFO - Update id=261501231 is handled. Duration 532 ms by bot id=8749053931
+2026-03-21 11:07:07,492 - aiogram.event - INFO - Update id=261501231 is handled. Duration 532 ms by bot id=8749053931
+2026-03-21 11:07:08,957 - aiogram.event - INFO - Update id=261501232 is handled. Duration 531 ms by bot id=8749053931
+2026-03-21 11:07:08,957 - aiogram.event - INFO - Update id=261501232 is handled. Duration 531 ms by bot id=8749053931
+2026-03-21 11:07:10,687 - aiogram.event - INFO - Update id=261501233 is handled. Duration 577 ms by bot id=8749053931
+2026-03-21 11:07:10,687 - aiogram.event - INFO - Update id=261501233 is handled. Duration 577 ms by bot id=8749053931
+2026-03-21 11:07:13,775 - aiogram.event - INFO - Update id=261501234 is handled. Duration 651 ms by bot id=8749053931
+2026-03-21 11:07:13,775 - aiogram.event - INFO - Update id=261501234 is handled. Duration 651 ms by bot id=8749053931
+2026-03-21 11:07:14,020 - aiogram.event - INFO - Update id=261501235 is handled. Duration 543 ms by bot id=8749053931
+2026-03-21 11:07:14,020 - aiogram.event - INFO - Update id=261501235 is handled. Duration 543 ms by bot id=8749053931
+2026-03-21 11:07:15,829 - aiogram.event - INFO - Update id=261501236 is handled. Duration 575 ms by bot id=8749053931
+2026-03-21 11:07:15,829 - aiogram.event - INFO - Update id=261501236 is handled. Duration 575 ms by bot id=8749053931
+2026-03-21 11:07:17,099 - aiogram.event - INFO - Update id=261501237 is handled. Duration 1093 ms by bot id=8749053931
+2026-03-21 11:07:17,099 - aiogram.event - INFO - Update id=261501237 is handled. Duration 1093 ms by bot id=8749053931
+2026-03-21 11:07:19,191 - aiogram.event - INFO - Update id=261501238 is handled. Duration 555 ms by bot id=8749053931
+2026-03-21 11:07:19,191 - aiogram.event - INFO - Update id=261501238 is handled. Duration 555 ms by bot id=8749053931
+2026-03-21 11:07:21,050 - aiogram.event - INFO - Update id=261501239 is handled. Duration 532 ms by bot id=8749053931
+2026-03-21 11:07:21,050 - aiogram.event - INFO - Update id=261501239 is handled. Duration 532 ms by bot id=8749053931
+2026-03-21 11:07:22,570 - aiogram.event - INFO - Update id=261501240 is handled. Duration 547 ms by bot id=8749053931
+2026-03-21 11:07:22,570 - aiogram.event - INFO - Update id=261501240 is handled. Duration 547 ms by bot id=8749053931
+2026-03-21 11:07:23,825 - aiogram.event - INFO - Update id=261501241 is handled. Duration 731 ms by bot id=8749053931
+2026-03-21 11:07:23,825 - aiogram.event - INFO - Update id=261501241 is handled. Duration 731 ms by bot id=8749053931
+2026-03-21 11:07:25,259 - aiogram.event - INFO - Update id=261501242 is handled. Duration 543 ms by bot id=8749053931
+2026-03-21 11:07:25,259 - aiogram.event - INFO - Update id=261501242 is handled. Duration 543 ms by bot id=8749053931
+2026-03-21 11:07:26,186 - aiogram.event - INFO - Update id=261501243 is handled. Duration 550 ms by bot id=8749053931
+2026-03-21 11:07:26,186 - aiogram.event - INFO - Update id=261501243 is handled. Duration 550 ms by bot id=8749053931
+2026-03-21 11:07:27,005 - aiogram.event - INFO - Update id=261501244 is handled. Duration 534 ms by bot id=8749053931
+2026-03-21 11:07:27,005 - aiogram.event - INFO - Update id=261501244 is handled. Duration 534 ms by bot id=8749053931
+2026-03-21 11:07:31,570 - aiogram.event - INFO - Update id=261501245 is handled. Duration 523 ms by bot id=8749053931
+2026-03-21 11:07:31,570 - aiogram.event - INFO - Update id=261501245 is handled. Duration 523 ms by bot id=8749053931
+2026-03-21 11:07:31,737 - aiogram.event - INFO - Update id=261501246 is handled. Duration 549 ms by bot id=8749053931
+2026-03-21 11:07:31,737 - aiogram.event - INFO - Update id=261501246 is handled. Duration 549 ms by bot id=8749053931
+2026-03-21 11:07:35,109 - aiogram.event - INFO - Update id=261501247 is handled. Duration 530 ms by bot id=8749053931
+2026-03-21 11:07:35,109 - aiogram.event - INFO - Update id=261501247 is handled. Duration 530 ms by bot id=8749053931
+2026-03-21 11:07:37,062 - aiogram.event - INFO - Update id=261501248 is handled. Duration 574 ms by bot id=8749053931
+2026-03-21 11:07:37,062 - aiogram.event - INFO - Update id=261501248 is handled. Duration 574 ms by bot id=8749053931
+2026-03-21 11:07:43,208 - aiogram.event - INFO - Update id=261501249 is handled. Duration 561 ms by bot id=8749053931
+2026-03-21 11:07:43,208 - aiogram.event - INFO - Update id=261501249 is handled. Duration 561 ms by bot id=8749053931
+2026-03-21 11:07:43,465 - aiogram.event - INFO - Update id=261501250 is handled. Duration 534 ms by bot id=8749053931
+2026-03-21 11:07:43,465 - aiogram.event - INFO - Update id=261501250 is handled. Duration 534 ms by bot id=8749053931
+2026-03-21 11:07:50,445 - aiogram.event - INFO - Update id=261501251 is handled. Duration 1433 ms by bot id=8749053931
+2026-03-21 11:07:50,445 - aiogram.event - INFO - Update id=261501251 is handled. Duration 1433 ms by bot id=8749053931
+2026-03-21 11:07:51,838 - aiogram.event - INFO - Update id=261501252 is handled. Duration 556 ms by bot id=8749053931
+2026-03-21 11:07:51,838 - aiogram.event - INFO - Update id=261501252 is handled. Duration 556 ms by bot id=8749053931
+2026-03-21 11:07:54,330 - aiogram.event - INFO - Update id=261501253 is handled. Duration 533 ms by bot id=8749053931
+2026-03-21 11:07:54,330 - aiogram.event - INFO - Update id=261501253 is handled. Duration 533 ms by bot id=8749053931
+2026-03-21 11:08:02,090 - aiogram.event - INFO - Update id=261501254 is handled. Duration 527 ms by bot id=8749053931
+2026-03-21 11:08:02,090 - aiogram.event - INFO - Update id=261501254 is handled. Duration 527 ms by bot id=8749053931
+2026-03-21 11:08:03,915 - aiogram.event - INFO - Update id=261501255 is handled. Duration 543 ms by bot id=8749053931
+2026-03-21 11:08:03,915 - aiogram.event - INFO - Update id=261501255 is handled. Duration 543 ms by bot id=8749053931
+2026-03-21 11:08:21,476 - aiogram.event - INFO - Update id=261501256 is handled. Duration 995 ms by bot id=8749053931
+2026-03-21 11:08:21,476 - aiogram.event - INFO - Update id=261501256 is handled. Duration 995 ms by bot id=8749053931
+2026-03-21 11:08:27,189 - aiogram.event - INFO - Update id=261501257 is handled. Duration 1166 ms by bot id=8749053931
+2026-03-21 11:08:27,189 - aiogram.event - INFO - Update id=261501257 is handled. Duration 1166 ms by bot id=8749053931
+2026-03-21 11:08:29,888 - aiogram.event - INFO - Update id=261501258 is handled. Duration 1021 ms by bot id=8749053931
+2026-03-21 11:08:29,888 - aiogram.event - INFO - Update id=261501258 is handled. Duration 1021 ms by bot id=8749053931
+2026-03-21 11:08:34,373 - aiogram.event - INFO - Update id=261501259 is handled. Duration 4354 ms by bot id=8749053931
+2026-03-21 11:08:34,373 - aiogram.event - INFO - Update id=261501259 is handled. Duration 4354 ms by bot id=8749053931
+2026-03-21 11:08:34,652 - aiogram.event - INFO - Update id=261501260 is handled. Duration 3698 ms by bot id=8749053931
+2026-03-21 11:08:34,652 - aiogram.event - INFO - Update id=261501260 is handled. Duration 3698 ms by bot id=8749053931
+2026-03-21 11:08:45,062 - aiogram.event - INFO - Update id=261501261 is handled. Duration 1181 ms by bot id=8749053931
+2026-03-21 11:08:45,062 - aiogram.event - INFO - Update id=261501261 is handled. Duration 1181 ms by bot id=8749053931
+2026-03-21 11:08:47,578 - aiogram.event - INFO - Update id=261501262 is handled. Duration 1017 ms by bot id=8749053931
+2026-03-21 11:08:47,578 - aiogram.event - INFO - Update id=261501262 is handled. Duration 1017 ms by bot id=8749053931
+2026-03-21 11:08:50,597 - aiogram.event - INFO - Update id=261501263 is handled. Duration 1289 ms by bot id=8749053931
+2026-03-21 11:08:50,597 - aiogram.event - INFO - Update id=261501263 is handled. Duration 1289 ms by bot id=8749053931
+2026-03-21 11:08:52,708 - aiogram.event - INFO - Update id=261501264 is handled. Duration 973 ms by bot id=8749053931
+2026-03-21 11:08:52,708 - aiogram.event - INFO - Update id=261501264 is handled. Duration 973 ms by bot id=8749053931
+2026-03-21 11:08:56,898 - telegram.runtime - INFO - runtime_stats uptime_s=240 total_records=68 total_exceptions=0 levels={'INFO': 68}
+2026-03-21 11:08:56,898 - telegram.runtime - INFO - runtime_stats uptime_s=240 total_records=68 total_exceptions=0 levels={'INFO': 68}
+2026-03-21 11:08:56,900 - aiogram.runtime - INFO - runtime_stats uptime_s=240 total_records=68 total_exceptions=0 levels={'INFO': 68}
+2026-03-21 11:08:56,900 - aiogram.runtime - INFO - runtime_stats uptime_s=240 total_records=68 total_exceptions=0 levels={'INFO': 68}
+2026-03-21 11:08:58,067 - aiogram.event - INFO - Update id=261501265 is handled. Duration 4265 ms by bot id=8749053931
+2026-03-21 11:08:58,067 - aiogram.event - INFO - Update id=261501265 is handled. Duration 4265 ms by bot id=8749053931
+2026-03-21 11:08:58,320 - aiogram.event - INFO - Update id=261501267 is handled. Duration 663 ms by bot id=8749053931
+2026-03-21 11:08:58,320 - aiogram.event - INFO - Update id=261501267 is handled. Duration 663 ms by bot id=8749053931
+2026-03-21 11:09:02,685 - aiogram.event - INFO - Update id=261501266 is handled. Duration 6541 ms by bot id=8749053931
+2026-03-21 11:09:02,685 - aiogram.event - INFO - Update id=261501266 is handled. Duration 6541 ms by bot id=8749053931
+2026-03-21 11:09:02,945 - aiogram.event - INFO - Update id=261501268 is handled. Duration 2205 ms by bot id=8749053931
+2026-03-21 11:09:02,945 - aiogram.event - INFO - Update id=261501268 is handled. Duration 2205 ms by bot id=8749053931
+2026-03-21 11:09:04,868 - aiogram.event - INFO - Update id=261501269 is handled. Duration 542 ms by bot id=8749053931
+2026-03-21 11:09:04,868 - aiogram.event - INFO - Update id=261501269 is handled. Duration 542 ms by bot id=8749053931
+2026-03-21 11:09:07,952 - aiogram.event - INFO - Update id=261501270 is handled. Duration 544 ms by bot id=8749053931
+2026-03-21 11:09:07,952 - aiogram.event - INFO - Update id=261501270 is handled. Duration 544 ms by bot id=8749053931
+2026-03-21 11:09:10,125 - aiogram.event - INFO - Update id=261501271 is handled. Duration 595 ms by bot id=8749053931
+2026-03-21 11:09:10,125 - aiogram.event - INFO - Update id=261501271 is handled. Duration 595 ms by bot id=8749053931
+2026-03-21 11:09:12,005 - telegram - ERROR - hunt callback error: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 33 seconds.
+Original description: Too Many Requests: retry after 33
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+2026-03-21 11:09:12,005 - telegram - ERROR - hunt callback error: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 33 seconds.
+Original description: Too Many Requests: retry after 33
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+2026-03-21 11:09:12,383 - aiogram.event - INFO - Update id=261501273 is handled. Duration 138 ms by bot id=8749053931
+2026-03-21 11:09:12,383 - aiogram.event - INFO - Update id=261501273 is handled. Duration 138 ms by bot id=8749053931
+2026-03-21 11:09:12,572 - adapters.aiogram.legacy_bridge - ERROR - legacy_callback_bridge_failed error=TelegramRetryAfter
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2785, in _safe_edit
+    await query.edit_message_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 33 seconds.
+Original description: Too Many Requests: retry after 33
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2790, in _safe_edit
+    await query.edit_message_text(text, reply_markup=reply_markup)
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 33 seconds.
+Original description: Too Many Requests: retry after 33
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2798, in _safe_edit
+    sent = await query.message.reply_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 33 seconds.
+Original description: Too Many Requests: retry after 33
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 4150, in callback_handler
+    await _safe_edit(
+    ...<2 lines>...
+    )
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2802, in _safe_edit
+    sent = await query.message.reply_text(text, reply_markup=reply_markup)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 33 seconds.
+Original description: Too Many Requests: retry after 33
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2785, in _safe_edit
+    await query.edit_message_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 32 seconds.
+Original description: Too Many Requests: retry after 32
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2790, in _safe_edit
+    await query.edit_message_text(text, reply_markup=reply_markup)
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 32 seconds.
+Original description: Too Many Requests: retry after 32
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2798, in _safe_edit
+    sent = await query.message.reply_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 32 seconds.
+Original description: Too Many Requests: retry after 32
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 508, in bridge_callback_handler
+    await legacy_bot.callback_handler(update, context)
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 4185, in callback_handler
+    await _safe_edit("❌ 狩猎面板出错，请重试", reply_markup=get_main_menu_keyboard())
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2802, in _safe_edit
+    sent = await query.message.reply_text(text, reply_markup=reply_markup)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 32 seconds.
+Original description: Too Many Requests: retry after 32
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+2026-03-21 11:09:12,572 - adapters.aiogram.legacy_bridge - ERROR - legacy_callback_bridge_failed error=TelegramRetryAfter
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2785, in _safe_edit
+    await query.edit_message_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 33 seconds.
+Original description: Too Many Requests: retry after 33
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2790, in _safe_edit
+    await query.edit_message_text(text, reply_markup=reply_markup)
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 33 seconds.
+Original description: Too Many Requests: retry after 33
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2798, in _safe_edit
+    sent = await query.message.reply_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 33 seconds.
+Original description: Too Many Requests: retry after 33
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 4150, in callback_handler
+    await _safe_edit(
+    ...<2 lines>...
+    )
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2802, in _safe_edit
+    sent = await query.message.reply_text(text, reply_markup=reply_markup)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 33 seconds.
+Original description: Too Many Requests: retry after 33
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2785, in _safe_edit
+    await query.edit_message_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 32 seconds.
+Original description: Too Many Requests: retry after 32
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2790, in _safe_edit
+    await query.edit_message_text(text, reply_markup=reply_markup)
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 32 seconds.
+Original description: Too Many Requests: retry after 32
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2798, in _safe_edit
+    sent = await query.message.reply_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 32 seconds.
+Original description: Too Many Requests: retry after 32
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 508, in bridge_callback_handler
+    await legacy_bot.callback_handler(update, context)
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 4185, in callback_handler
+    await _safe_edit("❌ 狩猎面板出错，请重试", reply_markup=get_main_menu_keyboard())
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2802, in _safe_edit
+    sent = await query.message.reply_text(text, reply_markup=reply_markup)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 32 seconds.
+Original description: Too Many Requests: retry after 32
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+2026-03-21 11:09:12,724 - aiogram.event - INFO - Update id=261501272 is handled. Duration 1474 ms by bot id=8749053931
+2026-03-21 11:09:12,724 - aiogram.event - INFO - Update id=261501272 is handled. Duration 1474 ms by bot id=8749053931
+2026-03-21 11:09:17,185 - telegram - ERROR - hunt callback error: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 27 seconds.
+Original description: Too Many Requests: retry after 27
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+2026-03-21 11:09:17,185 - telegram - ERROR - hunt callback error: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 27 seconds.
+Original description: Too Many Requests: retry after 27
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+2026-03-21 11:09:17,753 - adapters.aiogram.legacy_bridge - ERROR - legacy_callback_bridge_failed error=TelegramRetryAfter
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2785, in _safe_edit
+    await query.edit_message_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 28 seconds.
+Original description: Too Many Requests: retry after 28
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2790, in _safe_edit
+    await query.edit_message_text(text, reply_markup=reply_markup)
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 28 seconds.
+Original description: Too Many Requests: retry after 28
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2798, in _safe_edit
+    sent = await query.message.reply_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 28 seconds.
+Original description: Too Many Requests: retry after 28
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 4150, in callback_handler
+    await _safe_edit(
+    ...<2 lines>...
+    )
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2802, in _safe_edit
+    sent = await query.message.reply_text(text, reply_markup=reply_markup)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 27 seconds.
+Original description: Too Many Requests: retry after 27
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2785, in _safe_edit
+    await query.edit_message_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 27 seconds.
+Original description: Too Many Requests: retry after 27
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2790, in _safe_edit
+    await query.edit_message_text(text, reply_markup=reply_markup)
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 27 seconds.
+Original description: Too Many Requests: retry after 27
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2798, in _safe_edit
+    sent = await query.message.reply_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 27 seconds.
+Original description: Too Many Requests: retry after 27
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 508, in bridge_callback_handler
+    await legacy_bot.callback_handler(update, context)
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 4185, in callback_handler
+    await _safe_edit("❌ 狩猎面板出错，请重试", reply_markup=get_main_menu_keyboard())
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2802, in _safe_edit
+    sent = await query.message.reply_text(text, reply_markup=reply_markup)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 27 seconds.
+Original description: Too Many Requests: retry after 27
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+2026-03-21 11:09:17,753 - adapters.aiogram.legacy_bridge - ERROR - legacy_callback_bridge_failed error=TelegramRetryAfter
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2785, in _safe_edit
+    await query.edit_message_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 28 seconds.
+Original description: Too Many Requests: retry after 28
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2790, in _safe_edit
+    await query.edit_message_text(text, reply_markup=reply_markup)
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 28 seconds.
+Original description: Too Many Requests: retry after 28
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2798, in _safe_edit
+    sent = await query.message.reply_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 28 seconds.
+Original description: Too Many Requests: retry after 28
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 4150, in callback_handler
+    await _safe_edit(
+    ...<2 lines>...
+    )
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2802, in _safe_edit
+    sent = await query.message.reply_text(text, reply_markup=reply_markup)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 27 seconds.
+Original description: Too Many Requests: retry after 27
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2785, in _safe_edit
+    await query.edit_message_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 27 seconds.
+Original description: Too Many Requests: retry after 27
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2790, in _safe_edit
+    await query.edit_message_text(text, reply_markup=reply_markup)
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 27 seconds.
+Original description: Too Many Requests: retry after 27
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2798, in _safe_edit
+    sent = await query.message.reply_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 27 seconds.
+Original description: Too Many Requests: retry after 27
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 508, in bridge_callback_handler
+    await legacy_bot.callback_handler(update, context)
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 4185, in callback_handler
+    await _safe_edit("❌ 狩猎面板出错，请重试", reply_markup=get_main_menu_keyboard())
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2802, in _safe_edit
+    sent = await query.message.reply_text(text, reply_markup=reply_markup)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 27 seconds.
+Original description: Too Many Requests: retry after 27
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+2026-03-21 11:09:17,907 - aiogram.event - INFO - Update id=261501274 is handled. Duration 1458 ms by bot id=8749053931
+2026-03-21 11:09:17,907 - aiogram.event - INFO - Update id=261501274 is handled. Duration 1458 ms by bot id=8749053931
+2026-03-21 11:09:20,142 - telegram - ERROR - main menu status error: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 24 seconds.
+Original description: Too Many Requests: retry after 24
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+2026-03-21 11:09:20,142 - telegram - ERROR - main menu status error: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 24 seconds.
+Original description: Too Many Requests: retry after 24
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+2026-03-21 11:09:20,726 - adapters.aiogram.legacy_bridge - ERROR - legacy_callback_bridge_failed error=TelegramRetryAfter
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2785, in _safe_edit
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 25 seconds.
+Original description: Too Many Requests: retry after 25
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2790, in _safe_edit
+    if reply_markup is not None:
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 25 seconds.
+Original description: Too Many Requests: retry after 25
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2798, in _safe_edit
+    # Benign case: Telegram rejects idempotent edits.
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 25 seconds.
+Original description: Too Many Requests: retry after 25
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2851, in callback_handler
+    if stat_r.get("success"):
+        ^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        await _safe_edit(
+        ^
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2802, in _safe_edit
+    sent = await query.message.reply_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 24 seconds.
+Original description: Too Many Requests: retry after 24
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2785, in _safe_edit
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 24 seconds.
+Original description: Too Many Requests: retry after 24
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2790, in _safe_edit
+    if reply_markup is not None:
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 24 seconds.
+Original description: Too Many Requests: retry after 24
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2798, in _safe_edit
+    # Benign case: Telegram rejects idempotent edits.
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 24 seconds.
+Original description: Too Many Requests: retry after 24
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 508, in bridge_callback_handler
+    await legacy_bot.callback_handler(update, context)
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2860, in callback_handler
+    return
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2802, in _safe_edit
+    sent = await query.message.reply_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 24 seconds.
+Original description: Too Many Requests: retry after 24
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+2026-03-21 11:09:20,726 - adapters.aiogram.legacy_bridge - ERROR - legacy_callback_bridge_failed error=TelegramRetryAfter
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2785, in _safe_edit
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 25 seconds.
+Original description: Too Many Requests: retry after 25
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2790, in _safe_edit
+    if reply_markup is not None:
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 25 seconds.
+Original description: Too Many Requests: retry after 25
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2798, in _safe_edit
+    # Benign case: Telegram rejects idempotent edits.
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 25 seconds.
+Original description: Too Many Requests: retry after 25
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2851, in callback_handler
+    if stat_r.get("success"):
+        ^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        await _safe_edit(
+        ^
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2802, in _safe_edit
+    sent = await query.message.reply_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 24 seconds.
+Original description: Too Many Requests: retry after 24
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2785, in _safe_edit
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 24 seconds.
+Original description: Too Many Requests: retry after 24
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2790, in _safe_edit
+    if reply_markup is not None:
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 165, in edit_message_text
+    edited = await self._raw.message.edit_text(text=text, **payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/methods/base.py", line 82, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'EditMessageText' in chat -1003757376633. Retry in 24 seconds.
+Original description: Too Many Requests: retry after 24
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2798, in _safe_edit
+    # Benign case: Telegram rejects idempotent edits.
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 24 seconds.
+Original description: Too Many Requests: retry after 24
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 508, in bridge_callback_handler
+    await legacy_bot.callback_handler(update, context)
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2860, in callback_handler
+    return
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 2802, in _safe_edit
+    sent = await query.message.reply_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 114, in reply_text
+    sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 2923, in send_message
+    return await self(call, request_timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/bot.py", line 488, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 259, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/aiohttp.py", line 177, in make_request
+    response = self.check_response(
+        bot=bot,
+    ...<2 lines>...
+        content=raw_result,
+    )
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/aiogram/client/session/base.py", line 109, in check_response
+    raise TelegramRetryAfter(
+    ...<3 lines>...
+    )
+aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 24 seconds.
+Original description: Too Many Requests: retry after 24
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+2026-03-21 11:09:20,876 - aiogram.event - INFO - Update id=261501275 is handled. Duration 1462 ms by bot id=8749053931
+2026-03-21 11:09:20,876 - aiogram.event - INFO - Update id=261501275 is handled. Duration 1462 ms by bot id=8749053931
+2026-03-21 11:09:29,523 - aiogram.event - INFO - Update id=261501276 is handled. Duration 0 ms by bot id=8749053931
+2026-03-21 11:09:29,523 - aiogram.event - INFO - Update id=261501276 is handled. Duration 0 ms by bot id=8749053931
+2026-03-21 11:09:31,400 - aiogram.event - INFO - Update id=261501277 is handled. Duration 161 ms by bot id=8749053931
+2026-03-21 11:09:31,400 - aiogram.event - INFO - Update id=261501277 is handled. Duration 161 ms by bot id=8749053931
+2026-03-21 11:09:40,938 - aiogram.event - INFO - Update id=261501278 is handled. Duration 315 ms by bot id=8749053931
+2026-03-21 11:09:40,938 - aiogram.event - INFO - Update id=261501278 is handled. Duration 315 ms by bot id=8749053931
+2026-03-21 11:09:46,951 - aiogram.event - INFO - Update id=261501279 is handled. Duration 291 ms by bot id=8749053931
+2026-03-21 11:09:46,951 - aiogram.event - INFO - Update id=261501279 is handled. Duration 291 ms by bot id=8749053931
+2026-03-21 11:09:54,509 - aiogram.event - INFO - Update id=261501280 is handled. Duration 302 ms by bot id=8749053931
+2026-03-21 11:09:54,509 - aiogram.event - INFO - Update id=261501280 is handled. Duration 302 ms by bot id=8749053931
+2026-03-21 11:10:00,785 - aiogram.event - INFO - Update id=261501281 is handled. Duration 299 ms by bot id=8749053931
+2026-03-21 11:10:00,785 - aiogram.event - INFO - Update id=261501281 is handled. Duration 299 ms by bot id=8749053931
+2026-03-21 11:10:04,216 - aiogram.event - INFO - Update id=261501282 is handled. Duration 293 ms by bot id=8749053931
+2026-03-21 11:10:04,216 - aiogram.event - INFO - Update id=261501282 is handled. Duration 293 ms by bot id=8749053931
+2026-03-21 11:10:07,630 - aiogram.event - INFO - Update id=261501283 is handled. Duration 294 ms by bot id=8749053931
+2026-03-21 11:10:07,630 - aiogram.event - INFO - Update id=261501283 is handled. Duration 294 ms by bot id=8749053931
+2026-03-21 11:10:07,838 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 11:10:07,838 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 11:10:07,839 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 11:10:07,839 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 11:10:07,839 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 11:10:07,839 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 11:10:08,090 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 11:10:08,090 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 11:10:10,267 - telegram - INFO - runtime_logging_enabled pid=45984 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 11:10:10,269 - aiogram - INFO - runtime_logging_enabled pid=45984 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 11:10:10,269 - aiogram - INFO - runtime_logging_enabled pid=45984 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 11:10:10,276 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 11:10:10,276 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 11:10:10,276 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 11:10:10,276 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 11:10:10,341 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 11:10:10,341 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 11:10:11,764 - aiogram.event - INFO - Update id=261501284 is handled. Duration 340 ms by bot id=8749053931
+2026-03-21 11:10:11,764 - aiogram.event - INFO - Update id=261501284 is handled. Duration 340 ms by bot id=8749053931
+2026-03-21 11:10:13,500 - aiogram.event - INFO - Update id=261501285 is handled. Duration 303 ms by bot id=8749053931
+2026-03-21 11:10:13,500 - aiogram.event - INFO - Update id=261501285 is handled. Duration 303 ms by bot id=8749053931
+2026-03-21 11:10:14,914 - aiogram.event - INFO - Update id=261501286 is handled. Duration 293 ms by bot id=8749053931
+2026-03-21 11:10:14,914 - aiogram.event - INFO - Update id=261501286 is handled. Duration 293 ms by bot id=8749053931
+2026-03-21 11:10:16,520 - aiogram.event - INFO - Update id=261501287 is handled. Duration 579 ms by bot id=8749053931
+2026-03-21 11:10:16,520 - aiogram.event - INFO - Update id=261501287 is handled. Duration 579 ms by bot id=8749053931
+2026-03-21 11:10:19,544 - aiogram.event - INFO - Update id=261501288 is handled. Duration 539 ms by bot id=8749053931
+2026-03-21 11:10:19,544 - aiogram.event - INFO - Update id=261501288 is handled. Duration 539 ms by bot id=8749053931
+2026-03-21 11:10:21,114 - aiogram.event - INFO - Update id=261501289 is handled. Duration 542 ms by bot id=8749053931
+2026-03-21 11:10:21,114 - aiogram.event - INFO - Update id=261501289 is handled. Duration 542 ms by bot id=8749053931
+2026-03-21 11:10:23,699 - aiogram.event - INFO - Update id=261501290 is handled. Duration 551 ms by bot id=8749053931
+2026-03-21 11:10:23,699 - aiogram.event - INFO - Update id=261501290 is handled. Duration 551 ms by bot id=8749053931
+2026-03-21 11:10:51,849 - aiogram.event - INFO - Update id=261501291 is handled. Duration 294 ms by bot id=8749053931
+2026-03-21 11:10:51,849 - aiogram.event - INFO - Update id=261501291 is handled. Duration 294 ms by bot id=8749053931
+2026-03-21 11:10:56,133 - aiogram.event - INFO - Update id=261501292 is handled. Duration 285 ms by bot id=8749053931
+2026-03-21 11:10:56,133 - aiogram.event - INFO - Update id=261501292 is handled. Duration 285 ms by bot id=8749053931
+2026-03-21 11:10:57,983 - aiogram.event - INFO - Update id=261501293 is handled. Duration 533 ms by bot id=8749053931
+2026-03-21 11:10:57,983 - aiogram.event - INFO - Update id=261501293 is handled. Duration 533 ms by bot id=8749053931
+2026-03-21 11:10:58,034 - aiogram.event - INFO - Update id=261501294 is handled. Duration 327 ms by bot id=8749053931
+2026-03-21 11:10:58,034 - aiogram.event - INFO - Update id=261501294 is handled. Duration 327 ms by bot id=8749053931
+2026-03-21 11:10:59,886 - aiogram.event - INFO - Update id=261501295 is handled. Duration 535 ms by bot id=8749053931
+2026-03-21 11:10:59,886 - aiogram.event - INFO - Update id=261501295 is handled. Duration 535 ms by bot id=8749053931
+2026-03-21 11:11:00,076 - aiogram.event - INFO - Update id=261501296 is handled. Duration 323 ms by bot id=8749053931
+2026-03-21 11:11:00,076 - aiogram.event - INFO - Update id=261501296 is handled. Duration 323 ms by bot id=8749053931
+2026-03-21 11:11:02,831 - aiogram.event - INFO - Update id=261501297 is handled. Duration 292 ms by bot id=8749053931
+2026-03-21 11:11:02,831 - aiogram.event - INFO - Update id=261501297 is handled. Duration 292 ms by bot id=8749053931
+2026-03-21 11:11:04,474 - aiogram.event - INFO - Update id=261501298 is handled. Duration 383 ms by bot id=8749053931
+2026-03-21 11:11:04,474 - aiogram.event - INFO - Update id=261501298 is handled. Duration 383 ms by bot id=8749053931
+2026-03-21 11:11:06,021 - aiogram.event - INFO - Update id=261501299 is handled. Duration 305 ms by bot id=8749053931
+2026-03-21 11:11:06,021 - aiogram.event - INFO - Update id=261501299 is handled. Duration 305 ms by bot id=8749053931
+2026-03-21 11:11:07,358 - aiogram.event - INFO - Update id=261501300 is handled. Duration 310 ms by bot id=8749053931
+2026-03-21 11:11:07,358 - aiogram.event - INFO - Update id=261501300 is handled. Duration 310 ms by bot id=8749053931
+2026-03-21 11:11:08,716 - aiogram.event - INFO - Update id=261501301 is handled. Duration 294 ms by bot id=8749053931
+2026-03-21 11:11:08,716 - aiogram.event - INFO - Update id=261501301 is handled. Duration 294 ms by bot id=8749053931
+2026-03-21 11:11:09,972 - aiogram.event - INFO - Update id=261501302 is handled. Duration 289 ms by bot id=8749053931
+2026-03-21 11:11:09,972 - aiogram.event - INFO - Update id=261501302 is handled. Duration 289 ms by bot id=8749053931
+2026-03-21 11:11:11,773 - aiogram.event - INFO - Update id=261501303 is handled. Duration 295 ms by bot id=8749053931
+2026-03-21 11:11:11,773 - aiogram.event - INFO - Update id=261501303 is handled. Duration 295 ms by bot id=8749053931
+2026-03-21 11:11:12,985 - aiogram.event - INFO - Update id=261501304 is handled. Duration 300 ms by bot id=8749053931
+2026-03-21 11:11:12,985 - aiogram.event - INFO - Update id=261501304 is handled. Duration 300 ms by bot id=8749053931

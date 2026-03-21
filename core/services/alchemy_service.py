@@ -140,10 +140,11 @@ def _sum_material(user_id: str, item_id: str) -> int:
 
 
 def _deduct_material(cur, user_id: str, item_id: str, quantity: int) -> None:
-    rows = cur.execute(
+    cur.execute(
         "SELECT id, quantity FROM items WHERE user_id = ? AND item_id = ? AND item_type = 'material' ORDER BY id ASC",
         (user_id, item_id),
-    ).fetchall()
+    )
+    rows = cur.fetchall()
     remaining = int(quantity)
     for row in rows:
         if remaining <= 0:

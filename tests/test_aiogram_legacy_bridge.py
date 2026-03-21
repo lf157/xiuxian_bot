@@ -76,3 +76,19 @@ def test_normalize_message_kwargs_keeps_reply_context():
     assert payload["reply_to_message_id"] == 123
     assert payload["message_thread_id"] == 456
     assert payload["allow_sending_without_reply"] is True
+
+
+def test_compat_message_keeps_reply_to_message_reference():
+    bot = _DummyBot()
+    reply = SimpleNamespace(from_user=SimpleNamespace(id=123456, is_bot=False))
+    msg = legacy_bridge._CompatMessage(
+        bot,
+        None,
+        chat_id=-10012345,
+        message_id=13,
+        chat=SimpleNamespace(id=-10012345, type="group"),
+        reply_to_message=reply,
+    )
+
+    assert msg.reply_to_message is reply
+    assert msg.reply_to_message.from_user.id == 123456

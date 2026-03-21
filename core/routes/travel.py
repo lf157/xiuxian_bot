@@ -82,8 +82,7 @@ def travel():
     first_visit = to_map_id not in visited_maps
 
     # 执行移动
-    with db_transaction() as conn:
-        cur = conn.cursor()
+    with db_transaction() as cur:
         cur.execute(
             "UPDATE users SET current_map = %s, stamina = stamina - %s WHERE user_id = %s",
             (to_map_id, cost["stamina_cost"], user_id)
