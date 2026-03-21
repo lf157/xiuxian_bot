@@ -1,0 +1,209 @@
+# 卷九：众生相（支线故事合集）
+# 8个独立支线章节，补充NPC背景与世界观深度
+# 可在主线任意阶段触发
+
+volume_9:
+  title: "卷九：众生相"
+  realm_range: [1, 36]
+  type: side_stories
+
+  chapters:
+
+    ch01_shen_wuji_origin:
+      title: "番外一：废灵根少年"
+      trigger: {type: "item_use", item: "shen_wuji_diary"}
+      map: canglan_city
+      scenes:
+        - type: narration
+          text: |
+            你在整理旧物时发现了沈无极留下的日记。
+
+            他在日记里记录了灵根测试之前的事——
+
+            他不是苍澜洲人。他来自极北之地的一个小村庄。
+            村庄被妖兽毁灭时，他只有五岁。
+            一个路过的散修救了他，把他带到了苍澜城。
+
+            那个散修告诉他：修仙可以保护想保护的人。
+            于是他拼命修炼——直到被判定为废灵根。
+
+            日记最后一页只写了一句话：
+            「灵根是废的，但我的心不是。」
+
+    ch02_han_cang_story:
+      title: "番外二：铁拳韩苍"
+      trigger: {type: "friendship_level", npc: "han_cang", level: 10}
+      map: tianyuan_sect_city
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: 韩苍
+              text: "师弟，你知道我为什么力气这么大吗？"
+            - speaker: null
+              text: 韩苍难得认真起来。
+            - speaker: 韩苍
+              text: "我爹是个铁匠。普通人。没有灵根。"
+            - speaker: 韩苍
+              text: "他靠打铁养活了我和我娘。每天抡锤子，从早到晚。"
+            - speaker: 韩苍
+              text: "我小时候就在铁匠铺里帮忙，锤子比我还高。"
+            - speaker: 韩苍
+              text: "后来我被发现有灵根，进了宗门。但我一直记得我爹说的话——"
+            - speaker: 韩苍
+              text: "「力气是用来保护人的，不是用来欺负人的。」"
+            - speaker: 韩苍
+              text: "所以我这辈子，只打坏人。"
+
+    ch03_chu_qianshang_revenge:
+      title: "番外三：千殇之剑"
+      trigger: {type: "friendship_level", npc: "chu_qianshang", level: 10}
+      map: sword_peak
+      scenes:
+        - type: narration
+          text: |
+            楚千殇七岁那年的记忆，她从未完整地告诉过任何人。
+
+            那天夜里，血煞宗突袭了她家所在的小镇。
+            她的父亲是镇上唯一的修士——筑基期。
+            他独自面对三名金丹修士，为镇民争取逃跑时间。
+
+            他撑了一刻钟。然后倒下了。
+
+            她母亲抱着她躲在地窖里，
+            血煞宗的人搜查时打开了地窖盖。
+            母亲将她推到最深处，用身体挡住了那一刀。
+
+            她活了下来。
+            从那天起，她再也没有笑过——直到遇见了你们。
+        - type: dialogue
+          lines:
+            - speaker: 楚千殇
+              text: "谢谢你。不是谢你帮我报仇。"
+            - speaker: 楚千殇
+              text: "是谢你让我知道——剑不止可以杀人。"
+
+    ch04_liu_qingzhu_past:
+      title: "番外四：月下清竹"
+      trigger: {type: "friendship_level", npc: "liu_qingzhu", level: 10}
+      map: fallen_star_lake
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: 柳清竹
+              text: "你想知道我在太清宗的日子吗？"
+            - speaker: null
+              text: 月光下，她的表情平静而遥远。
+            - speaker: 柳清竹
+              text: "我是太清宗发现的太阴灵根天才。从小被当做宝贝养大。"
+            - speaker: 柳清竹
+              text: "最好的功法、最好的丹药、最好的洞府……什么都是最好的。"
+            - speaker: 柳清竹
+              text: "直到有一天，我发现——我不是被当做人养大的。"
+            - speaker: 柳清竹
+              text: "我是被当做炼器材料养大的。"
+            - speaker: 柳清竹
+              text: "那些'最好的'都是为了让我的太阴灵根更加纯净，更适合祭炼法器。"
+            - speaker: 柳清竹
+              text: "我逃了。逃了很久。"
+            - speaker: 柳清竹
+              text: "直到遇见了你——第一个不在意我灵根属性的人。"
+
+    ch05_wang_ni_philosophy:
+      title: "番外五：逆天之道"
+      trigger: {type: "friendship_level", npc: "wang_ni", level: 10}
+      map: any
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: 王逆
+              text: "你知道逆天殿为什么叫逆天殿吗？"
+            - speaker: 王逆
+              text: "不是因为我们要和天作对。"
+            - speaker: 王逆
+              text: "是因为我们不相信命运。"
+            - speaker: 王逆
+              text: "天道说你是废灵根，你就认命了？"
+            - speaker: 王逆
+              text: "天道说正道就是对的，你就信了？"
+            - speaker: 王逆
+              text: "逆天——不是叛逆。是质疑。是追问。是不盲从。"
+            - speaker: 王逆
+              text: "这个世界需要有人问为什么。哪怕问的人会被当做异端。"
+
+    ch06_xing_xuan_secret:
+      title: "番外六：星辰之女"
+      trigger: {type: "friendship_level", npc: "xing_xuan", level: 10}
+      map: star_fall_sea
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: 星璇
+              text: "你想知道我为什么一直待在星陨之海吗？"
+            - speaker: 星璇
+              text: "因为我不是人。"
+            - speaker: null
+              text: 你看着她，等待解释。
+            - speaker: 星璇
+              text: "我是星辰的意志凝聚而成的。万年前那颗坠落的星辰……就是我的本体。"
+            - speaker: 星璇
+              text: "星陨之海、落星湖……都是我坠落时的碎片。"
+            - speaker: 星璇
+              text: "我以人形存在了万年。看着修仙界的兴衰更替。"
+            - speaker: 星璇
+              text: "你是万年来第一个让我觉得——做人也不错的修士。"
+
+    ch07_taichu_redemption:
+      title: "番外七：太初的赎罪"
+      trigger: {type: "friendship_level", npc: "taichu", level: 5}
+      map: any
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: 太初
+              text: "你知道我为什么要炼万灵塔吗？不是为了控制修仙界。"
+            - speaker: 太初
+              text: "我见过天劫。三千年前，我亲眼看着上一次天劫毁灭了一个大陆。"
+            - speaker: 太初
+              text: "那个大陆上有我的师门、我的朋友、我爱的人。"
+            - speaker: 太初
+              text: "全部消失了。和大陆一起。"
+            - speaker: 太初
+              text: "我活下来了。但我不知道该怎么活。"
+            - speaker: 太初
+              text: "于是我用三千年准备了一个方案——万灵塔。"
+            - speaker: 太初
+              text: "方案是错的。但初心不是。"
+            - speaker: 太初
+              text: "谢谢你让我找到了更好的路。"
+
+    ch08_xiaojin_tale:
+      title: "番外八：小金的前世"
+      trigger: {type: "pet_level", pet: "xiaojin", level: 20}
+      map: north_mountain
+      scenes:
+        - type: narration
+          text: |
+            小金长大了。
+
+            它不再是那只只会「吱」的毛球。
+            金色的羽翼展开有两丈宽，通体散发着耀眼的金光。
+
+            在一次修炼中，你从它的记忆深处看到了一段画面——
+
+            上古时代。一只通体金色的神鸟翱翔在九天之上。
+            它叫——金翅大鹏。上古神兽。
+
+            后来天地大变，它将自己的精血封入一枚蛋中，
+            沉入北山深处，等待有缘人。
+
+            等了万年。等到了你。
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                小金蹭了蹭你的脸。
+                虽然它现在已经大到能驮着你飞了，
+                但蹭脸这个习惯从来没变过。
+
+                有些东西不会因为变强而改变。
+                就像你们之间的羁绊。

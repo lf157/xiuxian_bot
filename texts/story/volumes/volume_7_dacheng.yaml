@@ -1,0 +1,308 @@
+# 卷七：大乘（大乘初期 → 大乘圆满）
+# 完整12章，大乘修行 + 仙界之门 + 最终守护 + 飞升前奏
+# 核心线：大乘圆满 + 仙界真相 + 三界最终考验
+
+volume_7:
+  title: "卷七：大乘"
+  realm_range: [30, 33]
+  main_npcs: [mc_chu_qianshang, liu_qingzhu, xiao_han_cang, xing_xuan, wang_ni, taichu_elder, heavenly_dao]
+
+  chapters:
+
+    ch01_dacheng:
+      title: "第一章：大乘"
+      trigger: {type: "breakthrough_success", from_stage: "dujie"}
+      map: tongtian_peak
+      scenes:
+        - type: narration
+          text: |
+            大乘。
+
+            这个境界在修仙界中几乎是传说。
+            千年来能够走到这一步的修士，两只手数得过来。
+
+            你的感知力再次跃升了一个维度——
+            你能看到天道法则的运行轨迹，
+            能感受到整个天元大陆的灵脉脉动，
+            甚至能隐约感知到……仙界的存在。
+
+    ch02_immortal_gate:
+      title: "第二章：仙界之门"
+      trigger: {type: "realm_reach", realm: 31}
+      map: tongtian_peak
+      scenes:
+        - type: narration
+          text: |
+            大乘中期时，你在通天峰看到了它。
+
+            一扇巨大的、半透明的门悬浮在云端之上。
+            它由纯粹的天道法则构成，散发着令人敬畏的威严。
+
+            仙界之门。
+
+            它一直都在那里。只是你的修为不够，看不到而已。
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                你尝试接近那扇门。
+                当你的手触碰到门面时，一个声音在你脑海中响起——
+
+                「尔已触及天道边缘。
+                　若欲飞升，须渡仙劫。
+                　仙劫无常，十渡九亡。
+                　汝，可愿？」
+
+    ch03_truth_of_immortal:
+      title: "第三章：仙界真相"
+      trigger: {type: "explore_count", map: "immortal_gate", count: 3}
+      map: tongtian_peak
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                你多次探索仙界之门，从中获得了碎片化的信息。
+
+                仙界并非完美的极乐世界。
+                它是一个更高维度的修行场——
+                那里的修士以万年为单位修炼，
+                面对的考验比凡间残酷百倍。
+
+                更重要的是——飞升是单程票。
+                一旦飞升，再也无法回到凡间。
+
+                你想到了苍澜洲的故人，想到了韩苍、楚千殇、柳清竹。
+                如果飞升了，就意味着永远的离别。
+
+    ch04_final_threat:
+      title: "第四章：最后的威胁"
+      trigger: {type: "realm_reach", realm: 32}
+      map: three_realm_rift
+      scenes:
+        - type: narration
+          text: |
+            封印出现了裂痕。
+
+            虚界之王没有死。它在虚界中恢复了力量，
+            正在从另一侧攻击封印。
+
+            封印最多还能撑三年。三年之后——
+            三界裂隙将彻底崩溃，虚界大军倾巢而出。
+
+            上一次你们有九个人合力封印。
+            这一次，你需要一个永久的解决方案。
+
+    ch05_gathering_one_last_time:
+      title: "第五章：最后的聚会"
+      trigger: {type: "quest_start", quest: "final_seal"}
+      map: fallen_star_lake
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                落星湖畔，你召集了所有人。
+
+                韩苍来了，虽然修为不再巅峰，但笑容不减。
+                楚千殇来了，她的剑已经不再为复仇而鸣。
+                柳清竹来了，太阴灵根的光辉比以往更加温润。
+                王逆来了，逆天殿在他手中已非邪道。
+                星璇来了，银发依旧如星光般闪耀。
+                药灵儿来了，带着满满一箱灵药。
+                太初也来了，沉默寡言，但眼中有了某种赎罪的决意。
+
+                石伯没来——他在十年前老去了。凡人的一生，比修士短太多。
+                张大也走了——他在虚界战争中为保护苍澜城而战死。
+                陈丹师还在，但已经老得走不动了，托药灵儿带了一枚丹药。
+
+                你看着这些人。
+                有的陪你走了很远，有的中途加入，
+                有的已经不在了。
+
+                但他们都是你这条路上不可或缺的部分。
+            - speaker: 韩苍
+              text: "师弟，你有什么计划就说吧。不管是什么，我第一个支持。"
+
+    ch06_permanent_seal:
+      title: "第六章：永恒封印"
+      trigger: {type: "quest_progress", quest: "final_seal", step: "plan"}
+      map: fallen_star_lake
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: 星璇
+              text: "永久封印三界裂隙只有一个办法——以大乘修士的道之本源为锚点。"
+            - speaker: 星璇
+              text: "换句话说……需要一个大乘修士将自己的道融入封印之中。"
+            - speaker: 星璇
+              text: "不是牺牲。但他将永远与封印绑定，无法飞升，无法离开封印范围。"
+            - speaker: null
+              text: |
+                所有人都沉默了。
+
+                在场只有一个大乘修士——你。
+
+                如果你成为封印的锚点，
+                就意味着放弃飞升的可能，
+                永远守在三界裂隙旁边。
+        - type: choice
+          choices:
+            - label: "我来。这本就是我的道。"
+              result: |
+                你站了起来。没有犹豫。
+                "我的道是守护。守护这个世界——这就是我的道。"
+                柳清竹握住了你的手。她没有说话，但她的眼神告诉你——她会陪你。
+              tags: ["守护之选"]
+            - label: "一定有其他办法。我不接受这种代价。"
+              result: |
+                你摇了摇头。"我不接受非此即彼的选择。一定有第三条路。"
+                星璇皱了皱眉："星象中……确实有另一种可能。但风险极大。"
+                "说来听听。"
+              tags: ["第三条路"]
+
+    ch07_alternative_plan:
+      title: "第七章：另一种可能"
+      trigger: {type: "realm_reach", realm: 32, tags: ["第三条路"]}
+      map: star_fall_sea
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: 星璇
+              text: "如果能找到足够多的天道碎片——至少九块——"
+            - speaker: 星璇
+              text: "就可以构建一个自循环的封印阵法，不需要活人做锚点。"
+            - speaker: 星璇
+              text: "天道碎片散落在天元大陆各处的上古遗迹中。"
+            - speaker: 星璇
+              text: "但搜集它们的过程本身就极其危险。每一块碎片都有上古守护者看守。"
+            - speaker: null
+              text: |
+                九块天道碎片。分散在九处上古遗迹中。
+                每一处都有致命的守护者。
+
+                但至少——这给了你一个不用牺牲任何人的选择。
+
+    ch08_fragment_hunt:
+      title: "第八章：碎片之旅"
+      trigger: {type: "collect_count", item: "dao_fragment", count: 1}
+      map: any
+      scenes:
+        - type: narration
+          text: |
+            你将队伍分成三组，同时搜寻天道碎片。
+
+            你和楚千殇一组，前往最危险的三处遗迹。
+            韩苍和王逆一组，前往次危险的三处。
+            太初和柳清竹一组，前往剩余三处。
+
+            每一处遗迹都是一场生死考验。
+
+            你在上古剑冢中与一柄拥有自我意识的神剑对战三日，
+            最终以你的剑道感悟折服了它，获得了第一块碎片。
+
+            楚千殇在冰封地宫中面对自己的心魔——
+            那个七岁时目睹父母被杀的小女孩。
+            她握着剑走过了心魔，眼中再无阴霾。
+
+    ch09_nine_fragments:
+      title: "第九章：九碎归一"
+      trigger: {type: "collect_count", item: "dao_fragment", count: 9}
+      map: three_realm_rift
+      scenes:
+        - type: narration
+          text: |
+            九块天道碎片全部搜集完毕。
+
+            代价不小——韩苍再次负伤，王逆断了一臂。
+            但没有人阵亡。这已经是最好的结果了。
+
+            三界裂隙前，九块碎片悬浮在空中，
+            散发着纯净的天道之光。
+
+    ch10_eternal_seal:
+      title: "第十章：永恒封印"
+      trigger: {type: "quest_complete", quest: "final_seal"}
+      map: three_realm_rift
+      scenes:
+        - type: narration
+          text: |
+            封印仪式开始了。
+
+            九块天道碎片在你的引导下融为一体，
+            化为一面巨大的、散发着金色光芒的封印之壁。
+
+            封印之壁嵌入三界裂隙，与空间法则完美契合。
+            裂隙在光芒中缓缓愈合——不是封堵，而是真正的修复。
+
+            虚界之王在封印另一侧发出了暴怒的咆哮，
+            但封印之壁纹丝不动。
+
+            三界裂隙——永久封印。
+        - type: dialogue
+          lines:
+            - speaker: 韩苍
+              text: "……成了？"
+            - speaker: null
+              text: 成了。
+            - speaker: null
+              text: |
+                所有人如释重负。
+
+                悬在修仙界头顶数十年的阴影，终于消散了。
+
+    ch11_dacheng_peak:
+      title: "第十一章：大乘圆满"
+      trigger: {type: "realm_reach", realm: 33}
+      map: tongtian_peak
+      scenes:
+        - type: narration
+          text: |
+            封印天道碎片的过程让你对天道有了更深的理解。
+
+            你的修为在此基础上再次突破——大乘圆满。
+
+            仙界之门在你眼前愈发清晰。
+            门后的世界在召唤你。
+
+            但你不急了。
+            你知道这扇门不会消失。它会一直等你。
+
+            而你在这个世界上，还有未了的事。
+
+    ch12_volume7_end:
+      title: "第十二章：仙途在前"
+      trigger: {type: "realm_reach", realm: 33}
+      map: fallen_star_lake
+      scenes:
+        - type: narration
+          text: |
+            落星湖。
+
+            你再一次站在湖边，看着水中的倒影。
+
+            倒影中的人不再是当年那个瘦弱的少年。
+            但眼中的光——从第一天到现在，从未变过。
+
+            仙劫在前。飞升在望。
+            但你不是一个人走到这里的。
+
+            苍澜城的石伯教你做人要厚道。
+            张大教你战斗不能怕流血。
+            药灵儿教你草木皆有情。
+            陈丹师教你做事要认真。
+            林中老人教你修行在于恒心。
+            沈无极教你友谊胜过灵根。
+            韩苍教你义气重于修为。
+            楚千殇教你剑可以为守护而鸣。
+            柳清竹教你信任的力量。
+            星璇教你命运可以选择。
+            王逆教你立场不代表善恶。
+
+            每一个人，都是你修仙之路上的一座灯塔。
+
+            ═══════════════════════════════
+            卷七完
+            ═══════════════════════════════
+      rewards:
+        tags: ["卷七完结", "仙劫在前"]

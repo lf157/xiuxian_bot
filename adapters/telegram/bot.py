@@ -792,6 +792,7 @@ def get_main_menu_keyboard():
         ],
         [
             InlineKeyboardButton("🏅 成就", callback_data="achievements_menu"),
+            InlineKeyboardButton("📜 剧情", callback_data="story_menu"),
         ],
         [
             InlineKeyboardButton("📜 任务", callback_data="quests"),
@@ -1108,6 +1109,167 @@ async def _send_prologue_page(update, context, page_index: int):
         parse_mode=ParseMode.MARKDOWN,
         reply_markup=keyboard,
     )
+
+
+# ============================================================
+# 剧情系统 – 逐行展示引擎
+# ============================================================
+
+async def _handle_story_menu(update, context, user_id, _safe_edit):
+    """Show the story chapter list with available chapters."""
+    try:
+        r = await http_get(
+            f"{SERVER_URL}/api/user/lookup",
+            params={"platform": "telegram", "platform_id": user_id},
+            timeout=15,
+        )
+        if not r.get("success"):
+            await _safe_edit("❌ 请先注册")
+            return
+        uid = r["user_id"]
+        vol_r = await http_get(f"{SERVER_URL}/api/story/volumes/{uid}", timeout=15)
+        if not vol_r.get("success"):
+            await _safe_edit("❌ 获取剧情失败")
+            return
+
+        chapters = vol_r.get("available_chapters", [])
+        if not chapters:
+            text = "📜 *主线剧情*\n\n暂无可阅读的章节。\n继续修炼、历练以解锁更多剧情！"
+            keyboard = [[InlineKeyboardButton("🔙 返回", callback_data="main_menu")]]
+            await _safe_edit(text, parse_mode=ParseMode.MARKDOWN, reply_markup=InlineKeyboardMarkup(keyboard))
+            return
+
+        text = "📜 *主线剧情*\n\n"
+        buttons: list = []
+        current_volume = ""
+        for ch in chapters[:15]:  # show at most 15 chapters
+            vol_title = ch.get("volume_title", "")
+            if vol_title != current_volume:
+                current_volume = vol_title
+                text += f"\n*{vol_title}*\n"
+
+            ch_id = ch["chapter_id"]
+            title = ch.get("title", ch_id)
+            cur = ch.get("current_line", 0)
+            total = ch.get("total_lines", 0)
+            is_new = ch.get("is_new", False)
+
+            if cur >= total and total > 0:
+                status_icon = "✅"
+                progress = "已读完"
+            elif cur > 0:
+                status_icon = "📖"
+                progress = f"{cur}/{total}"
+            else:
+                status_icon = "🆕" if is_new else "📕"
+                progress = "未读"
+
+            text += f"  {status_icon} {title} ({progress})\n"
+            btn_label = f"{'🆕 ' if is_new else ''}{title}"
+            if len(btn_label) > 30:
+                btn_label = btn_label[:28] + "…"
+            buttons.append([InlineKeyboardButton(btn_label, callback_data=f"story_read_{ch_id}")])
+
+        buttons.append([InlineKeyboardButton("🔙 返回", callback_data="main_menu")])
+        await _safe_edit(text, parse_mode=ParseMode.MARKDOWN, reply_markup=InlineKeyboardMarkup(buttons))
+    except Exception as e:
+        logger.error(f"story menu error: {e}")
+        await _safe_edit("❌ 加载剧情失败，请稍后重试")
+
+
+async def _handle_story_read(update, context, user_id, chapter_id, _safe_edit):
+    """Read next batch of lines for a chapter and display them line by line."""
+    try:
+        r = await http_get(
+            f"{SERVER_URL}/api/user/lookup",
+            params={"platform": "telegram", "platform_id": user_id},
+            timeout=15,
+        )
+        if not r.get("success"):
+            await _safe_edit("❌ 请先注册")
+            return
+        uid = r["user_id"]
+
+        # Fetch next batch of lines (5 lines at a time)
+        read_r = await http_post(
+            f"{SERVER_URL}/api/story/read",
+            json={"user_id": uid, "chapter_id": chapter_id, "count": 5},
+            timeout=15,
+        )
+        if not read_r.get("success"):
+            code = read_r.get("code", "")
+            if code == "CHAPTER_NOT_FOUND":
+                await _safe_edit("❌ 章节不存在")
+            else:
+                await _safe_edit(f"❌ {read_r.get('message', '读取失败')}")
+            return
+
+        title = read_r.get("title", chapter_id)
+        vol_title = read_r.get("volume_title", "")
+        lines = read_r.get("lines", [])
+        current_line = read_r.get("current_line", 0)
+        total_lines = read_r.get("total_lines", 0)
+        is_finished = read_r.get("is_finished", False)
+
+        # Build the display text – each line separated by blank line
+        header = f"📜 *{vol_title}*\n*{title}*\n"
+        header += f"{'─' * 25}\n"
+        progress_text = f"({current_line}/{total_lines})"
+
+        body_parts = []
+        for line in lines:
+            ltype = line.get("type", "narration")
+            text = line.get("text", "")
+            speaker = line.get("speaker")
+            if ltype == "dialogue" and speaker:
+                body_parts.append(f"*{speaker}*：{text}")
+            elif ltype == "choice":
+                body_parts.append(f"  {text}")
+            else:
+                body_parts.append(text)
+
+        body = "\n\n".join(body_parts)
+        full_text = f"{header}\n{body}\n\n{'─' * 25}\n{progress_text}"
+
+        # Build buttons
+        buttons: list = []
+        if not is_finished:
+            buttons.append([InlineKeyboardButton("▶️ 继续阅读", callback_data=f"story_next_{chapter_id}")])
+        else:
+            buttons.append([InlineKeyboardButton("🔄 重新阅读", callback_data=f"story_reread_{chapter_id}")])
+
+        buttons.append([InlineKeyboardButton("📜 章节列表", callback_data="story_menu")])
+        buttons.append([InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")])
+
+        await _safe_edit(full_text, parse_mode=ParseMode.MARKDOWN, reply_markup=InlineKeyboardMarkup(buttons))
+    except Exception as e:
+        logger.error(f"story read error: {e}")
+        await _safe_edit("❌ 读取剧情失败，请稍后重试")
+
+
+async def _handle_story_reread(update, context, user_id, chapter_id, _safe_edit):
+    """Reset progress and start reading from the beginning."""
+    try:
+        r = await http_get(
+            f"{SERVER_URL}/api/user/lookup",
+            params={"platform": "telegram", "platform_id": user_id},
+            timeout=15,
+        )
+        if not r.get("success"):
+            await _safe_edit("❌ 请先注册")
+            return
+        uid = r["user_id"]
+
+        await http_post(
+            f"{SERVER_URL}/api/story/reread",
+            json={"user_id": uid, "chapter_id": chapter_id},
+            timeout=15,
+        )
+        # Now read from the beginning
+        await _handle_story_read(update, context, user_id, chapter_id, _safe_edit)
+    except Exception as e:
+        logger.error(f"story reread error: {e}")
+        await _safe_edit("❌ 重置失败，请稍后重试")
 
 
 @require_account
@@ -2733,6 +2895,27 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             page = 0
         await _send_prologue_page(update, context, page)
         return
+
+    # ── 剧情系统 ─────────────────────────────────────────
+    if data == "story_menu":
+        await _handle_story_menu(update, context, user_id, _safe_edit)
+        return
+
+    if data.startswith("story_read_"):
+        chapter_id = data[len("story_read_"):]
+        await _handle_story_read(update, context, user_id, chapter_id, _safe_edit)
+        return
+
+    if data.startswith("story_next_"):
+        chapter_id = data[len("story_next_"):]
+        await _handle_story_read(update, context, user_id, chapter_id, _safe_edit)
+        return
+
+    if data.startswith("story_reread_"):
+        chapter_id = data[len("story_reread_"):]
+        await _handle_story_reread(update, context, user_id, chapter_id, _safe_edit)
+        return
+    # ── 剧情系统 END ─────────────────────────────────────
 
     # 主菜单
     if data == "main_menu":

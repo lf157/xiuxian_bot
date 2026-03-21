@@ -1,0 +1,339 @@
+# 卷五：合体风云（合体初期 → 合体圆满）
+# 完整15章，天劫逼近 + 各势力终极博弈 + 合体突破
+# 核心线：天劫逼近 + 太初最终战 + 合体突破 + 三界裂隙
+
+volume_5:
+  title: "卷五：合体风云"
+  realm_range: [22, 25]
+  main_npcs: [mc_shen_wuji, xiao_han_cang, chu_qianshang, liu_qingzhu, xing_xuan, wang_ni, taichu_elder, sect_leader, heavenly_tribulation]
+
+  chapters:
+
+    ch01_ten_year_rush:
+      title: "第一章：十年之约"
+      trigger: {type: "realm_reach", realm: 22}
+      map: any
+      scenes:
+        - type: narration
+          text: |
+            十年倒计时开始了。
+
+            你将所有精力投入修炼和备战。
+            合体期——将元神与肉身完美融合的境界。
+            化神圆满到合体，是又一道天堑。
+
+            你不再有从容游历的闲暇。
+            每一天都在与时间赛跑。
+
+    ch02_heiti_preparation:
+      title: "第二章：合体之基"
+      trigger: {type: "realm_reach", realm: 22}
+      map: xuankong_mountain
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: 沈无极
+              text: "合体期需要天地至宝辅助。我知道一处——天元大陆最高的山峰，通天峰。"
+            - speaker: 沈无极
+              text: "那里有上古大能留下的合体石台。但去那里的路……元婴以下必死。"
+            - speaker: null
+              text: |
+                你组建了一支精锐队伍：你、沈无极、韩苍、楚千殇。
+                四个化神修士，踏上了通天峰之路。
+
+    ch03_tongtian_peak:
+      title: "第三章：通天峰"
+      trigger: {type: "first_visit", map: "tongtian_peak"}
+      map: tongtian_peak
+      scenes:
+        - type: narration
+          text: |
+            通天峰高入云端，峰顶终年被天雷笼罩。
+
+            攀登的过程本身就是修行——
+            每上升一千丈，承受的天地威压就增加一倍。
+            到了峰顶，只有化神圆满以上的修士才能站稳。
+
+            合体石台就在峰顶正中，
+            一方数丈大小的青色石台，上面刻满了上古符文。
+
+    ch04_heiti_breakthrough:
+      title: "第四章：合体"
+      trigger: {type: "breakthrough_success", from_stage: "huashen"}
+      map: tongtian_peak
+      scenes:
+        - type: narration
+          text: |
+            你盘坐在合体石台上，引导元神与肉身融合。
+
+            这个过程比任何一次突破都更加凶险——
+            元神要彻底融入肉身的每一个细胞，
+            任何一处不协调都会导致走火入魔。
+
+            天雷劈下来了。一道，两道，三道……
+
+            九道天雷，每一道都比前一道强十倍。
+            这是天道对合体修士的考验——
+            不配承受天地之力的人，将在天雷中化为灰烬。
+
+            你咬牙承受了全部九道天雷。
+
+            最后一道天雷落下时，你的肉身与元神彻底融为一体。
+            一种前所未有的圆满感充盈全身。
+
+            合体。成了。
+
+    ch05_taichu_return:
+      title: "第五章：太初归来"
+      trigger: {type: "realm_reach", realm: 23, tags: ["对抗太初"]}
+      map: any
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                太初没有消失。他在暗中积蓄了五年的力量，
+                万灵塔的炼制已经接近完成。
+
+                这一次，他不再试图说服任何人。
+                他直接出手了。
+            - speaker: null
+              text: |
+                三座城池在一夜之间被万灵塔控制——
+                数千修士成了没有意识的傀儡。
+
+                消息传遍了修仙界，所有宗门震动。
+
+    ch06_final_alliance:
+      title: "第六章：最终联盟"
+      trigger: {type: "quest_start", quest: "final_war"}
+      map: xuankong_mountain
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                悬空山上，前所未有的联盟成立了。
+
+                正道、邪道、散修——所有势力放下成见，
+                共同面对太初的威胁。
+
+                王逆代表逆天殿参战。
+                星璇提供了万灵塔的弱点分析。
+                甚至连太清宗也清理了内部的太初党羽，加入了联盟。
+            - speaker: 王逆
+              text: "没想到有一天我会和你并肩作战。"
+            - speaker: 王逆
+              text: "不过也好。打完这一仗，你还欠我一场公平的切磋。"
+
+    ch07_wan_ling_tower:
+      title: "第七章：万灵塔"
+      trigger: {type: "battle", battle_id: "taichu_final"}
+      map: taichu_domain
+      scenes:
+        - type: narration
+          text: |
+            太初的领域——一片被万灵塔笼罩的扭曲空间。
+
+            万灵塔高九层，每一层都囚禁着上千个灵魂。
+            塔顶散发着令人绝望的灵魂啸叫声。
+
+            联盟大军从四个方向同时进攻。
+            你带领主攻队直取万灵塔。
+
+    ch08_sacrifice:
+      title: "第八章：牺牲"
+      trigger: {type: "battle_phase", battle_id: "taichu_final", phase: 2}
+      map: taichu_domain
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                万灵塔的防护远超预期。
+
+                太初将自己的半数修为注入了万灵塔，
+                使其拥有了半自主攻击的能力。
+
+                战斗中，韩苍为了掩护你，
+                用肉身挡下了万灵塔的一击。
+            - speaker: 韩苍
+              text: "师……师弟……继续走……我扛得住……"
+            - speaker: null
+              text: |
+                他扛住了。但代价是半边身体被灵魂之力侵蚀。
+                你将他交给后方的治疗修士，
+                强忍着愤怒继续向前。
+
+    ch09_taichu_final:
+      title: "第九章：终战"
+      trigger: {type: "battle_phase", battle_id: "taichu_final", phase: 3}
+      map: taichu_domain
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                万灵塔第九层。太初在这里等着你。
+            - speaker: 太初
+              text: "你真的来了。"
+            - speaker: 太初
+              text: "你知道吗？其实我很欣赏你。如果你愿意和我一起——"
+            - speaker: null
+              text: 你没有让他说完。剑已出鞘。
+            - speaker: null
+              text: |
+                合体对大乘。差距依然存在，但不再是天堑。
+
+                更关键的是——你不是一个人。
+                沈无极用鸿蒙之力封锁了万灵塔的灵魂控制，
+                楚千殇的剑斩断了万灵塔与太初的灵力连接，
+                柳清竹的太阴之力净化了被污染的灵魂。
+
+                而你——在他们创造的机会中，一剑刺穿了万灵塔的核心。
+
+                万灵塔碎了。
+                被囚禁的灵魂如烟花般升空，消散在天际。
+            - speaker: 太初
+              text: "……你们赢了。"
+            - speaker: null
+              text: |
+                太初没有死。万灵塔的崩溃让他修为大损，
+                从大乘跌落到了合体期。
+            - speaker: 太初
+              text: "天劫……依然会来。你摧毁了我的方案，但问题还在。"
+            - speaker: 太初
+              text: "希望你有更好的办法。"
+            - speaker: null
+              text: 他化作一道残光消失了。
+
+    ch10_aftermath:
+      title: "第十章：战后余波"
+      trigger: {type: "quest_complete", quest: "final_war"}
+      map: tianyuan_sect_city
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                万灵塔事件结束了，但它留下的影响深远。
+
+                三座被控制的城池恢复了正常，
+                但数百人的灵魂永久受损，再也无法修炼。
+
+                韩苍的伤经过三个月的治疗终于稳定，
+                但他的修为倒退了一个大境界。
+            - speaker: 韩苍
+              text: "修为降了就降了。命还在就好。"
+            - speaker: 韩苍
+              text: "师弟，别那个表情。我高兴还来不及呢——那一下要打在你身上，你可就没了。"
+            - speaker: null
+              text: 你沉默了很久，然后拍了拍他的肩。
+
+    ch11_rift_appears:
+      title: "第十一章：裂隙"
+      trigger: {type: "realm_reach", realm: 24}
+      map: any
+      scenes:
+        - type: narration
+          text: |
+            太初的警告成了现实。
+
+            万灵塔碎裂释放的能量扰动了天地法则，
+            天元大陆的天空中出现了一道巨大的裂缝。
+
+            裂缝的那一头——是另一个世界。
+
+            三界裂隙，提前出现了。
+            天劫的倒计时进一步缩短。
+
+    ch12_other_world:
+      title: "第十二章：彼界来客"
+      trigger: {type: "explore_count", map: "three_realm_rift", count: 1}
+      map: three_realm_rift
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                裂隙中涌出了来自另一个世界的生物——
+                它们不是妖兽，不是魔物，而是某种完全陌生的存在。
+
+                它们以灵气为食，所过之处灵脉尽枯。
+                修仙界称它们为「虚界兽」。
+            - speaker: 沈无极
+              text: "虚界兽只是先锋。裂隙如果继续扩大，更可怕的东西会出来。"
+            - speaker: 沈无极
+              text: "必须封印裂隙。但需要……渡劫期以上的修为。"
+
+    ch13_heiti_mastery:
+      title: "第十三章：合体圆满"
+      trigger: {type: "realm_reach", realm: 25}
+      map: any
+      scenes:
+        - type: narration
+          text: |
+            在与虚界兽的连续战斗中，你的修为突飞猛进。
+
+            实战是最好的修炼。
+            每一次与虚界兽的战斗都在逼迫你突破极限，
+            合体中期、后期、圆满——你在战火中完成了蜕变。
+
+    ch14_preparing_tribulation:
+      title: "第十四章：渡劫之前"
+      trigger: {type: "realm_reach", realm: 25}
+      map: fallen_star_lake
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                落星湖。
+                你站在湖边，看着水中自己的倒影。
+
+                从一个下等灵根的少年，到合体圆满的大修士。
+                这条路你走了很久很久。
+
+                但真正的考验还在前面——渡劫。
+
+                渡劫期不是普通的突破。
+                你要面对的是天道本身的审判。
+                通过了，你将超越凡俗，触摸天道的边缘。
+                失败了，形神俱灭。
+
+                没有第三种可能。
+            - speaker: 柳清竹
+              text: "你在害怕吗？"
+            - speaker: null
+              text: 她站在你身后，月光照在她的白衣上。
+            - speaker: 柳清竹
+              text: "我不会说'别怕'这种话。因为渡劫确实很可怕。"
+            - speaker: 柳清竹
+              text: "但我想让你知道——不管结果如何，我都会在这里等你。"
+
+    ch15_volume5_end:
+      title: "第十五章：劫云聚"
+      trigger: {type: "realm_reach", realm: 25, tags: ["天劫倒计时"]}
+      map: any
+      scenes:
+        - type: narration
+          text: |
+            天空中，劫云开始聚集。
+
+            不是你的渡劫——而是天劫本身的前兆。
+
+            三界裂隙在持续扩大，虚界兽的入侵越来越频繁。
+            整个修仙界都意识到——大劫将至。
+
+            你站在风暴的中心，看着远方翻涌的劫云。
+
+            所有的修炼、所有的战斗、所有的羁绊——
+            都是为了这一刻。
+
+            你准备好了。
+
+            ═══════════════════════════════
+            卷五完
+            ═══════════════════════════════
+      rewards:
+        tags: ["卷五完结", "天劫在即"]

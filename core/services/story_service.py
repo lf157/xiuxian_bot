@@ -1,14 +1,26 @@
-"""Mainline story progression service."""
+"""Mainline story progression service.
+
+Handles both the original 6-chapter tutorial chapters AND the expanded
+volume-based story system with line-by-line playback.
+"""
 
 from __future__ import annotations
 
 import json
+import logging
 import time
 from typing import Any, Dict, List, Optional, Tuple
 
 from core.database.connection import db_transaction, fetch_all, fetch_one, get_user_by_id
 from core.game.story import list_chapters
+from core.game.story_volumes import (
+    get_chapter_info,
+    get_chapter_lines,
+    get_volume_chapter_list,
+)
 from core.services.metrics_service import log_economy_ledger, log_event
+
+logger = logging.getLogger(__name__)
 
 _ACTION_COUNTER_COLUMN: Dict[str, str] = {
     "signin": "signin_count",
@@ -422,3 +434,260 @@ def claim_story_chapter(user_id: str, chapter_id: Optional[str] = None) -> Tuple
         },
         "rewards": rewards,
     }, 200
+
+
+# ============================================================
+# Volume story: line-by-line playback progress
+# ============================================================
+
+def _ensure_volume_story_tables_tx(cur: object) -> None:
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS user_volume_progress (
+            user_id TEXT NOT NULL,
+            chapter_id TEXT NOT NULL,
+            current_line INTEGER DEFAULT 0,
+            total_lines INTEGER DEFAULT 0,
+            finished INTEGER DEFAULT 0,
+            unlocked_at INTEGER NOT NULL DEFAULT 0,
+            finished_at INTEGER DEFAULT 0,
+            PRIMARY KEY (user_id, chapter_id)
+        )
+        """
+    )
+
+
+def _check_volume_trigger(trigger: Dict[str, Any], user: Dict[str, Any], counters: Dict[str, Any]) -> bool:
+    """Check if a volume chapter's trigger condition is met."""
+    ttype = trigger.get("type", "")
+
+    if ttype == "prologue":
+        return True
+
+    if ttype == "realm_reach":
+        needed = _safe_int(trigger.get("realm"), 0)
+        return _safe_int(user.get("rank", 1), 1) >= needed
+
+    if ttype == "hunt_count":
+        needed = _safe_int(trigger.get("count"), 0)
+        return _safe_int(counters.get("hunt_victory_count", 0), 0) >= needed
+
+    if ttype == "cultivate_count":
+        needed = _safe_int(trigger.get("count"), 0)
+        return _safe_int(counters.get("cultivate_count", 0), 0) >= needed
+
+    if ttype == "gather_herb_count":
+        needed = _safe_int(trigger.get("count"), 0)
+        return _safe_int(counters.get("hunt_victory_count", 0), 0) >= needed
+
+    if ttype == "explore_count":
+        needed = _safe_int(trigger.get("count"), 0)
+        return _safe_int(counters.get("secret_realm_count", 0), 0) >= needed
+
+    if ttype == "alchemy_count":
+        needed = _safe_int(trigger.get("count"), 0)
+        return _safe_int(counters.get("cultivate_count", 0), 0) >= needed
+
+    if ttype in ("first_visit", "join_sect", "sect_quest_complete",
+                 "sect_event", "sect_contribution", "sect_role",
+                 "tournament_win", "tournament_match",
+                 "quest_start", "quest_progress", "quest_complete",
+                 "battle", "battle_phase", "breakthrough_success",
+                 "breakthrough_attempt", "story_complete",
+                 "reputation_reach", "friendship_level",
+                 "item_use", "pet_level", "collect_count",
+                 "xian_jie_phase", "explore_complete"):
+        # These triggers are based on game progression actions;
+        # for now treat them as met if player rank is in range
+        realm_min = _safe_int(trigger.get("realm"), 0)
+        if realm_min > 0:
+            return _safe_int(user.get("rank", 1), 1) >= realm_min
+        # Fallback: check count-based triggers
+        count = _safe_int(trigger.get("count"), 0)
+        if count > 0:
+            total_actions = (
+                _safe_int(counters.get("hunt_victory_count", 0), 0)
+                + _safe_int(counters.get("cultivate_count", 0), 0)
+                + _safe_int(counters.get("secret_realm_count", 0), 0)
+            )
+            return total_actions >= count
+        return True
+
+    # Unknown trigger type – default to not ready
+    return False
+
+
+def get_available_volume_chapters(user_id: str) -> Tuple[Dict[str, Any], int]:
+    """Get list of volume chapters available (unlocked but not finished) for the player."""
+    user = get_user_by_id(user_id)
+    if not user:
+        return {"success": False, "code": "NOT_FOUND", "message": "User not found"}, 404
+
+    _ensure_story_rows(user_id)
+    counters = fetch_one("SELECT * FROM user_story_counters WHERE user_id = %s", (user_id,)) or {}
+
+    with db_transaction() as cur:
+        _ensure_volume_story_tables_tx(cur)
+
+    # Get already-tracked progress
+    progress_rows = fetch_all(
+        "SELECT chapter_id, current_line, total_lines, finished FROM user_volume_progress WHERE user_id = %s",
+        (user_id,),
+    )
+    progress_map = {row["chapter_id"]: row for row in progress_rows}
+
+    all_chapters = get_volume_chapter_list()
+    available: List[Dict[str, Any]] = []
+    newly_unlocked: List[str] = []
+
+    for ch in all_chapters:
+        ch_id = ch["chapter_id"]
+        trigger = ch.get("trigger") or {}
+        prog = progress_map.get(ch_id)
+
+        if prog and _safe_int(prog.get("finished"), 0) == 1:
+            # Already finished – skip
+            continue
+
+        if not ch.get("has_scenes"):
+            # No scenes to play – skip
+            continue
+
+        if not _check_volume_trigger(trigger, user, counters):
+            continue
+
+        # This chapter is available
+        current_line = _safe_int((prog or {}).get("current_line"), 0)
+        total_lines = _safe_int((prog or {}).get("total_lines"), 0)
+
+        # If not yet tracked, compute total lines
+        if not prog:
+            lines = get_chapter_lines(ch_id)
+            total_lines = len(lines) if lines else 0
+            if total_lines == 0:
+                continue
+            newly_unlocked.append(ch_id)
+
+        available.append({
+            "chapter_id": ch_id,
+            "title": ch.get("title", ch_id),
+            "volume_title": ch.get("volume_title", ""),
+            "current_line": current_line,
+            "total_lines": total_lines,
+            "is_new": ch_id in newly_unlocked,
+        })
+
+    # Insert newly unlocked progress rows
+    if newly_unlocked:
+        now = int(time.time())
+        with db_transaction() as cur:
+            _ensure_volume_story_tables_tx(cur)
+            for ch_id in newly_unlocked:
+                lines = get_chapter_lines(ch_id)
+                total = len(lines) if lines else 0
+                cur.execute(
+                    """
+                    INSERT INTO user_volume_progress (user_id, chapter_id, current_line, total_lines, finished, unlocked_at)
+                    VALUES (%s, %s, 0, %s, 0, %s)
+                    ON CONFLICT (user_id, chapter_id) DO NOTHING
+                    """,
+                    (user_id, ch_id, total, now),
+                )
+
+    return {
+        "success": True,
+        "available_chapters": available,
+        "total_available": len(available),
+    }, 200
+
+
+def get_chapter_next_lines(
+    user_id: str,
+    chapter_id: str,
+    count: int = 5,
+) -> Tuple[Dict[str, Any], int]:
+    """Get the next N display lines for a chapter and advance progress.
+
+    Returns the lines plus metadata about progress.
+    """
+    user = get_user_by_id(user_id)
+    if not user:
+        return {"success": False, "code": "NOT_FOUND", "message": "User not found"}, 404
+
+    lines = get_chapter_lines(chapter_id)
+    if lines is None:
+        return {"success": False, "code": "CHAPTER_NOT_FOUND", "message": "Chapter not found"}, 404
+
+    total_lines = len(lines)
+    if total_lines == 0:
+        return {"success": False, "code": "EMPTY", "message": "Chapter has no content"}, 404
+
+    info = get_chapter_info(chapter_id) or {}
+    now = int(time.time())
+
+    with db_transaction() as cur:
+        _ensure_volume_story_tables_tx(cur)
+        cur.execute(
+            """
+            INSERT INTO user_volume_progress (user_id, chapter_id, current_line, total_lines, finished, unlocked_at)
+            VALUES (%s, %s, 0, %s, 0, %s)
+            ON CONFLICT (user_id, chapter_id) DO NOTHING
+            """,
+            (user_id, chapter_id, total_lines, now),
+        )
+        cur.execute(
+            "SELECT current_line, finished FROM user_volume_progress WHERE user_id = %s AND chapter_id = %s",
+            (user_id, chapter_id),
+        )
+        row = cur.fetchone() or {}
+        current = _safe_int(row.get("current_line"), 0)
+        already_finished = _safe_int(row.get("finished"), 0) == 1
+
+        # Clamp
+        if current >= total_lines:
+            current = total_lines
+
+        # Slice lines
+        end = min(current + count, total_lines)
+        batch = lines[current:end]
+
+        # Advance progress
+        new_pos = end
+        is_finished = new_pos >= total_lines
+
+        cur.execute(
+            """
+            UPDATE user_volume_progress
+            SET current_line = %s, total_lines = %s,
+                finished = %s, finished_at = CASE WHEN %s = 1 AND finished = 0 THEN %s ELSE finished_at END
+            WHERE user_id = %s AND chapter_id = %s
+            """,
+            (new_pos, total_lines, 1 if is_finished else 0,
+             1 if is_finished else 0, now,
+             user_id, chapter_id),
+        )
+
+    return {
+        "success": True,
+        "chapter_id": chapter_id,
+        "title": info.get("title", chapter_id),
+        "volume_title": info.get("volume_title", ""),
+        "lines": batch,
+        "current_line": new_pos,
+        "total_lines": total_lines,
+        "is_finished": is_finished,
+        "was_already_finished": already_finished,
+    }, 200
+
+
+def reset_chapter_progress(user_id: str, chapter_id: str) -> Tuple[Dict[str, Any], int]:
+    """Reset reading progress for a chapter (re-read)."""
+    with db_transaction() as cur:
+        _ensure_volume_story_tables_tx(cur)
+        cur.execute(
+            "UPDATE user_volume_progress SET current_line = 0, finished = 0, finished_at = 0 WHERE user_id = %s AND chapter_id = %s",
+            (user_id, chapter_id),
+        )
+        if int(cur.rowcount or 0) == 0:
+            return {"success": False, "code": "NOT_FOUND", "message": "No progress found"}, 404
+    return {"success": True, "message": "Progress reset"}, 200

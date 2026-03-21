@@ -1,0 +1,405 @@
+# 卷六：渡劫（渡劫初期 → 渡劫圆满）
+# 完整15章，渡劫 + 三界裂隙 + 虚界大战 + 大乘之路
+# 核心线：个人渡劫 + 封印裂隙 + 沈无极三道合一 + 最终道途选择
+
+volume_6:
+  title: "卷六：渡劫"
+  realm_range: [26, 29]
+  main_npcs: [mc_shen_wuji, xiao_han_cang, chu_qianshang, liu_qingzhu, xing_xuan, wang_ni, taichu_elder, void_king]
+
+  chapters:
+
+    ch01_tribulation_begins:
+      title: "第一章：天劫降临"
+      trigger: {type: "breakthrough_attempt", to_stage: "dujie"}
+      map: tongtian_peak
+      scenes:
+        - type: narration
+          text: |
+            通天峰顶。九重劫云笼罩整片天空。
+
+            你的渡劫引动了天地之间最暴虐的力量——
+            雷劫、火劫、风劫、心劫……九重天劫，逐一降临。
+
+            第一重雷劫将你打入山石。
+            第三重火劫将你的护体灵光烧穿。
+            第五重风劫几乎将你的元神撕裂。
+            第七重心劫让你看到了最不愿面对的幻象——
+            所有你珍视的人，一个个在你面前消逝。
+
+            但你挺过来了。
+            因为你知道那是幻象。
+            真正的他们，正在山下为你守护。
+
+            第九重天劫——纯粹的天道之力。
+            没有属性，没有形态，只有毁灭一切的意志。
+
+            你迎着它站起来。
+
+            渡劫，成。
+
+    ch02_dujie_power:
+      title: "第二章：劫后新生"
+      trigger: {type: "breakthrough_success", from_stage: "heiti"}
+      map: tongtian_peak
+      scenes:
+        - type: narration
+          text: |
+            渡劫之后，你的感知力发生了质变。
+
+            你能感受到天道的脉动，能听到灵脉的呼吸，
+            能看到普通修士看不见的天地法则纹路。
+
+            这就是渡劫期的修士——半只脚踏入天道的存在。
+        - type: dialogue
+          lines:
+            - speaker: 韩苍
+              text: "师弟……你渡劫成了？！"
+            - speaker: null
+              text: 韩苍冲上来抱住了你，差点把你的骨头捏碎。
+            - speaker: 楚千殇
+              text: "不错。你的气息……变了。比以前更沉稳了。"
+            - speaker: 柳清竹
+              text: "……"
+            - speaker: null
+              text: 她没有说话，只是轻轻握住了你的手。手指微微颤抖——她比你更紧张。
+
+    ch03_rift_crisis:
+      title: "第三章：裂隙扩张"
+      trigger: {type: "realm_reach", realm: 27}
+      map: three_realm_rift
+      scenes:
+        - type: narration
+          text: |
+            三界裂隙在加速扩张。
+
+            虚界兽的入侵规模从个位数升级到了百位数，
+            边境防线连续告急。
+
+            更糟的是——裂隙另一头出现了有智慧的存在。
+            虚界之王。
+        - type: dialogue
+          lines:
+            - speaker: 虚界之王
+              text: "你们的世界……灵气真多。"
+            - speaker: 虚界之王
+              text: "够我的子民吃上万年了。"
+            - speaker: null
+              text: |
+                虚界之王的实力……至少大乘巅峰。
+                即使你渡劫成功，独自也不是他的对手。
+
+    ch04_void_war:
+      title: "第四章：虚界战争"
+      trigger: {type: "quest_start", quest: "void_war"}
+      map: three_realm_rift
+      scenes:
+        - type: narration
+          text: |
+            修仙界与虚界的全面战争爆发了。
+
+            所有宗门倾巢而出，散修自发参战。
+            从炼气到渡劫，每一个修士都在这场战争中找到了自己的位置。
+
+            你作为渡劫期修士，站在了最前线。
+
+    ch05_old_enemy_ally:
+      title: "第五章：旧敌新盟"
+      trigger: {type: "realm_reach", realm: 27, tags: ["太初对话"]}
+      map: three_realm_rift
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                战场上，你再次见到了太初。
+                他的修为恢复到了大乘初期——比之前弱了很多。
+            - speaker: 太初
+              text: "看来我说的没错。天劫确实来了。"
+            - speaker: 太初
+              text: "……我来帮忙。不是为了赎罪。是因为这个世界毁了，我也活不了。"
+            - speaker: null
+              text: |
+                太初加入了战线。
+                他的经验和见识在对抗虚界兽时发挥了巨大作用。
+
+                敌人的敌人，在这一刻成了战友。
+
+    ch06_wuji_fusion:
+      title: "第六章：三道合一"
+      trigger: {type: "realm_reach", realm: 28, tags: ["三道危机"]}
+      map: chaos_forbidden
+      scenes:
+        - type: narration
+          text: |
+            在虚界战争的间歇，沈无极迎来了他的关键时刻。
+
+            鸿蒙珠在混沌禁地汲取了足够的鸿蒙之力，
+            三道融合的最终阶段开始了。
+        - type: dialogue
+          lines:
+            - speaker: 沈无极
+              text: "恒、逆、衍——三道合为一道。鸿蒙道。"
+            - speaker: null
+              text: |
+                融合过程惊天动地。
+                整个混沌禁地都在震动，
+                三色光芒冲天而起，化为一道白光。
+
+                白光散去后，沈无极站在原地，
+                但他的气息已经完全不同了。
+
+                不是恒，不是逆，不是衍。
+                而是三者的完美统一——鸿蒙道。
+            - speaker: 沈无极
+              text: "……这就是鸿蒙。万物之源。"
+            - speaker: 沈无极
+              text: "我终于理解了。这颗珠子选我，不是因为我有多特殊。"
+            - speaker: 沈无极
+              text: "而是因为那个被判定为废灵根的少年……什么都没有，所以什么都能容纳。"
+
+    ch07_counterattack:
+      title: "第七章：反攻"
+      trigger: {type: "battle", battle_id: "void_war_counterattack"}
+      map: three_realm_rift
+      scenes:
+        - type: narration
+          text: |
+            沈无极的突破为战局带来了转机。
+
+            鸿蒙道的力量对虚界兽有天然的克制效果——
+            鸿蒙是万物之源，虚界的虚无在鸿蒙之力面前无所遁形。
+
+            联军开始反攻。
+            你和沈无极并肩冲锋，如同当年在苍澜城东郊灵林时一样——
+            只是这一次，你们面对的不是灵鼠，而是虚界的军队。
+
+    ch08_void_king_battle:
+      title: "第八章：对决虚界之王"
+      trigger: {type: "battle", battle_id: "void_king_fight"}
+      map: three_realm_rift
+      scenes:
+        - type: narration
+          text: |
+            虚界之王亲自出手了。
+
+            他化为一团吞噬一切的黑暗，
+            所过之处，空间碎裂，灵气消亡。
+
+            你、沈无极、太初——三个最强的修士联手迎战。
+        - type: dialogue
+          lines:
+            - speaker: 虚界之王
+              text: "三个……？以为人多就能赢？"
+            - speaker: null
+              text: |
+                战斗持续了三天三夜。
+
+                太初的大乘之力牵制了虚界之王的行动，
+                沈无极的鸿蒙道在不断消解虚界之力，
+                而你——在寻找致命的一击机会。
+
+                第三天黎明，虚界之王露出了破绽。
+                你等了三天的这一刻终于到来。
+
+                举剑。
+
+                这一剑汇聚了你从凡人到渡劫的所有积累，
+                从苍澜城到天元大陆的所有经历，
+                从第一头灵鼠到虚界之王的所有战斗。
+
+                一剑，穿透虚空，直贯虚界之王的核心。
+
+    ch09_sealing:
+      title: "第九章：封印"
+      trigger: {type: "quest_progress", quest: "void_war", step: "seal"}
+      map: three_realm_rift
+      scenes:
+        - type: narration
+          text: |
+            虚界之王被击退，但裂隙还在。
+
+            封印裂隙需要巨大的灵力和对空间法则的深刻理解。
+            星璇为此准备了一个上古封印阵法——
+            需要九个化神以上的修士同时运转。
+        - type: dialogue
+          lines:
+            - speaker: 星璇
+              text: "九个位置。你、沈无极、韩苍、楚千殇、柳清竹、王逆、太初，加我。"
+            - speaker: 星璇
+              text: "还差一个。"
+            - speaker: null
+              text: |
+                最后一个位置——药灵儿站了出来。
+                她不知何时已经突破到了化神期。
+            - speaker: 药灵儿
+              text: "你在外面闯荡的这些年，我也没闲着呢。"
+            - speaker: null
+              text: |
+                九人合力，上古封印阵法启动。
+
+                裂隙在光芒中缓缓缩小、闭合。
+                虚界的黑暗被阻隔在了封印之外。
+
+                三界裂隙——封印完成。
+
+    ch10_peace:
+      title: "第十章：和平"
+      trigger: {type: "quest_complete", quest: "void_war"}
+      map: tianyuan_sect_city
+      scenes:
+        - type: narration
+          text: |
+            虚界战争结束了。
+
+            修仙界为此付出了惨重的代价——
+            十二座城池被毁，七个中小宗门覆灭，
+            数万修士阵亡。
+
+            但他们守住了这个世界。
+
+            战后，各宗门签订了「天元盟约」——
+            正道、邪道不再以立场划分敌我，
+            而是以行为判定善恶。
+
+            这是你一直以来想要看到的变化。
+
+    ch11_wuji_parting:
+      title: "第十一章：道别"
+      trigger: {type: "realm_reach", realm: 28, tags: ["沈无极重逢"]}
+      map: fallen_star_lake
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: 沈无极
+              text: "我要离开了。"
+            - speaker: null
+              text: 落星湖畔，沈无极的语气一如既往的平淡。
+            - speaker: 沈无极
+              text: "鸿蒙道指引我去更高的地方。这个世界已经装不下鸿蒙之力了。"
+            - speaker: null
+              text: 你看着他。从灵根测试那天起，你们相识已经数百年了。
+            - speaker: 沈无极
+              text: "别那个表情。又不是去送死。"
+            - speaker: 沈无极
+              text: "只是……去看看更高处的风景。"
+            - speaker: null
+              text: |
+                他从怀中取出鸿蒙珠——珠子散发着柔和的白光。
+            - speaker: 沈无极
+              text: "这颗珠子陪了我一辈子。现在，它也该回归鸿蒙了。"
+            - speaker: null
+              text: |
+                白光冲天而起。
+                沈无极的身影在光中渐渐透明。
+            - speaker: 沈无极
+              text: "修仙这条路，最好的事不是成仙成佛。"
+            - speaker: 沈无极
+              text: "是交到了你这个朋友。"
+            - speaker: null
+              text: |
+                白光散去。
+                落星湖畔只剩你一个人。
+
+                但你知道——他没有消失。
+                只是去了更高的地方。
+
+                你们的友谊，超越了距离和境界。
+
+    ch12_dujie_mastery:
+      title: "第十二章：渡劫圆满"
+      trigger: {type: "realm_reach", realm: 29}
+      map: any
+      scenes:
+        - type: narration
+          text: |
+            渡劫圆满。
+
+            你已经站在了这个世界修士所能达到的几乎最高的位置。
+            再往上，就是大乘——传说中的境界。
+
+            大乘之后，就是渡仙劫、飞升。
+
+            修仙之路的终点，已经隐约可见了。
+
+    ch13_dacheng_path:
+      title: "第十三章：大乘之门"
+      trigger: {type: "realm_reach", realm: 29}
+      map: tongtian_peak
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                通天峰顶，你再次来到这里。
+
+                上一次你在这里渡劫成功。
+                这一次，你来寻找大乘的契机。
+
+                通天峰的上古符文在你的注视下活了过来——
+                原来它记载的不只是合体之法，
+                还有……大乘突破的提示。
+            - speaker: null
+              text: |
+                「大乘者，道之大成也。
+                　非力可至，非智可及。
+                　唯心之所向，道之所归。」
+
+                心之所向，道之所归。
+
+                你闭上眼睛。
+                你的道——连接之道，守护之道。
+                你用一生证明了这条道路的正确。
+
+                剩下的，只有最后一步了。
+
+    ch14_dacheng_prep:
+      title: "第十四章：蓄势"
+      trigger: {type: "cultivate_count", count: 200}
+      map: any
+      scenes:
+        - type: narration
+          text: |
+            你开始为大乘突破做最后的准备。
+
+            楚千殇帮你布下了护法剑阵。
+            柳清竹将她积攒的所有太阴灵石留给你做辅助。
+            韩苍在山脚站岗，誓言不让任何人打扰你的闭关。
+            药灵儿送来了她亲手炼制的顶级恢复丹药。
+            王逆从逆天殿送来了一份古老的大乘心得。
+            星璇选定了最佳的突破时机——星象最和谐的一天。
+
+            所有人都在为你的最后一步倾尽全力。
+
+    ch15_volume6_end:
+      title: "第十五章：破界"
+      trigger: {type: "realm_reach", realm: 29, tags: ["天劫在即"]}
+      map: tongtian_peak
+      scenes:
+        - type: narration
+          text: |
+            你盘坐在通天峰顶，闭上了眼睛。
+
+            天地灵气如江河汇海般涌来。
+            你的意识沉入了最深处——
+            那里有你走过的每一步路，
+            遇到的每一个人，做过的每一个选择。
+
+            灵根测试时被宣判为下等灵根的少年，
+            在东郊灵林战战兢兢打灵鼠的新手，
+            在宗门中咬牙坚持的外门弟子，
+            在苍澜城墙上独战三名元婴的守护者，
+            在万灵塔中一剑斩破邪术的正道之剑，
+            在三界裂隙前并肩封印虚空的九人之一。
+
+            所有的一切，都在这一刻汇聚。
+
+            你睁开了眼。
+
+            大乘。
+
+            ═══════════════════════════════
+            卷六完
+            ═══════════════════════════════
+      rewards:
+        tags: ["卷六完结", "大乘在望"]

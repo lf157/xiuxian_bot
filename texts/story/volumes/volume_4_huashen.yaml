@@ -1,0 +1,498 @@
+# 卷四：化神之路（化神初期 → 化神圆满）
+# 完整18章，覆盖宗门崛起 + 道侣线 + 混沌禁地探索
+# 核心线：化神突破 + 正邪大战前奏 + 沈无极求治 + 道侣抉择
+
+volume_4:
+  title: "卷四：化神之路"
+  realm_range: [18, 21]
+  main_npcs: [mc_shen_wuji, xiao_han_cang, chu_qianshang, liu_qingzhu, xing_xuan, wang_ni, elder_chen_sect, sect_leader, taichu_elder]
+
+  chapters:
+
+    ch01_huashen_bottleneck:
+      title: "第一章：化神瓶颈"
+      trigger: {type: "realm_reach", realm: 18}
+      map: tianyuan_sect_city
+      scenes:
+        - type: narration
+          text: |
+            元婴圆满。
+
+            你已经站在了绝大多数修士一生都无法企及的高度。
+            但化神——这道修仙路上最难的坎之一，横亘在你面前。
+
+            化神，不仅需要足够的灵力积累，
+            更需要对「道」的理解达到全新的层次。
+
+            你需要「悟道」。而悟道这种事，急不来。
+        - type: dialogue
+          lines:
+            - speaker: 陈长老
+              text: "化神的关键不在修为，在心境。"
+            - speaker: 陈长老
+              text: "你经历的已经够多了。但经历和领悟是两回事。"
+            - speaker: 陈长老
+              text: "去游历吧。去看看这个世界。答案不在洞府里。"
+
+    ch02_wandering:
+      title: "第二章：游历"
+      trigger: {type: "explore_count", map: "any", count: 10}
+      map: any
+      scenes:
+        - type: narration
+          text: |
+            你开始了一段漫长的游历。
+
+            你去了乱星海最深处的无人岛，独自修炼三个月。
+            你去了古战场遗迹，感悟上古大能残留的战意。
+            你去了苍澜洲的每一个角落，重走当年的修仙之路。
+
+            在游历中，你遇到了形形色色的人——
+            有为一颗灵草打生打死的散修，
+            有在深山中独居百年的老修士，
+            有面朝大海等待永远不会回来的道侣的女修……
+
+            修仙界的众生相，在你面前徐徐展开。
+
+    ch03_dao_enlightenment:
+      title: "第三章：悟道"
+      trigger: {type: "cultivate_count", count: 50}
+      map: fallen_star_lake
+      scenes:
+        - type: narration
+          text: |
+            落星湖。你修行之初就来过的地方。
+
+            你盘坐在湖边，看着湖水映出星空的倒影。
+            忽然，你明白了。
+
+            你的道不是追求极致的力量，也不是超脱红尘。
+            你的道是——连接。
+
+            连接人与人、连接此岸与彼岸、
+            连接过去与未来、连接弱者与希望。
+
+            你修行的每一步，都是在建立这样的连接。
+            从苍澜城到天元宗，从独行者到守护者。
+
+            领悟降临的那一刻，天地灵气如潮水般涌入你的体内。
+            元婴在丹田中蜕变，化为一道无形的神识。
+
+            化神。
+
+    ch04_sect_elder:
+      title: "第四章：长老之位"
+      trigger: {type: "breakthrough_success", from_stage: "yuanying"}
+      map: tianyuan_sect_city
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: 宗主
+              text: "化神修士在宗门中有长老之位。你当得起。"
+            - speaker: null
+              text: |
+                你成为了天元宗最年轻的长老。
+                从外门弟子到长老，你用了别人三分之一的时间。
+
+                陈长老一脸欣慰。
+            - speaker: 陈长老
+              text: "后生可畏。以后宗门的事，就交给你们年轻人了。"
+            - speaker: 陈长老
+              text: "我要闭关了。下次见面……也许就是合体期了。呵呵。"
+
+    ch05_chaos_forbidden:
+      title: "第五章：混沌禁地"
+      trigger: {type: "first_visit", map: "chaos_forbidden", tags: ["混沌禁地线索"]}
+      map: chaos_forbidden
+      scenes:
+        - type: narration
+          text: |
+            混沌禁地。天元大陆最深处的秘境。
+
+            入口隐藏在万丈地底，需要化神修士才能开启。
+            里面的空间法则扭曲，时间流速紊乱，
+            一进去就可能迷失在无尽的混沌中。
+
+            你来这里是为了沈无极——他需要鸿蒙之源来根治三道冲突。
+        - type: dialogue
+          lines:
+            - speaker: 沈无极
+              text: "你不用陪我进去。这是我自己的事。"
+            - speaker: null
+              text: 你没有理他，直接走在了前面。
+            - speaker: 沈无极
+              text: "……你这个人，从小就这样。"
+            - speaker: null
+              text: |
+                混沌禁地中，你们遭遇了无数危险——
+                空间裂缝、时间乱流、混沌兽群……
+
+                但最大的危险来自沈无极自身。
+                越深入禁地，三道冲突就越剧烈，
+                他的状态时好时坏，数次差点失控。
+
+    ch06_hongmeng_source:
+      title: "第六章：鸿蒙之源"
+      trigger: {type: "explore_complete", map: "chaos_forbidden"}
+      map: chaos_forbidden
+      scenes:
+        - type: narration
+          text: |
+            混沌禁地最深处。
+
+            一团混沌之气缓缓旋转，
+            散发着亘古不变的永恒气息。
+
+            鸿蒙之源。
+
+            沈无极的鸿蒙珠在胸口剧烈震动，
+            与混沌之气产生了强烈的共鸣。
+        - type: dialogue
+          lines:
+            - speaker: 沈无极
+              text: "找到了。"
+            - speaker: null
+              text: |
+                沈无极将鸿蒙珠取出，投入混沌之气中。
+
+                三色光芒与混沌之气融为一体，
+                恒、逆、衍三道在鸿蒙之力的调和下达成了平衡。
+
+                沈无极的气息稳定了下来，
+                三道冲突彻底根治。
+            - speaker: 沈无极
+              text: "……终于。"
+            - speaker: null
+              text: 他笑了，是你见过的最轻松的笑容。
+            - speaker: 沈无极
+              text: "我一直觉得自己活不了多久。但现在……也许可以再活个几千年。"
+            - speaker: 沈无极
+              text: "多谢你，老朋友。"
+
+    ch07_dao_companion:
+      title: "第七章：道侣"
+      trigger: {type: "realm_reach", realm: 19, tags: ["清竹信任"]}
+      map: fallen_star_lake
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                化神之后，你的生命开始以千年为单位计算。
+                但长寿不意味着不孤独。
+
+                柳清竹来落霞谷看你了。
+                她的修为也进步神速——太阴灵根的天赋在自由修炼后彻底释放。
+            - speaker: 柳清竹
+              text: "我从太清宗的追杀中彻底脱身了。他们放弃了。"
+            - speaker: 柳清竹
+              text: "因为他们发现，太阴锁魂镜没有太阴灵根也能炼——只是品质差一些。"
+            - speaker: null
+              text: 她看着你，眼中有一种你从未见过的柔和。
+            - speaker: 柳清竹
+              text: "我不用再逃了。所以……我想问你一件事。"
+            - speaker: 柳清竹
+              text: "你愿不愿意……和我结为道侣？"
+            - speaker: null
+              text: |
+                落星湖的月光洒在她身上，
+                她的声音很轻，但很坚定。
+        - type: choice
+          choices:
+            - label: "我愿意"
+              result: |
+                你伸出手，握住了她的手。
+                两人的灵力自然地交融，像是本该如此。
+                "我愿意。"
+                她笑了，如同月光般温柔。
+              tags: ["道侣结缘"]
+            - label: "我还需要时间"
+              result: |
+                你沉默了一会儿。不是不愿意，而是……
+                你还有太多事要做，你怕连累她。
+                "等一切尘埃落定之后，我给你答案。"
+                她点了点头，没有追问。
+              tags: ["道侣暂缓"]
+
+    ch08_rising_tensions:
+      title: "第八章：暗流"
+      trigger: {type: "realm_reach", realm: 19}
+      map: tianyuan_sect_city
+      scenes:
+        - type: narration
+          text: |
+            血煞宗覆灭后，修仙界的格局发生了巨大变化。
+
+            正道宗门在瓜分血煞宗遗产的过程中产生了严重分歧。
+            太清宗和天剑门因为一座矿脉的归属争执不下。
+            逆天殿趁机扩张势力，暗中吸收血煞宗残部。
+
+            正邪之间的平衡比以前更脆弱了。
+        - type: dialogue
+          lines:
+            - speaker: 王逆
+              text: "你以为消灭血煞宗就天下太平了？"
+            - speaker: 王逆
+              text: "正道内部的矛盾早就存在，只是被共同的敌人压着。"
+            - speaker: 王逆
+              text: "现在敌人没了，矛盾自然就爆发了。"
+            - speaker: 王逆
+              text: "下一场战争不会是正邪之战——而是正道内战。"
+
+    ch09_taichu_conspiracy:
+      title: "第九章：太初阴谋"
+      trigger: {type: "reputation_reach", value: 1000}
+      map: any
+      scenes:
+        - type: narration
+          text: |
+            你发现了一个惊人的秘密——
+            血煞宗的覆灭不是自然发生的。
+
+            是太清宗的一位隐世长老在幕后推动了整件事。
+            他利用正道联盟消灭了血煞宗，
+            然后暗中收集血煞宗的禁术和资源。
+
+            这位长老的名字叫——太初。
+
+            而他的目标远不止一个血煞宗。
+            他要的是……整个修仙界的控制权。
+
+    ch10_xingxuan_prophecy:
+      title: "第十章：星璇的预言"
+      trigger: {type: "realm_reach", realm: 20, tags: ["星璇初遇"]}
+      map: star_fall_sea
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: 星璇
+              text: "你来了。我等你很久了。"
+            - speaker: null
+              text: |
+                星陨之海，星璇依然站在那块浮空星石上。
+                但她的表情比上次严肃得多。
+            - speaker: 星璇
+              text: "星象异变。天命之子即将觉醒。"
+            - speaker: 星璇
+              text: "三界的命运将在未来百年内决定。"
+            - speaker: 星璇
+              text: "你、沈无极、还有另外几个人……是关键。"
+            - speaker: null
+              text: 你想起了血煞宗密信中提到的「天命之子」。
+            - speaker: 星璇
+              text: "天命之子不是一个人。是一种觉醒。"
+            - speaker: 星璇
+              text: "当足够多的关键者聚集在一起时，天命就会降临。"
+            - speaker: 星璇
+              text: "而那个时候……你需要做出一个影响三界的选择。"
+
+    ch11_inner_sect_war:
+      title: "第十一章：内门之乱"
+      trigger: {type: "sect_event", event: "civil_conflict"}
+      map: tianyuan_sect_city
+      scenes:
+        - type: narration
+          text: |
+            太初的阴谋终于波及到了天元宗。
+
+            宗门内部分裂成了两派：
+            保守派主张维持现状，激进派要求扩张势力。
+            两派之间的矛盾日益激化。
+
+            而你作为最年轻的长老，被夹在了中间。
+        - type: dialogue
+          lines:
+            - speaker: 宗主
+              text: "我老了。这些争斗已经超出了我的控制。"
+            - speaker: 宗主
+              text: "你来决定吧。宗门的未来——是保守，还是进取？"
+        - type: choice
+          choices:
+            - label: "走中间路线，团结两派"
+              result: |
+                你没有选择任何一边，而是提出了第三条路——
+                对外维持和平，对内改革制度。
+                两派虽然不完全满意，但认可了你的方案。
+                宗门暂时稳定了下来。
+              tags: ["宗门调和"]
+            - label: "支持改革派"
+              result: |
+                你认为固步自封只会被时代抛弃。
+                在你的支持下，改革派推行了一系列新政策，
+                但也引起了保守派的强烈不满。
+              tags: ["宗门改革"]
+
+    ch12_training_montage:
+      title: "第十二章：磨砺"
+      trigger: {type: "cultivate_count", count: 100}
+      map: any
+      scenes:
+        - type: narration
+          text: |
+            化神中期到化神圆满，是一段漫长的积累期。
+
+            你每天修炼、处理宗务、与好友切磋。
+            韩苍也突破到了化神期，依然是你最可靠的搭档。
+            楚千殇的剑越来越快，她说她找到了新的剑道——不是复仇之剑，而是守护之剑。
+
+    ch13_taichu_moves:
+      title: "第十三章：太初出手"
+      trigger: {type: "realm_reach", realm: 20, tags: ["太初阴谋"]}
+      map: any
+      scenes:
+        - type: narration
+          text: |
+            太初的计划开始加速。
+
+            一连串看似不相关的事件在修仙界发生——
+            三座小宗门神秘覆灭，数十名散修失踪，
+            多处灵脉异常枯竭。
+
+            所有线索都指向同一个方向——
+            有人在暗中搜集大量灵力，为某种禁术做准备。
+        - type: dialogue
+          lines:
+            - speaker: 沈无极
+              text: "太初在炼制一件上古法器——万灵塔。"
+            - speaker: 沈无极
+              text: "这件法器一旦完成，可以操控方圆千里内所有低阶修士的心智。"
+            - speaker: 沈无极
+              text: "比太阴锁魂镜更可怕的是——万灵塔没有解药。"
+
+    ch14_gathering_allies:
+      title: "第十四章：聚力"
+      trigger: {type: "reputation_reach", value: 2000}
+      map: xuankong_mountain
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                你开始联络所有信得过的力量。
+
+                沈无极、韩苍、楚千殇、柳清竹——你的核心团队。
+                王逆虽然是逆天殿的人，但在这件事上和你立场一致。
+                星璇提供星象情报，帮你预判太初的行动。
+
+                你甚至联系了苍澜洲的旧友——
+                张大带着苍澜民兵，药灵儿带着她的灵药储备，
+                石伯提供了矿脉中发现的上古阵法图。
+
+                你从小到大建立的每一段关系，
+                都在这一刻汇聚成了力量。
+
+    ch15_taichu_reveal:
+      title: "第十五章：太初现身"
+      trigger: {type: "quest_start", quest: "stop_taichu"}
+      map: taichu_hideout
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                你们追踪到了太初的据点——一个隐藏在空间裂缝中的秘境。
+            - speaker: 太初
+              text: "你们来了。比我预想的快。"
+            - speaker: null
+              text: |
+                太初是一个看起来很年轻的男人，但眼中有千年的沧桑。
+                他的修为……大乘期。超出了你目前的想象。
+            - speaker: 太初
+              text: "你们觉得我在做坏事？"
+            - speaker: 太初
+              text: "我在拯救修仙界。你们知道天劫会吞噬多少人吗？"
+            - speaker: 太初
+              text: "万灵塔不是用来控制人的——是用来在天劫降临时保护所有修士的。"
+            - speaker: null
+              text: |
+                他的话让你犹豫了。
+                如果他说的是真的——万灵塔真的是为了保护？
+
+                但你注意到——万灵塔旁边堆积着数百个灵魂石。
+                每一颗都是一个消散的灵魂。
+            - speaker: 太初
+              text: "牺牲少数人，拯救多数人。你觉得这有什么问题吗？"
+        - type: choice
+          choices:
+            - label: "不管目的如何，牺牲无辜是错的"
+              result: |
+                你拔剑。
+                "就算天劫来临，也不能用无辜者的灵魂铺路。"
+                太初叹了口气："我就知道你会这么说。"
+              tags: ["对抗太初"]
+            - label: "我理解你的想法，但一定有更好的办法"
+              result: |
+                你没有立刻拔剑。
+                "你的目的我理解。但这种方式只会制造更多仇恨。"
+                "如果天劫真的会来，我们一起找另一条路。"
+                太初沉默了很久："另一条路？……也许吧。"
+              tags: ["太初对话"]
+
+    ch16_first_clash:
+      title: "第十六章：化神之战"
+      trigger: {type: "battle", battle_id: "taichu_clash_1"}
+      map: taichu_hideout
+      scenes:
+        - type: narration
+          text: |
+            不管你怎么选择，太初不会停下他的计划。
+
+            万灵塔的炼制已经到了最后阶段，
+            他不可能因为你的几句话就放弃。
+
+            战斗不可避免。
+
+            大乘对化神——差距如同天堑。
+            你、沈无极、韩苍、楚千殇四人联手，
+            也只能勉强和太初打个平手。
+
+            最终，柳清竹的太阴灵力打破了僵局——
+            太阴之力恰好克制万灵塔的灵魂控制效果。
+
+            太初被迫撤退，万灵塔的炼制被中断。
+            但他没有被击败——他只是暂时退让了。
+
+    ch17_huashen_peak:
+      title: "第十七章：化神圆满"
+      trigger: {type: "realm_reach", realm: 21}
+      map: any
+      scenes:
+        - type: narration
+          text: |
+            与太初的战斗让你对自身实力的不足有了深刻认识。
+
+            化神圆满——你必须尽快达到这个境界，
+            才有资格在接下来的棋局中做一颗不被轻易吃掉的棋子。
+
+            你闭关一年，将所有领悟融会贯通。
+            化神圆满的那一刻，你的神识覆盖范围扩大了十倍。
+            你甚至能隐约感知到其他大陆的灵力波动。
+
+            更广阔的世界，正在向你敞开。
+
+    ch18_volume4_end:
+      title: "第十八章：天命将至"
+      trigger: {type: "realm_reach", realm: 21, tags: ["天命之子线索"]}
+      map: star_fall_sea
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: 星璇
+              text: "星象剧变。天命降临的时间……提前了。"
+            - speaker: 星璇
+              text: "不是百年后。是十年后。"
+            - speaker: 星璇
+              text: "太初的行动加速了天劫的降临。他越是试图控制命运，命运就越快到来。"
+            - speaker: null
+              text: |
+                十年。
+                十年内你必须从化神圆满突破到合体期，
+                甚至更高——才有可能面对即将到来的天劫。
+
+                修仙路从来不给人喘息的时间。
+
+                ═══════════════════════════════
+                卷四完
+                ═══════════════════════════════
+      rewards:
+        tags: ["卷四完结", "天劫倒计时"]

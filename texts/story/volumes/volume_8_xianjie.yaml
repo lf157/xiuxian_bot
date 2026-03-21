@@ -1,0 +1,373 @@
+# 卷八：仙劫（渡仙劫）
+# 完整10章，渡仙劫 + 飞升抉择 + 终章告别
+# 核心线：最终考验 + 生死抉择 + 飞升或留守
+
+volume_8:
+  title: "卷八：仙劫"
+  realm_range: [34, 36]
+  main_npcs: [mc_chu_qianshang, liu_qingzhu, xiao_han_cang, xing_xuan, wang_ni, heavenly_dao]
+
+  chapters:
+
+    ch01_xian_jie:
+      title: "第一章：仙劫将至"
+      trigger: {type: "realm_reach", realm: 34}
+      map: tongtian_peak
+      scenes:
+        - type: narration
+          text: |
+            大乘圆满之上，便是——仙。
+
+            仙劫不是普通的天劫。
+            它不考验你的力量，不考验你的根基，
+            它考验的是——你对道的终极理解。
+
+            十渡九亡，不是夸张。
+            历史上尝试渡仙劫的大乘修士，
+            活下来的……一只手都数不满。
+        - type: dialogue
+          lines:
+            - speaker: 楚千殇
+              text: "你确定要渡？"
+            - speaker: null
+              text: 你看着她。她的眼中没有恐惧，只有关切。
+            - speaker: 楚千殇
+              text: "……算我没问。你什么时候退缩过？"
+
+    ch02_farewell_tour:
+      title: "第二章：告别之旅"
+      trigger: {type: "quest_start", quest: "farewell_tour"}
+      map: canglan_city_v2
+      scenes:
+        - type: narration
+          text: |
+            渡仙劫之前，你回了一趟苍澜洲。
+
+            苍澜城已经变了很多。
+            在你当年布下的灵脉辅助阵法下，
+            灵气比你离开时还浓郁了三倍。
+            城中最高的建筑上刻着四个字——
+
+            「恩泽不忘」。
+
+            你知道，那是说你的。
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                你去了东郊灵林。灵鼠还在——它们的后代已经繁衍了无数代。
+                你去了南市坊市。王掌柜的孙子接了班，店还是那个店。
+                你去了落霞谷的洞府。你当年刻在洞口的名字已经模糊了。
+                你去了迷雾沼泽。当年的血煞宗祭坛已被荒草淹没。
+                你去了北山。独眼狼王的后代在那里建了新的领地。
+
+                最后，你去了陈丹师的丹房。
+
+                陈丹师已经很老了。他坐在丹炉前，手中还握着药杵。
+            - speaker: 陈丹师
+              text: "你要渡仙劫了？"
+            - speaker: null
+              text: 你点了点头。
+            - speaker: 陈丹师
+              text: "……嗯。"
+            - speaker: 陈丹师
+              text: "这枚丹药留给你。不是什么好东西——就是当年你第一次炼出的回灵丹。"
+            - speaker: 陈丹师
+              text: "我留了一枚。品质很差。但你炼的。"
+            - speaker: null
+              text: |
+                你接过那枚粗糙的丹药。
+                它的品质确实很差——色泽暗淡，药效微弱。
+                但你握在手里时，感觉比任何仙丹都温暖。
+
+    ch03_last_night:
+      title: "第三章：渡劫前夜"
+      trigger: {type: "quest_progress", quest: "farewell_tour", step: "complete"}
+      map: fallen_star_lake
+      scenes:
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                渡仙劫的前一夜，你来到落星湖。
+
+                所有人都在。
+
+                韩苍在烤肉。他说渡仙劫之前总得吃顿好的。
+                楚千殇坐在一旁擦剑。她说剑如果脏了就不吉利。
+                王逆带了几坛好酒。他说逆天殿的酒天下第一。
+                星璇安静地看着星空。她说今夜的星象……最适合飞升。
+                药灵儿在调配灵药。她说渡劫后可能需要恢复。
+                太初一个人坐在远处。他没有说话，但他来了。
+            - speaker: null
+              text: |
+                柳清竹靠在你身边，没有说话。
+
+                良久，她轻声开口。
+            - speaker: 柳清竹
+              text: "如果你飞升了……我会修炼到大乘，然后去找你。"
+            - speaker: 柳清竹
+              text: "不管多久。"
+            - speaker: null
+              text: |
+                你握住了她的手。
+
+                月光洒在落星湖上，星光映在水中。
+                火堆噼啪作响，肉香弥漫。
+                笑声、酒声、剑鸣声交织在一起。
+
+                这一夜，很长。
+                也很短。
+
+    ch04_xian_jie_start:
+      title: "第四章：仙劫"
+      trigger: {type: "breakthrough_attempt", to_stage: "xian"}
+      map: tongtian_peak
+      scenes:
+        - type: narration
+          text: |
+            天亮了。
+
+            你独自站在通天峰顶。
+            仙界之门在你头顶悬浮，散发着亘古的光辉。
+
+            劫云从四面八方涌来——
+            不是乌云，而是金色的云。
+            金色劫云中蕴含着天道最纯粹的力量。
+
+            仙劫，降临。
+
+    ch05_first_tribulation:
+      title: "第五章：道之问"
+      trigger: {type: "xian_jie_phase", phase: 1}
+      map: tongtian_peak
+      scenes:
+        - type: narration
+          text: |
+            仙劫的第一重，不是雷电，不是烈火。
+
+            而是一个问题。
+
+            天道的声音在你脑海中响起——
+
+            「何为道？」
+
+            你看过无数功法，走过无数路，
+            见识过恒道、逆道、衍道、鸿蒙道……
+
+            但你的答案很简单。
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                "道在人心。"
+
+                "我的道不在天上，不在地下。
+                　在苍澜城的街巷里，在东郊灵林的林间，
+                　在每一个帮助过我的人身上，
+                　在每一个我保护过的人心中。"
+
+                "道不是一个答案。道是走过的路本身。"
+
+                天道沉默了片刻。
+                然后——第一重仙劫，通过。
+
+    ch06_second_tribulation:
+      title: "第六章：力之极"
+      trigger: {type: "xian_jie_phase", phase: 2}
+      map: tongtian_peak
+      scenes:
+        - type: narration
+          text: |
+            第二重仙劫——天道凝聚了一个与你完全相同的存在。
+
+            同样的修为，同样的功法，同样的战斗经验。
+            但它没有感情，没有犹豫，是纯粹的战斗机器。
+
+            你和你自己的完美复制品战斗。
+
+            一招一式都被预判，每个破绽都被利用。
+            你打不赢你自己——至少在纯粹的技巧上。
+
+            但你有一样它没有的东西。
+
+            你怀中那枚粗糙的回灵丹——陈丹师留给你的。
+            你肩上小金留下的温暖余韵——它在你飞升前回到了灵兽谷。
+            你手心还残留的柳清竹的温度。
+            你耳边还回荡着韩苍的笑声。
+
+            这些东西不是力量。
+            但它们让你比一个完美的复制品更完整。
+
+            最终的一击——你赢了。
+            不是因为你更强，而是因为你更真实。
+
+    ch07_third_tribulation:
+      title: "第七章：心之择"
+      trigger: {type: "xian_jie_phase", phase: 3}
+      map: tongtian_peak
+      scenes:
+        - type: narration
+          text: |
+            第三重仙劫——也是最后一重。
+
+            天道给了你一个选择。
+        - type: dialogue
+          lines:
+            - speaker: 天道
+              text: "汝已证道。仙界之门为汝而开。"
+            - speaker: 天道
+              text: "然——飞升之后，凡间一切皆断。"
+            - speaker: 天道
+              text: "汝之道侣、友人、故土——尽在此间。"
+            - speaker: 天道
+              text: "汝……何择？"
+        - type: choice
+          choices:
+            - label: "飞升"
+              result: |
+                你看了一眼山下。
+
+                韩苍在向你挥手。
+                楚千殇在微笑。
+                柳清竹在流泪——但她点了点头。
+
+                她说过：她会修炼到大乘，然后来找你。
+
+                你转身面对仙界之门。
+                "我的道不会因为距离而断。"
+                "他们在我心中。走到哪里都在。"
+
+                你踏入了仙界之门。
+              tags: ["飞升"]
+            - label: "留在凡间"
+              result: |
+                你摇了摇头。
+
+                "仙界可以等。但他们等不了。"
+
+                "我选择留下。不是放弃飞升——
+                　是选择了比飞升更重要的东西。"
+
+                天道沉默了很久。
+                然后——它笑了。如果天道能笑的话。
+
+                "有趣。千年来第一个拒绝飞升的大乘圆满。"
+                "汝之道……已超越仙凡之别。"
+
+                仙劫散去。你还站在通天峰上。
+                你的修为没有增长，但你的道……圆满了。
+              tags: ["留守凡间"]
+
+    ch08_after_choice_ascend:
+      title: "第八章：仙界（飞升线）"
+      trigger: {type: "realm_reach", realm: 36, tags: ["飞升"]}
+      map: immortal_realm
+      scenes:
+        - type: narration
+          text: |
+            仙界。
+
+            比你想象的更广阔，也更孤寂。
+
+            这里的灵气浓度是凡间的万倍，
+            但每一个仙人都独自修行，彼此之间保持着礼貌的距离。
+
+            你明白了——仙界不缺力量，缺的是凡间的烟火气。
+        - type: dialogue
+          lines:
+            - speaker: null
+              text: |
+                你在仙界落脚的第一天，就开始修炼。
+
+                不是为了变更强。
+                而是为了有一天——
+                能够打开仙凡之间的通道，让她上来。
+
+                柳清竹说过：不管多久。
+                你相信她。
+
+                而你在仙界能做的最好的事——
+                就是在她到来之前，把这里变成一个值得来的地方。
+
+    ch09_after_choice_stay:
+      title: "第九章：凡间（留守线）"
+      trigger: {type: "realm_reach", realm: 34, tags: ["留守凡间"]}
+      map: fallen_star_lake
+      scenes:
+        - type: narration
+          text: |
+            你回到了落星湖。
+
+            韩苍看到你从山上走下来时，先是一愣，然后咧嘴大笑。
+        - type: dialogue
+          lines:
+            - speaker: 韩苍
+              text: "哈哈哈哈！我就知道你不会走！"
+            - speaker: 楚千殇
+              text: "……"
+            - speaker: null
+              text: 楚千殇没有说话。但她的嘴角微微上扬。
+            - speaker: 柳清竹
+              text: "你留下了。"
+            - speaker: null
+              text: 你握住她的手。"我留下了。"
+            - speaker: null
+              text: |
+                你选择了留在凡间。
+                作为天元大陆最强的修士，你没有飞升的欲望。
+
+                你在苍澜洲建了一座学堂，
+                教那些和当年的你一样——
+                被判定为下等灵根，被认为没有前途的少年。
+
+                你告诉他们：修仙之路，从来不看灵根。
+                看的是心。
+
+    ch10_volume8_end:
+      title: "第十章：道之终，亦道之始"
+      trigger: {type: "story_complete"}
+      map: any
+      scenes:
+        - type: narration
+          text: |
+            不管你选择了飞升还是留守——
+
+            你的故事都不会结束。
+
+            因为你的道，是连接之道。
+            连接过去与未来，连接凡间与仙界，
+            连接每一个在修仙路上孤独前行的灵魂。
+
+            你从一个下等灵根的少年开始，
+            走过了苍澜城的街巷，
+            穿越了东郊灵林的荆棘，
+            攀上了通天峰的绝顶，
+            站在了仙凡之间的边界。
+
+            这条路上，你哭过、笑过、流过血、流过泪。
+            你失去过，也得到过。
+            你被打倒过无数次，也站起来过无数次。
+
+            但你从来没有一个人走。
+
+            那个在破庙里分给你半个馒头的少年，
+            那个在灵田里帮你拔草的大块头，
+            那个在悬崖边上挥剑的黑衣女子，
+            那个在月光下握住你手的白衣女修，
+            那个在星光中微笑的银发少女，
+            那个从敌人变成战友的逆天殿少主，
+            还有苍澜城的每一个普通人——
+
+            他们都是你的道的一部分。
+
+            修仙之路，从来不是一个人的路。
+
+            ═══════════════════════════════
+            全篇终
+            ═══════════════════════════════
+
+            感谢你走完了这条路。
+            愿你的修仙之旅，永不孤独。
+      rewards:
+        tags: ["主线完结"]
