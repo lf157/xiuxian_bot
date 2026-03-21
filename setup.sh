@@ -88,8 +88,8 @@ echo ""
 # ──────────────────────────────────────
 echo "[1] 构建前端..."
 cd "${WEB_SRC}"
-pnpm install --frozen-lockfile 2>/dev/null || pnpm install
-pnpm build:fast
+pnpm install --dir "${WEB_SRC}" --frozen-lockfile 2>/dev/null || pnpm install --dir "${WEB_SRC}"
+pnpm run --dir "${WEB_SRC}" build:fast
 ok "前端构建完成"
 echo ""
 
