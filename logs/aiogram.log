@@ -4251,3 +4251,42 @@ Original description: Too Many Requests: retry after 24
 2026-03-21 11:41:08,227 - aiogram.event - INFO - Update id=261501470 is handled. Duration 2692 ms by bot id=8749053931
 2026-03-21 11:41:09,785 - aiogram.event - INFO - Update id=261501471 is handled. Duration 588 ms by bot id=8749053931
 2026-03-21 11:41:09,785 - aiogram.event - INFO - Update id=261501471 is handled. Duration 588 ms by bot id=8749053931
+2026-03-21 11:41:12,136 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 11:41:12,136 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 11:41:12,137 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 11:41:12,137 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 11:41:12,137 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 11:41:12,137 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 11:41:12,388 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 11:41:12,388 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 11:41:14,182 - telegram - INFO - runtime_logging_enabled pid=48119 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 11:41:14,185 - aiogram - INFO - runtime_logging_enabled pid=48119 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 11:41:14,185 - aiogram - INFO - runtime_logging_enabled pid=48119 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 11:41:14,192 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 11:41:14,192 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 11:41:14,192 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 11:41:14,192 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 11:41:14,256 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 11:41:14,256 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 11:41:15,333 - aiogram.event - INFO - Update id=261501472 is handled. Duration 604 ms by bot id=8749053931
+2026-03-21 11:41:15,333 - aiogram.event - INFO - Update id=261501472 is handled. Duration 604 ms by bot id=8749053931
+2026-03-21 11:41:17,280 - aiogram.event - INFO - Update id=261501473 is handled. Duration 537 ms by bot id=8749053931
+2026-03-21 11:41:17,280 - aiogram.event - INFO - Update id=261501473 is handled. Duration 537 ms by bot id=8749053931
+2026-03-21 11:41:17,999 - aiogram.event - INFO - Update id=261501474 is handled. Duration 533 ms by bot id=8749053931
+2026-03-21 11:41:17,999 - aiogram.event - INFO - Update id=261501474 is handled. Duration 533 ms by bot id=8749053931
+2026-03-21 11:41:19,783 - aiogram.event - INFO - Update id=261501475 is handled. Duration 662 ms by bot id=8749053931
+2026-03-21 11:41:19,783 - aiogram.event - INFO - Update id=261501475 is handled. Duration 662 ms by bot id=8749053931
+2026-03-21 11:41:20,409 - aiogram.event - INFO - Update id=261501476 is handled. Duration 530 ms by bot id=8749053931
+2026-03-21 11:41:20,409 - aiogram.event - INFO - Update id=261501476 is handled. Duration 530 ms by bot id=8749053931
+2026-03-21 11:41:22,367 - aiogram.event - INFO - Update id=261501477 is handled. Duration 547 ms by bot id=8749053931
+2026-03-21 11:41:22,367 - aiogram.event - INFO - Update id=261501477 is handled. Duration 547 ms by bot id=8749053931
+2026-03-21 11:41:28,321 - aiogram.event - INFO - Update id=261501478 is handled. Duration 656 ms by bot id=8749053931
+2026-03-21 11:41:28,321 - aiogram.event - INFO - Update id=261501478 is handled. Duration 656 ms by bot id=8749053931
+2026-03-21 11:41:31,449 - aiogram.event - INFO - Update id=261501479 is handled. Duration 549 ms by bot id=8749053931
+2026-03-21 11:41:31,449 - aiogram.event - INFO - Update id=261501479 is handled. Duration 549 ms by bot id=8749053931
+2026-03-21 11:41:47,546 - aiogram.event - INFO - Update id=261501480 is handled. Duration 663 ms by bot id=8749053931
+2026-03-21 11:41:47,546 - aiogram.event - INFO - Update id=261501480 is handled. Duration 663 ms by bot id=8749053931
+2026-03-21 11:41:57,942 - aiogram.event - INFO - Update id=261501481 is handled. Duration 673 ms by bot id=8749053931
+2026-03-21 11:41:57,942 - aiogram.event - INFO - Update id=261501481 is handled. Duration 673 ms by bot id=8749053931
+2026-03-21 11:42:06,515 - aiogram.event - INFO - Update id=261501482 is handled. Duration 677 ms by bot id=8749053931
+2026-03-21 11:42:06,515 - aiogram.event - INFO - Update id=261501482 is handled. Duration 677 ms by bot id=8749053931
