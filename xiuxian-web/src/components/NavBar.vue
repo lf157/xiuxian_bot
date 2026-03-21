@@ -4,6 +4,7 @@ const router = useRouter()
 
 const tabs = [
   { path: '/',         icon: '🏯', label: '洞府' },
+  { path: '/map',      icon: '🗺️', label: '地图' },
   { path: '/cultivate', icon: '🧘', label: '修炼' },
   { path: '/story',    icon: '📜', label: '仙卷' },
   { path: '/bag',      icon: '🎒', label: '乾坤袋' },
@@ -12,6 +13,13 @@ const tabs = [
 
 function isActive(path: string) {
   if (path === '/') return route.path === '/'
+  if (path === '/more') {
+    return route.path === '/more'
+      || route.path.startsWith('/relations')
+      || route.path.startsWith('/codex')
+      || route.path.startsWith('/sect')
+      || route.path.startsWith('/leaderboard')
+  }
   return route.path.startsWith(path)
 }
 </script>

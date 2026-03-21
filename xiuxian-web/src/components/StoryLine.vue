@@ -1,9 +1,7 @@
 <script setup lang="ts">
 /**
- * StoryLine – 单条剧情行渲染 (水墨风)
- * 旁白 → 横排竖线分隔
- * 对话 → NPC 名篆 + 气泡
- * 选择 → 金色选项卡
+ * StoryLine – 单条剧情行的渲染
+ * 根据 type 自动选择旁白/对话/选择的显示样式
  */
 import TypeWriter from './TypeWriter.vue'
 
@@ -14,107 +12,92 @@ const props = defineProps<{
   animate?: boolean
 }>()
 
-const emit = defineEmits<{ done: [] }>()
-
-// NPC 名字首字做「篆章」效果
-const sealChar = computed(() => props.speaker ? props.speaker.charAt(0) : '')
-
-// NPC 篆章颜色 — 根据名字 hash 分配
-const sealColor = computed(() => {
-  if (!props.speaker) return 'var(--cinnabar)'
-  const colors = ['#c03030', '#b8860b', '#4a8c6f', '#4a6fa5', '#7b5ea7', '#8b6914']
-  let h = 0
-  for (let i = 0; i < props.speaker.length; i++) h = ((h << 5) - h + props.speaker.charCodeAt(i)) | 0
-  return colors[Math.abs(h) % colors.length]
-})
+const emit = defineEmits<{
+  done: []
+}>()
 </script>
 
 <template>
-  <div class="sl" :class="`sl--${type}`">
+  <div class="story-line" :class="`story-line--${type}`">
+    <!-- 对话：带说话人 -->
+    <template v-if="type === 'dialogue' && speaker">
+      <div class="story-line__speaker">{{ speaker }}</div>
+      <div class="story-line__bubble">
+        <TypeWriter v-if="animate" :text="text" :speed="35" @done="emit('done')" />
+        <span v-else v-html="text.replace(/\n/g, '<br>')"></span>
+      </div>
+    </template>
 
-    <!-- ── 旁白 ── -->
-    <template v-if="type === 'narration'">
-      <div class="sl__narration">
+    <!-- 旁白 -->
+    <template v-else-if="type === 'narration'">
+      <div class="story-line__narration">
         <TypeWriter v-if="animate" :text="text" :speed="30" @done="emit('done')" />
         <span v-else v-html="text.replace(/\n/g, '<br>')"></span>
       </div>
     </template>
 
-    <!-- ── 对话（有说话人） ── -->
-    <template v-else-if="type === 'dialogue' && speaker">
-      <div class="sl__dialogue">
-        <div class="sl__seal" :style="{ background: sealColor }">{{ sealChar }}</div>
-        <div class="sl__bubble">
-          <div class="sl__speaker" :style="{ color: sealColor }">{{ speaker }}</div>
-          <div class="sl__text">
-            <TypeWriter v-if="animate" :text="text" :speed="35" @done="emit('done')" />
-            <span v-else v-html="text.replace(/\n/g, '<br>')"></span>
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- ── 对话（无说话人 = 旁白式内心独白） ── -->
+    <!-- 旁白式对话（无说话人） -->
     <template v-else-if="type === 'dialogue'">
-      <div class="sl__inner">
+      <div class="story-line__narration story-line__narration--inner">
         <TypeWriter v-if="animate" :text="text" :speed="30" @done="emit('done')" />
         <span v-else v-html="text.replace(/\n/g, '<br>')"></span>
       </div>
     </template>
 
-    <!-- ── 选择 ── -->
+    <!-- 选择项 -->
     <template v-else-if="type === 'choice'">
-      <div class="sl__choice">{{ text }}</div>
+      <div class="story-line__choice">
+        {{ text }}
+      </div>
     </template>
   </div>
 </template>
 
 <style scoped>
-.sl { margin-bottom: var(--space-md); animation: fade-in var(--duration-normal) var(--ease-out) both; }
-
-/* ── 旁白 ── */
-.sl__narration {
-  color: var(--ink-dark); line-height: 1.9;
-  padding: var(--space-xs) 0 var(--space-xs) var(--space-md);
-  border-left: 2px solid var(--paper-deeper);
+.story-line {
+  margin-bottom: var(--space-md);
+  animation: fade-in var(--duration-normal) var(--ease-out) both;
 }
 
-/* ── 对话 ── */
-.sl__dialogue { display: flex; gap: var(--space-sm); align-items: flex-start; }
-.sl__seal {
-  width: 32px; height: 32px; border-radius: 4px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.85rem; font-weight: 700; color: #f5e6c8;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15);
+.story-line__speaker {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  margin-bottom: 2px;
+  padding-left: var(--space-sm);
 }
-.sl__bubble {
-  flex: 1; background: var(--paper-dark);
-  border: 1px solid var(--paper-deeper);
-  border-radius: 2px var(--radius-sm) var(--radius-sm) var(--radius-sm);
+
+.story-line__bubble {
+  background: rgba(167, 139, 250, 0.08);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   padding: var(--space-sm) var(--space-md);
-  position: relative;
-}
-.sl__bubble::before {
-  content: ''; position: absolute; left: -6px; top: 8px;
-  width: 0; height: 0;
-  border-top: 5px solid transparent; border-bottom: 5px solid transparent;
-  border-right: 6px solid var(--paper-deeper);
-}
-.sl__speaker { font-size: 0.7rem; font-weight: 700; margin-bottom: 2px; }
-.sl__text { color: var(--ink-dark); line-height: 1.8; font-size: 0.88rem; }
-
-/* ── 内心独白 ── */
-.sl__inner {
-  color: var(--ink-mid); line-height: 1.8; font-style: italic;
-  padding: var(--space-xs) var(--space-md);
+  color: var(--color-text-bright);
+  line-height: 1.7;
 }
 
-/* ── 选择 ── */
-.sl__choice {
-  background: var(--paper-dark); border: 1px solid var(--gold);
-  border-radius: var(--radius-sm); padding: var(--space-sm) var(--space-md);
-  color: var(--gold); font-weight: 600; font-size: 0.85rem;
-  cursor: pointer; transition: background var(--duration-fast);
+.story-line__narration {
+  color: var(--color-text);
+  line-height: 1.8;
+  padding: 0 var(--space-xs);
 }
-.sl__choice:active { background: rgba(184,134,11,0.1); }
+
+.story-line__narration--inner {
+  color: var(--color-text-dim);
+  font-style: italic;
+}
+
+.story-line__choice {
+  background: var(--color-bg-card-hover);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-md);
+  color: var(--color-gold);
+  cursor: pointer;
+  transition: border-color var(--duration-fast);
+}
+
+.story-line__choice:active {
+  border-color: var(--color-gold);
+}
 </style>

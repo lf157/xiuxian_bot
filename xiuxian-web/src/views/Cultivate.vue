@@ -11,6 +11,10 @@ const gainPerHour = ref(0)
 const boostInfo = ref('')
 const elapsed = ref(0)
 const currentGain = ref(0)
+const anchorTime = ref(0)
+const anchorGain = ref(0)
+const gainBursts = ref<Array<{ id: number; text: string }>>([])
+let gainBurstSeq = 0
 
 // Settlement result
 const result = ref<Record<string, any> | null>(null)
@@ -36,11 +40,17 @@ onUnmounted(() => {
 async function checkStatus() {
   if (!player.userId) return
   try {
-    const r = await get(`/api/cultivate/status/${player.userId}`)
-    if (r.cultivating) {
+    const r = await get<any>(`/api/cultivate/status/${player.userId}`)
+    if (r.state) {
       state.value = 'cultivating'
-      startTime.value = r.start_time || 0
-      gainPerHour.value = r.gain_per_hour || 200
+      startTime.value = Number(r.start_time || Math.floor(Date.now() / 1000))
+      currentGain.value = Math.max(0, Number(r.current_gain || 0))
+      const hours = Math.max(0, Number(r.hours || 0))
+      gainPerHour.value = hours > 0
+        ? Math.max(1, Math.round(currentGain.value / hours))
+        : 200
+      anchorGain.value = currentGain.value
+      anchorTime.value = Math.floor(Date.now() / 1000)
       startTick()
     }
   } catch { /* not cultivating */ }
@@ -50,14 +60,18 @@ async function checkStatus() {
 async function startCultivate() {
   if (!player.userId) return
   try {
-    const r = await post('/api/cultivate/start', { user_id: player.userId })
+    const r = await post<any>('/api/cultivate/start', { user_id: player.userId })
     if (r.success === false) {
       alert(r.message || '无法开始修炼')
       return
     }
     state.value = 'cultivating'
-    startTime.value = r.start_time || Math.floor(Date.now() / 1000)
-    gainPerHour.value = r.gain_per_hour || 200
+    startTime.value = Number(r.start_time || Math.floor(Date.now() / 1000))
+    gainPerHour.value = Number(r.gain_per_hour || 200)
+    currentGain.value = 0
+    anchorGain.value = 0
+    anchorTime.value = Math.floor(Date.now() / 1000)
+    gainBursts.value = []
     const boosts: string[] = []
     if (r.sprint_boost_applied) boosts.push(`冲刺丹 x${r.sprint_boost_mult}`)
     if (r.sect_cultivation_bonus_pct > 0) boosts.push(`宗门加成 +${r.sect_cultivation_bonus_pct}%`)
@@ -76,10 +90,24 @@ function startTick() {
 }
 
 function tick() {
+  if (state.value !== 'cultivating') return
   const now = Math.floor(Date.now() / 1000)
   elapsed.value = Math.max(0, now - startTime.value)
-  const hours = Math.min(elapsed.value / 3600, 120)
-  currentGain.value = Math.floor(gainPerHour.value * hours)
+  if (anchorTime.value <= 0) {
+    anchorTime.value = now
+    anchorGain.value = currentGain.value
+  }
+
+  const elapsedAtAnchor = Math.max(0, anchorTime.value - startTime.value)
+  const remainCapSeconds = Math.max(0, 120 * 3600 - elapsedAtAnchor)
+  const deltaSeconds = Math.max(0, now - anchorTime.value)
+  const effectiveDelta = Math.min(deltaSeconds, remainCapSeconds)
+  const nextGain = anchorGain.value + Math.floor((gainPerHour.value * effectiveDelta) / 3600)
+
+  if (nextGain > currentGain.value) {
+    emitGainBurst(nextGain - currentGain.value)
+  }
+  currentGain.value = Math.max(currentGain.value, nextGain)
 }
 
 // ── End cultivation ──
@@ -92,7 +120,7 @@ async function endCultivate() {
     result.value = r
     canBreakthrough.value = !!r.can_breakthrough
     // Refresh player data
-    await player.init()
+    await player.init(true)
   } catch (e: any) {
     result.value = { success: false, message: e.body?.message || '结算失败' }
   }
@@ -107,6 +135,29 @@ function reset() {
   btResult.value = null
   elapsed.value = 0
   currentGain.value = 0
+  anchorTime.value = 0
+  anchorGain.value = 0
+  gainBursts.value = []
+}
+
+function emitGainBurst(delta: number) {
+  if (!Number.isFinite(delta) || delta <= 0) return
+
+  if (delta <= 6) {
+    for (let i = 0; i < delta; i += 1) pushGainBurst('+1')
+    return
+  }
+
+  for (let i = 0; i < 6; i += 1) pushGainBurst('+1')
+  pushGainBurst(`+${delta - 6}`)
+}
+
+function pushGainBurst(text: string) {
+  const id = ++gainBurstSeq
+  gainBursts.value.push({ id, text })
+  setTimeout(() => {
+    gainBursts.value = gainBursts.value.filter((b) => b.id !== id)
+  }, 950)
 }
 
 // ── Breakthrough preview ──
@@ -133,7 +184,7 @@ async function doBreakthrough() {
     })
     btResult.value = r
     btState.value = 'done'
-    await player.init()
+    await player.init(true)
   } catch (e: any) {
     btResult.value = { success: false, message: e.body?.message || '突破失败' }
     btState.value = 'done'
@@ -198,6 +249,9 @@ function fmtTime(s: number) {
           <div class="qi-particle qi-particle--3"></div>
           <div class="ripple ripple--1"></div>
           <div class="ripple ripple--2"></div>
+          <transition-group name="gain-float" tag="div" class="gain-float-list">
+            <span v-for="pulse in gainBursts" :key="pulse.id" class="gain-float-item">{{ pulse.text }}</span>
+          </transition-group>
         </div>
 
         <div class="card card--decorated">
@@ -210,7 +264,7 @@ function fmtTime(s: number) {
           </div>
 
           <div class="cult-meter">
-            <div class="cult-meter__label">预计修为</div>
+            <div class="cult-meter__label">实时修为</div>
             <div class="cult-meter__value text-gold">+{{ currentGain.toLocaleString() }}</div>
           </div>
 
@@ -383,6 +437,49 @@ function fmtTime(s: number) {
 }
 .ripple--1 { animation: ink-ripple 3s ease-out infinite; }
 .ripple--2 { animation: ink-ripple 3s ease-out 1.5s infinite; }
+
+.gain-float-list {
+  position: absolute;
+  top: 14px;
+  right: 22%;
+  display: flex;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.gain-float-item {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--gold);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.gain-float-enter-active {
+  animation: gain-float-up 0.92s ease-out;
+}
+
+.gain-float-leave-active {
+  transition: opacity 0.2s;
+}
+
+.gain-float-leave-to {
+  opacity: 0;
+}
+
+@keyframes gain-float-up {
+  0% {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  16% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+}
 
 .cult-boost {
   text-align: center; font-size: 0.75rem; color: var(--jade);

@@ -1,11 +1,15 @@
 /** Player state store */
 
 import { defineStore } from 'pinia'
-import { fetchInit, type InitData } from '@/api/client'
+import { fetchInit, setActorUserId, type InitData } from '@/api/client'
+
+const PLAYER_SNAPSHOT_CACHE_KEY = 'xx_player_snapshot_v1'
+const PLAYER_CACHE_TTL_MS = Number(import.meta.env.VITE_PLAYER_CACHE_TTL_MS || 180000)
 
 interface PlayerState {
   userId: string
   username: string
+  realmNameServer: string
   rank: number
   exp: number
   copper: number
@@ -18,6 +22,7 @@ interface PlayerState {
   defense: number
   element: string
   currentMap: string
+  lastSyncAt: number
   loaded: boolean
   loading: boolean
   raw: Record<string, any>
@@ -27,6 +32,7 @@ export const usePlayerStore = defineStore('player', {
   state: (): PlayerState => ({
     userId: '',
     username: '',
+    realmNameServer: '',
     rank: 1,
     exp: 0,
     copper: 0,
@@ -39,6 +45,7 @@ export const usePlayerStore = defineStore('player', {
     defense: 5,
     element: '',
     currentMap: 'canglan_city',
+    lastSyncAt: 0,
     loaded: false,
     loading: false,
     raw: {},
@@ -47,21 +54,28 @@ export const usePlayerStore = defineStore('player', {
   getters: {
     hpPercent: (s) => (s.maxHp > 0 ? Math.round((s.hp / s.maxHp) * 100) : 0),
     mpPercent: (s) => (s.maxMp > 0 ? Math.round((s.mp / s.maxMp) * 100) : 0),
-    realmName: (s) => REALM_NAMES[s.rank] || `???`,
+    realmName: (s) => s.realmNameServer || REALM_NAMES[s.rank] || `???`,
   },
 
   actions: {
     setUserId(id: string) {
       this.userId = id
+      setActorUserId(id)
     },
 
-    async init() {
+    async init(force = false) {
       if (!this.userId || this.loading) return
+
+      if (!force && this.hydrateFromCache()) {
+        return
+      }
+
       this.loading = true
       try {
         const data: InitData = await fetchInit(this.userId)
         this.applyUserData(data.user)
         this.loaded = true
+        this.persistCache()
       } finally {
         this.loading = false
       }
@@ -70,6 +84,7 @@ export const usePlayerStore = defineStore('player', {
     applyUserData(u: Record<string, any>) {
       this.raw = u
       this.username = u.in_game_username || u.username || ''
+      this.realmNameServer = u.realm_name || ''
       this.rank = u.rank || 1
       this.exp = u.exp || 0
       this.copper = u.copper || 0
@@ -82,6 +97,47 @@ export const usePlayerStore = defineStore('player', {
       this.defense = u.defense || 5
       this.element = u.element || ''
       this.currentMap = u.current_map || 'canglan_city'
+      this.lastSyncAt = Date.now()
+    },
+
+    hydrateFromCache() {
+      try {
+        const raw = localStorage.getItem(PLAYER_SNAPSHOT_CACHE_KEY)
+        if (!raw) return false
+        const parsed = JSON.parse(raw) as {
+          userId?: string
+          savedAt?: number
+          user?: Record<string, any>
+        }
+        const cachedUserId = String(parsed?.userId || '').trim()
+        const savedAt = Number(parsed?.savedAt || 0)
+        const user = parsed?.user
+        if (!cachedUserId || cachedUserId !== this.userId || !user || !savedAt) return false
+        if (Date.now() - savedAt > PLAYER_CACHE_TTL_MS) return false
+
+        this.applyUserData(user)
+        this.lastSyncAt = savedAt
+        this.loaded = true
+        return true
+      } catch {
+        return false
+      }
+    },
+
+    persistCache() {
+      if (!this.userId || !this.raw || Object.keys(this.raw).length === 0) return
+      try {
+        localStorage.setItem(
+          PLAYER_SNAPSHOT_CACHE_KEY,
+          JSON.stringify({
+            userId: this.userId,
+            savedAt: this.lastSyncAt || Date.now(),
+            user: this.raw,
+          }),
+        )
+      } catch {
+        // ignore cache write failures
+      }
     },
   },
 })

@@ -5,7 +5,7 @@ import App from './App.vue'
 import './styles/global.css'
 
 import { usePlayerStore } from './stores/player'
-import { getTwaUser } from './api/client'
+import { getTwaUser, resolveOrCreatePlayerIdByTelegram } from './api/client'
 
 const app = createApp(App)
 app.use(createPinia())
@@ -16,8 +16,14 @@ app.mount('#app')
 const twaUser = getTwaUser()
 if (twaUser) {
   const player = usePlayerStore()
-  // Use Telegram user ID as the lookup key
-  // The backend will need a mapping from telegram_id → user_id
-  player.setUserId(String(twaUser.id))
-  player.init()
+  ;(async () => {
+    try {
+      const userId = await resolveOrCreatePlayerIdByTelegram()
+      if (!userId) return
+      player.setUserId(userId)
+      await player.init()
+    } catch (err) {
+      console.error('[bootstrap] failed to resolve player id', err)
+    }
+  })()
 }

@@ -16,6 +16,7 @@ const player = usePlayerStore()
           <div class="dao-card__info">
             <div class="dao-card__name">{{ player.username }}</div>
             <div class="dao-card__realm">{{ player.realmName }}</div>
+            <div class="dao-card__uid">角色ID：{{ player.userId }}</div>
           </div>
           <div class="dao-card__element">{{ player.element || '无' }}灵根</div>
         </div>
@@ -43,7 +44,12 @@ const player = usePlayerStore()
           <div class="stat"><span class="stat__label">攻</span><span class="stat__val">{{ player.attack }}</span></div>
           <div class="stat"><span class="stat__label">防</span><span class="stat__val">{{ player.defense }}</span></div>
           <div class="stat"><span class="stat__label">修为</span><span class="stat__val">{{ player.exp.toLocaleString() }}</span></div>
-          <div class="stat"><span class="stat__label">灵石</span><span class="stat__val text-gold">{{ player.copper.toLocaleString() }}</span></div>
+          <div class="stat"><span class="stat__label">下品灵石</span><span class="stat__val text-gold">{{ player.copper.toLocaleString() }}</span></div>
+        </div>
+
+        <div class="wallet-row">
+          <span>中品灵石</span>
+          <span class="text-gold">{{ player.gold.toLocaleString() }}</span>
         </div>
       </div>
 
@@ -54,15 +60,6 @@ const player = usePlayerStore()
         </router-link>
         <router-link to="/story" class="quick__btn">
           <span class="quick__icon">📜</span><span>仙卷剧情</span>
-        </router-link>
-      </div>
-
-      <div class="quick" style="margin-top:var(--space-sm)">
-        <router-link to="/map" class="quick__btn">
-          <span class="quick__icon">🗺️</span><span>大地图</span>
-        </router-link>
-        <router-link to="/more" class="quick__btn">
-          <span class="quick__icon">☯</span><span>更多</span>
         </router-link>
       </div>
     </template>
@@ -87,6 +84,7 @@ const player = usePlayerStore()
 .dao-card__info { flex:1; }
 .dao-card__name { font-size:1.15rem;font-weight:700;color:var(--ink-black); }
 .dao-card__realm { font-size:0.8rem;color:var(--gold);font-weight:600; }
+.dao-card__uid { font-size:0.65rem;color:var(--ink-light);margin-top:2px; }
 .dao-card__element { font-size:0.7rem;color:var(--ink-light);background:var(--paper-dark);padding:2px 8px;border-radius:var(--radius-sm); }
 
 /* 气血灵力条 */
@@ -101,6 +99,14 @@ const player = usePlayerStore()
 .stat { display:flex;flex-direction:column;align-items:center;gap:2px; }
 .stat__label { font-size:0.65rem;color:var(--ink-light); }
 .stat__val { font-size:0.9rem;font-weight:700;color:var(--ink-dark); }
+.wallet-row {
+  margin-top: var(--space-sm);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:0.8rem;
+  color:var(--ink-mid);
+}
 
 /* 快捷入口 */
 .quick { display:flex;gap:var(--space-sm);margin-top:var(--space-lg); }

@@ -1,6 +1,8 @@
 /** API client – wraps fetch with Telegram MiniApp auth */
 
 const BASE = import.meta.env.VITE_API_BASE || ''
+let actorUserId = ''
+const PLAYER_ID_CACHE_PREFIX = 'xx_player_id_by_tg:'
 
 /** Telegram WebApp instance (injected by TWA runtime) */
 function getTwa(): any {
@@ -14,6 +16,34 @@ export function getTwaInitData(): string {
 
 export function getTwaUser(): { id: number; first_name: string } | null {
   return getTwa()?.initDataUnsafe?.user || null
+}
+
+export function setActorUserId(userId: string | number | null | undefined) {
+  actorUserId = userId == null ? '' : String(userId)
+}
+
+function readCachedPlayerId(telegramId: string): string | null {
+  try {
+    const raw = localStorage.getItem(`${PLAYER_ID_CACHE_PREFIX}${telegramId}`)
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as { userId?: string; at?: number }
+    const userId = String(parsed?.userId || '').trim()
+    if (!userId) return null
+    return userId
+  } catch {
+    return null
+  }
+}
+
+function writeCachedPlayerId(telegramId: string, userId: string) {
+  try {
+    localStorage.setItem(
+      `${PLAYER_ID_CACHE_PREFIX}${telegramId}`,
+      JSON.stringify({ userId, at: Date.now() }),
+    )
+  } catch {
+    // ignore cache write errors
+  }
 }
 
 /** Typed fetch wrapper */
@@ -31,6 +61,9 @@ async function request<T = any>(
   const initData = getTwaInitData()
   if (initData) {
     headers['X-Telegram-Init-Data'] = initData
+  }
+  if (actorUserId) {
+    headers['X-Actor-User-Id'] = actorUserId
   }
 
   const res = await fetch(url, { ...options, headers })
@@ -85,6 +118,49 @@ export async function fetchInit(userId: string): Promise<InitData> {
   }
 }
 
+interface LookupUserResponse {
+  user_id: string
+}
+
+interface RegisterResponse {
+  success: boolean
+  user_id?: string
+}
+
+export async function resolveOrCreatePlayerIdByTelegram(): Promise<string | null> {
+  const twaUser = getTwaUser()
+  if (!twaUser?.id) return null
+
+  const platformId = String(twaUser.id)
+  const cached = readCachedPlayerId(platformId)
+  if (cached) return cached
+
+  const query = new URLSearchParams({
+    platform: 'telegram',
+    platform_id: platformId,
+  })
+
+  try {
+    const found = await get<LookupUserResponse>(`/api/user/lookup?${query.toString()}`)
+    const resolved = String(found.user_id || '').trim()
+    if (resolved) writeCachedPlayerId(platformId, resolved)
+    return resolved || null
+  } catch (err: any) {
+    if (err?.status !== 404) throw err
+  }
+
+  const fallbackName = `${twaUser.first_name || '修士'}${platformId.slice(-4)}`
+  const created = await post<RegisterResponse>('/api/register', {
+    platform: 'telegram',
+    platform_id: platformId,
+    username: fallbackName,
+  })
+  if (!created?.success) return null
+  const resolved = String(created.user_id || '').trim()
+  if (resolved) writeCachedPlayerId(platformId, resolved)
+  return resolved || null
+}
+
 /** Story: read next lines */
 export function storyRead(userId: string, chapterId: string, count = 5) {
   return post('/api/story/read', { user_id: userId, chapter_id: chapterId, count })
@@ -93,38 +169,4 @@ export function storyRead(userId: string, chapterId: string, count = 5) {
 /** Story: reset chapter */
 export function storyReread(userId: string, chapterId: string) {
   return post('/api/story/reread', { user_id: userId, chapter_id: chapterId })
-}
-
-// ── Map / Travel ────────────────────────────────
-
-export function travelTo(userId: string, toMap: string) {
-  return post('/api/travel', { user_id: userId, to_map: toMap })
-}
-
-export function getAreaActions(mapId: string) {
-  return get(`/api/area/actions/${mapId}`)
-}
-
-// ── Signin ──────────────────────────────────────
-
-export function signin(userId: string) {
-  return post('/api/signin', { user_id: userId })
-}
-
-export function getSigninStatus(userId: string) {
-  return get(`/api/signin/${userId}`)
-}
-
-// ── Items / Bag ─────────────────────────────────
-
-export function getItems(userId: string) {
-  return get(`/api/items/${userId}`)
-}
-
-export function equipItem(userId: string, itemInstanceId: string, slot: string) {
-  return post('/api/equip', { user_id: userId, item_instance_id: itemInstanceId, slot })
-}
-
-export function useItem(userId: string, itemInstanceId: string) {
-  return post('/api/item/use', { user_id: userId, item_instance_id: itemInstanceId })
 }
