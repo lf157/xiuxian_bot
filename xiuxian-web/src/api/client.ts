@@ -173,19 +173,24 @@ export function storyReread(userId: string, chapterId: string) {
 
 // ── Hunt / Combat ───────────────────────────────
 
-export function hunt(userId: string) {
-  return post('/api/hunt', { user_id: userId })
+export function hunt(userId: string, monsterId: string, useActive = true) {
+  return post('/api/hunt', {
+    user_id: userId,
+    monster_id: monsterId,
+    use_active: useActive,
+  })
 }
 
 export function getHuntStatus(userId: string) {
   return get(`/api/hunt/status/${userId}`)
 }
 
-export function getMonsters() {
-  return get('/api/monsters')
+export function getMonsters(userId?: string) {
+  const query = userId ? `?user_id=${encodeURIComponent(userId)}` : ''
+  return get(`/api/monsters${query}`)
 }
 
-export function turnStart(userId: string, monsterId?: string) {
+export function turnStart(userId: string, monsterId: string) {
   return post('/api/hunt/turn/start', { user_id: userId, monster_id: monsterId })
 }
 

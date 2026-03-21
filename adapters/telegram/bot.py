@@ -771,6 +771,37 @@ def _is_retry_after_error(exc: Exception) -> bool:
     return "retry after" in text or "too many requests" in text or "flood control exceeded" in text
 
 
+def _is_button_type_invalid_error(exc: Exception) -> bool:
+    return "BUTTON_TYPE_INVALID" in str(exc or "").upper()
+
+
+def _strip_web_app_from_reply_markup(reply_markup):
+    if not isinstance(reply_markup, InlineKeyboardMarkup):
+        return reply_markup
+    changed = False
+    rows = []
+    for row in (reply_markup.inline_keyboard or []):
+        new_row = []
+        for btn in row:
+            web_app = getattr(btn, "web_app", None)
+            if web_app is not None:
+                changed = True
+                text = str(getattr(btn, "text", "") or "🏯 进入修仙世界")
+                new_row.append(
+                    InlineKeyboardButton(
+                        text=text,
+                        callback_data="miniapp_private_hint",
+                    )
+                )
+            else:
+                new_row.append(btn)
+        if new_row:
+            rows.append(new_row)
+    if not changed:
+        return reply_markup
+    return InlineKeyboardMarkup(rows)
+
+
 def _is_private_panel_message(message) -> bool:
     if not message:
         return False
@@ -858,7 +889,19 @@ async def _reply_text(update_or_query, text: str, **kwargs):
     message = _get_reply_message(update_or_query)
     if message is None:
         raise ValueError("No replyable message found")
-    return await message.reply_text(text, **kwargs)
+    try:
+        return await message.reply_text(text, **kwargs)
+    except Exception as exc:
+        if not _is_button_type_invalid_error(exc):
+            raise
+        downgraded_kwargs = dict(kwargs)
+        downgraded_markup = _strip_web_app_from_reply_markup(downgraded_kwargs.get("reply_markup"))
+        if downgraded_markup is None:
+            downgraded_kwargs.pop("reply_markup", None)
+        else:
+            downgraded_kwargs["reply_markup"] = downgraded_markup
+        logger.warning("reply_text fallback: downgraded web_app buttons due to BUTTON_TYPE_INVALID")
+        return await message.reply_text(text, **downgraded_kwargs)
 
 
 async def _on_app_init(_app: Application) -> None:
@@ -887,7 +930,15 @@ async def _on_app_init(_app: Application) -> None:
         await _app.bot.set_my_commands(_MENU_COMMANDS)
         await _app.bot.set_my_commands(_MENU_COMMANDS, scope=BotCommandScopeAllPrivateChats())
         await _app.bot.set_my_commands(_MENU_COMMANDS, scope=BotCommandScopeAllGroupChats())
-        await _app.bot.set_chat_menu_button(menu_button=MenuButtonCommands())
+        if MINIAPP_URL:
+            await _app.bot.set_chat_menu_button(
+                menu_button=MenuButtonWebApp(
+                    text="进入修仙世界",
+                    web_app=WebAppInfo(url=MINIAPP_URL),
+                )
+            )
+        else:
+            await _app.bot.set_chat_menu_button(menu_button=MenuButtonCommands())
         logger.info("Telegram commands synced: %s", len(_MENU_COMMANDS))
     except Exception as e:
         logger.warning("Failed to set bot commands: %s", e)
@@ -1135,12 +1186,12 @@ def require_account(handler):
 
 # ==================== 主菜单 ====================
 
-def get_main_menu_keyboard():
+def get_main_menu_keyboard(*, include_miniapp: bool = True):
     """获取主菜单键盘"""
     keyboard = []
 
     # MiniApp 入口（最顶部，最醒目）
-    if MINIAPP_URL:
+    if include_miniapp and MINIAPP_URL:
         keyboard.append([
             InlineKeyboardButton(
                 "🏯 进入修仙世界",
@@ -3425,6 +3476,13 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception as e:
             logger.error(f"main menu status error: {e}")
             await _safe_edit("选择下方按钮继续：", reply_markup=get_main_menu_keyboard())
+        return
+
+    if data == "miniapp_private_hint":
+        await _safe_edit(
+            "🏯 当前会话不支持直接弹出 MiniApp。\n请先在与机器人私聊中发送 /xian_start，再点击「进入修仙世界」。",
+            reply_markup=get_main_menu_keyboard(include_miniapp=False),
+        )
         return
 
     # 大地图

@@ -20,6 +20,7 @@ from aiogram.types import (
     InlineKeyboardButton as AioInlineKeyboardButton,
     InlineKeyboardMarkup as AioInlineKeyboardMarkup,
     Message,
+    WebAppInfo as AioWebAppInfo,
 )
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
@@ -64,7 +65,13 @@ class _CompatBot:
 
     async def send_message(self, chat_id: int | str, text: str, **kwargs):
         payload = _normalize_message_kwargs(kwargs)
-        sent = await self._bot.send_message(chat_id=chat_id, text=text, **payload)
+        try:
+            sent = await self._bot.send_message(chat_id=chat_id, text=text, **payload)
+        except Exception as exc:
+            if not _is_button_type_invalid_error(exc):
+                raise
+            payload = _normalize_message_kwargs(kwargs, drop_web_app=True)
+            sent = await self._bot.send_message(chat_id=chat_id, text=text, **payload)
         return _CompatMessage(self._bot, sent)
 
 
@@ -111,7 +118,15 @@ class _CompatMessage:
         payload = _normalize_message_kwargs(kwargs)
         if self.message_thread_id > 0 and "message_thread_id" not in payload:
             payload["message_thread_id"] = self.message_thread_id
-        sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+        try:
+            sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
+        except Exception as exc:
+            if not _is_button_type_invalid_error(exc):
+                raise
+            payload = _normalize_message_kwargs(kwargs, drop_web_app=True)
+            if self.message_thread_id > 0 and "message_thread_id" not in payload:
+                payload["message_thread_id"] = self.message_thread_id
+            sent = await self._bot.send_message(chat_id=self.chat_id, text=text, **payload)
         return _CompatMessage(self._bot, sent)
 
 
@@ -162,17 +177,34 @@ class _CompatCallbackQuery:
     async def edit_message_text(self, text: str, **kwargs):
         payload = _normalize_message_kwargs(kwargs)
         if isinstance(self._raw.message, Message):
-            edited = await self._raw.message.edit_text(text=text, **payload)
+            try:
+                edited = await self._raw.message.edit_text(text=text, **payload)
+            except Exception as exc:
+                if not _is_button_type_invalid_error(exc):
+                    raise
+                payload = _normalize_message_kwargs(kwargs, drop_web_app=True)
+                edited = await self._raw.message.edit_text(text=text, **payload)
             if isinstance(edited, Message):
                 return _CompatMessage(self._bot, edited)
             return self.message
         if self.message is not None:
-            edited = await self._bot.edit_message_text(
-                chat_id=self.message.chat_id,
-                message_id=self.message.message_id,
-                text=text,
-                **payload,
-            )
+            try:
+                edited = await self._bot.edit_message_text(
+                    chat_id=self.message.chat_id,
+                    message_id=self.message.message_id,
+                    text=text,
+                    **payload,
+                )
+            except Exception as exc:
+                if not _is_button_type_invalid_error(exc):
+                    raise
+                payload = _normalize_message_kwargs(kwargs, drop_web_app=True)
+                edited = await self._bot.edit_message_text(
+                    chat_id=self.message.chat_id,
+                    message_id=self.message.message_id,
+                    text=text,
+                    **payload,
+                )
             if isinstance(edited, Message):
                 return _CompatMessage(self._bot, edited)
         return self.message
@@ -194,7 +226,15 @@ def _normalize_parse_mode(value: Any) -> str | None:
     return str(value)
 
 
-def _convert_inline_keyboard(raw_rows: Any) -> list[list[AioInlineKeyboardButton]]:
+def _is_button_type_invalid_error(exc: Exception) -> bool:
+    return "BUTTON_TYPE_INVALID" in str(exc or "").upper()
+
+
+def _convert_inline_keyboard(
+    raw_rows: Any,
+    *,
+    drop_web_app: bool = False,
+) -> list[list[AioInlineKeyboardButton]]:
     rows: list[list[AioInlineKeyboardButton]] = []
     if not isinstance(raw_rows, list):
         return rows
@@ -215,14 +255,27 @@ def _convert_inline_keyboard(raw_rows: Any) -> list[list[AioInlineKeyboardButton
                         "text": getattr(raw_btn, "text", "按钮"),
                         "callback_data": getattr(raw_btn, "callback_data", None),
                         "url": getattr(raw_btn, "url", None),
+                        "web_app": getattr(raw_btn, "web_app", None),
                     }
             text = str(btn.get("text") or "按钮")
             callback_data = btn.get("callback_data")
             url = btn.get("url")
+            web_app_url = ""
+            raw_web_app = btn.get("web_app")
+            if isinstance(raw_web_app, dict):
+                web_app_url = str(raw_web_app.get("url") or "").strip()
+            elif raw_web_app is not None:
+                web_app_url = str(getattr(raw_web_app, "url", "") or "").strip()
             if callback_data is not None:
                 row.append(AioInlineKeyboardButton(text=text, callback_data=str(callback_data)))
             elif url:
                 row.append(AioInlineKeyboardButton(text=text, url=str(url)))
+            elif web_app_url:
+                if drop_web_app:
+                    # Fallback for contexts where inline web_app button type is rejected by Telegram.
+                    row.append(AioInlineKeyboardButton(text=text, callback_data="miniapp_private_hint"))
+                else:
+                    row.append(AioInlineKeyboardButton(text=text, web_app=AioWebAppInfo(url=web_app_url)))
             else:
                 row.append(AioInlineKeyboardButton(text=text, callback_data="main_menu"))
         if row:
@@ -230,10 +283,14 @@ def _convert_inline_keyboard(raw_rows: Any) -> list[list[AioInlineKeyboardButton
     return rows
 
 
-def _convert_reply_markup(markup: Any):
+def _convert_reply_markup(markup: Any, *, drop_web_app: bool = False):
     if markup is None:
         return None
     if isinstance(markup, (AioInlineKeyboardMarkup, AioForceReply)):
+        if drop_web_app and isinstance(markup, AioInlineKeyboardMarkup):
+            return AioInlineKeyboardMarkup(
+                inline_keyboard=_convert_inline_keyboard(markup.inline_keyboard, drop_web_app=True)
+            )
         return markup
 
     data: dict[str, Any] | None = None
@@ -247,7 +304,7 @@ def _convert_reply_markup(markup: Any):
 
     if isinstance(data, dict):
         if "inline_keyboard" in data:
-            rows = _convert_inline_keyboard(data.get("inline_keyboard"))
+            rows = _convert_inline_keyboard(data.get("inline_keyboard"), drop_web_app=drop_web_app)
             return AioInlineKeyboardMarkup(inline_keyboard=rows)
         if bool(data.get("force_reply")):
             return AioForceReply(
@@ -258,7 +315,7 @@ def _convert_reply_markup(markup: Any):
     cls = markup.__class__.__name__
     if cls == "InlineKeyboardMarkup":
         raw_rows = getattr(markup, "inline_keyboard", None)
-        rows = _convert_inline_keyboard(raw_rows)
+        rows = _convert_inline_keyboard(raw_rows, drop_web_app=drop_web_app)
         return AioInlineKeyboardMarkup(inline_keyboard=rows)
     if cls == "ForceReply":
         return AioForceReply(
@@ -269,12 +326,16 @@ def _convert_reply_markup(markup: Any):
     return None
 
 
-def _normalize_message_kwargs(kwargs: dict[str, Any]) -> dict[str, Any]:
+def _normalize_message_kwargs(
+    kwargs: dict[str, Any],
+    *,
+    drop_web_app: bool = False,
+) -> dict[str, Any]:
     out: dict[str, Any] = {}
     parse_mode = _normalize_parse_mode(kwargs.get("parse_mode"))
     if parse_mode:
         out["parse_mode"] = parse_mode
-    reply_markup = _convert_reply_markup(kwargs.get("reply_markup"))
+    reply_markup = _convert_reply_markup(kwargs.get("reply_markup"), drop_web_app=drop_web_app)
     if reply_markup is not None:
         out["reply_markup"] = reply_markup
     if "disable_web_page_preview" in kwargs:

@@ -5658,3 +5658,234 @@ Original description: Too Many Requests: retry after 13
 2026-03-21 17:57:01,177 - telegram.runtime - INFO - runtime_stats uptime_s=1440 total_records=27 total_exceptions=0 levels={'INFO': 27}
 2026-03-21 17:57:01,180 - aiogram.runtime - INFO - runtime_stats uptime_s=1440 total_records=27 total_exceptions=0 levels={'INFO': 27}
 2026-03-21 17:57:01,180 - aiogram.runtime - INFO - runtime_stats uptime_s=1440 total_records=27 total_exceptions=0 levels={'INFO': 27}
+2026-03-21 19:50:09,730 - telegram - INFO - runtime_logging_enabled pid=67323 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 19:50:09,734 - aiogram - INFO - runtime_logging_enabled pid=67323 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 19:50:09,734 - aiogram - INFO - runtime_logging_enabled pid=67323 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 19:50:09,747 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 19:50:09,747 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 19:50:09,747 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 19:50:09,747 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 19:50:09,811 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 19:50:09,811 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 19:50:12,429 - aiogram.event - INFO - Update id=261501747 is handled. Duration 523 ms by bot id=8749053931
+2026-03-21 19:50:12,429 - aiogram.event - INFO - Update id=261501747 is handled. Duration 523 ms by bot id=8749053931
+2026-03-21 19:50:17,091 - aiogram.event - INFO - Update id=261501748 is handled. Duration 569 ms by bot id=8749053931
+2026-03-21 19:50:17,091 - aiogram.event - INFO - Update id=261501748 is handled. Duration 569 ms by bot id=8749053931
+2026-03-21 19:50:20,890 - aiogram.event - INFO - Update id=261501749 is handled. Duration 731 ms by bot id=8749053931
+2026-03-21 19:50:20,890 - aiogram.event - INFO - Update id=261501749 is handled. Duration 731 ms by bot id=8749053931
+2026-03-21 19:52:09,731 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=8 total_exceptions=0 levels={'INFO': 8}
+2026-03-21 19:52:09,731 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=8 total_exceptions=0 levels={'INFO': 8}
+2026-03-21 19:52:09,734 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=8 total_exceptions=0 levels={'INFO': 8}
+2026-03-21 19:52:09,734 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=8 total_exceptions=0 levels={'INFO': 8}
+2026-03-21 19:54:04,463 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 19:54:04,463 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 19:54:04,464 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 19:54:04,464 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 19:54:04,464 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 19:54:04,464 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 19:54:04,715 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 19:54:04,715 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 19:54:06,629 - telegram - INFO - runtime_logging_enabled pid=67561 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 19:54:06,632 - aiogram - INFO - runtime_logging_enabled pid=67561 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 19:54:06,632 - aiogram - INFO - runtime_logging_enabled pid=67561 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 19:54:06,639 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 19:54:06,639 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 19:54:06,639 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 19:54:06,639 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 19:54:06,710 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 19:54:06,710 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 19:56:06,629 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=5 total_exceptions=0 levels={'INFO': 5}
+2026-03-21 19:56:06,629 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=5 total_exceptions=0 levels={'INFO': 5}
+2026-03-21 19:56:06,632 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=5 total_exceptions=0 levels={'INFO': 5}
+2026-03-21 19:56:06,632 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=5 total_exceptions=0 levels={'INFO': 5}
+2026-03-21 19:57:40,696 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 19:57:40,696 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 19:57:40,697 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 19:57:40,697 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 19:57:40,697 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 19:57:40,697 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 19:57:40,947 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 19:57:40,947 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 19:57:42,979 - telegram - INFO - runtime_logging_enabled pid=67709 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 19:57:42,982 - aiogram - INFO - runtime_logging_enabled pid=67709 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 19:57:42,982 - aiogram - INFO - runtime_logging_enabled pid=67709 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 19:57:42,989 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 19:57:42,989 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 19:57:42,989 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 19:57:42,989 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 19:57:43,055 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 19:57:43,055 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 19:57:56,924 - telegram - ERROR - start error: Telegram server says - Bad Request: BUTTON_TYPE_INVALID
+2026-03-21 19:57:56,924 - telegram - ERROR - start error: Telegram server says - Bad Request: BUTTON_TYPE_INVALID
+2026-03-21 19:57:57,379 - aiogram.event - INFO - Update id=261501750 is handled. Duration 674 ms by bot id=8749053931
+2026-03-21 19:57:57,379 - aiogram.event - INFO - Update id=261501750 is handled. Duration 674 ms by bot id=8749053931
+2026-03-21 19:58:09,426 - telegram - WARNING - callback edit fallback failed: Telegram server says - Bad Request: BUTTON_TYPE_INVALID
+2026-03-21 19:58:09,426 - telegram - WARNING - callback edit fallback failed: Telegram server says - Bad Request: BUTTON_TYPE_INVALID
+2026-03-21 19:58:09,427 - aiogram.event - INFO - Update id=261501751 is handled. Duration 798 ms by bot id=8749053931
+2026-03-21 19:58:09,427 - aiogram.event - INFO - Update id=261501751 is handled. Duration 798 ms by bot id=8749053931
+2026-03-21 19:59:42,979 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=9 total_exceptions=0 levels={'INFO': 7, 'ERROR': 1, 'WARNING': 1}
+2026-03-21 19:59:42,979 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=9 total_exceptions=0 levels={'INFO': 7, 'ERROR': 1, 'WARNING': 1}
+2026-03-21 19:59:42,982 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=9 total_exceptions=0 levels={'INFO': 7, 'ERROR': 1, 'WARNING': 1}
+2026-03-21 19:59:42,982 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=9 total_exceptions=0 levels={'INFO': 7, 'ERROR': 1, 'WARNING': 1}
+2026-03-21 20:01:28,854 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 20:01:28,854 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 20:01:28,855 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:01:28,855 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:01:28,855 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 20:01:28,855 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 20:01:29,107 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 20:01:29,107 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 20:01:31,106 - telegram - INFO - runtime_logging_enabled pid=67962 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 20:01:31,109 - aiogram - INFO - runtime_logging_enabled pid=67962 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 20:01:31,109 - aiogram - INFO - runtime_logging_enabled pid=67962 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 20:01:31,122 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 20:01:31,122 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 20:01:31,122 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 20:01:31,122 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 20:01:31,185 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:01:31,185 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:03:31,106 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=5 total_exceptions=0 levels={'INFO': 5}
+2026-03-21 20:03:31,106 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=5 total_exceptions=0 levels={'INFO': 5}
+2026-03-21 20:03:31,109 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=5 total_exceptions=0 levels={'INFO': 5}
+2026-03-21 20:03:31,109 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=5 total_exceptions=0 levels={'INFO': 5}
+2026-03-21 20:05:31,107 - telegram.runtime - INFO - runtime_stats uptime_s=240 total_records=7 total_exceptions=0 levels={'INFO': 7}
+2026-03-21 20:05:31,107 - telegram.runtime - INFO - runtime_stats uptime_s=240 total_records=7 total_exceptions=0 levels={'INFO': 7}
+2026-03-21 20:05:31,109 - aiogram.runtime - INFO - runtime_stats uptime_s=240 total_records=7 total_exceptions=0 levels={'INFO': 7}
+2026-03-21 20:05:31,109 - aiogram.runtime - INFO - runtime_stats uptime_s=240 total_records=7 total_exceptions=0 levels={'INFO': 7}
+2026-03-21 20:07:16,688 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 20:07:16,688 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 20:07:16,689 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:07:16,689 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:07:16,689 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 20:07:16,689 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 20:07:16,941 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 20:07:16,941 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 20:07:18,457 - telegram - INFO - runtime_logging_enabled pid=68695 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 20:07:18,459 - aiogram - INFO - runtime_logging_enabled pid=68695 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 20:07:18,459 - aiogram - INFO - runtime_logging_enabled pid=68695 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 20:07:18,467 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 20:07:18,467 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 20:07:18,467 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 20:07:18,467 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 20:07:18,537 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:07:18,537 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:07:20,247 - aiogram.event - INFO - Update id=261501752 is handled. Duration 707 ms by bot id=8749053931
+2026-03-21 20:07:20,247 - aiogram.event - INFO - Update id=261501752 is handled. Duration 707 ms by bot id=8749053931
+2026-03-21 20:09:18,457 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=6 total_exceptions=0 levels={'INFO': 6}
+2026-03-21 20:09:18,457 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=6 total_exceptions=0 levels={'INFO': 6}
+2026-03-21 20:09:18,459 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=6 total_exceptions=0 levels={'INFO': 6}
+2026-03-21 20:09:18,459 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=6 total_exceptions=0 levels={'INFO': 6}
+2026-03-21 20:11:18,457 - telegram.runtime - INFO - runtime_stats uptime_s=240 total_records=8 total_exceptions=0 levels={'INFO': 8}
+2026-03-21 20:11:18,457 - telegram.runtime - INFO - runtime_stats uptime_s=240 total_records=8 total_exceptions=0 levels={'INFO': 8}
+2026-03-21 20:11:18,460 - aiogram.runtime - INFO - runtime_stats uptime_s=240 total_records=8 total_exceptions=0 levels={'INFO': 8}
+2026-03-21 20:11:18,460 - aiogram.runtime - INFO - runtime_stats uptime_s=240 total_records=8 total_exceptions=0 levels={'INFO': 8}
+2026-03-21 20:13:14,109 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 20:13:14,109 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 20:13:14,110 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:13:14,110 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:13:14,110 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 20:13:14,110 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 20:13:14,361 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 20:13:14,361 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 20:13:15,836 - telegram - INFO - runtime_logging_enabled pid=68900 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 20:13:15,839 - aiogram - INFO - runtime_logging_enabled pid=68900 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 20:13:15,839 - aiogram - INFO - runtime_logging_enabled pid=68900 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 20:13:15,846 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 20:13:15,846 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 20:13:15,846 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 20:13:15,846 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 20:13:15,911 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:13:15,911 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:15:15,836 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=5 total_exceptions=0 levels={'INFO': 5}
+2026-03-21 20:15:15,836 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=5 total_exceptions=0 levels={'INFO': 5}
+2026-03-21 20:15:15,839 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=5 total_exceptions=0 levels={'INFO': 5}
+2026-03-21 20:15:15,839 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=5 total_exceptions=0 levels={'INFO': 5}
+2026-03-21 20:15:49,371 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 20:15:49,371 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 20:15:49,374 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:15:49,374 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:15:49,374 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 20:15:49,374 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 20:15:49,626 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 20:15:49,626 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 20:15:51,163 - telegram - INFO - runtime_logging_enabled pid=69028 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 20:15:51,165 - aiogram - INFO - runtime_logging_enabled pid=69028 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 20:15:51,165 - aiogram - INFO - runtime_logging_enabled pid=69028 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 20:15:51,175 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 20:15:51,175 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 20:15:51,175 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 20:15:51,175 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 20:15:51,244 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:15:51,244 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:15:58,266 - aiogram.event - INFO - Update id=261501753 is handled. Duration 629 ms by bot id=8749053931
+2026-03-21 20:15:58,266 - aiogram.event - INFO - Update id=261501753 is handled. Duration 629 ms by bot id=8749053931
+2026-03-21 20:15:59,741 - aiogram.event - INFO - Update id=261501754 is handled. Duration 528 ms by bot id=8749053931
+2026-03-21 20:15:59,741 - aiogram.event - INFO - Update id=261501754 is handled. Duration 528 ms by bot id=8749053931
+2026-03-21 20:16:07,349 - aiogram.event - INFO - Update id=261501755 is handled. Duration 313 ms by bot id=8749053931
+2026-03-21 20:16:07,349 - aiogram.event - INFO - Update id=261501755 is handled. Duration 313 ms by bot id=8749053931
+2026-03-21 20:16:22,086 - aiogram.event - INFO - Update id=261501756 is handled. Duration 618 ms by bot id=8749053931
+2026-03-21 20:16:22,086 - aiogram.event - INFO - Update id=261501756 is handled. Duration 618 ms by bot id=8749053931
+2026-03-21 20:17:51,163 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-21 20:17:51,163 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-21 20:17:51,165 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-21 20:17:51,165 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-21 20:18:11,835 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 20:18:11,835 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 20:18:11,836 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:18:11,836 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:18:11,836 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 20:18:11,836 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 20:18:12,011 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 20:18:12,011 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 20:18:12,087 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 20:18:12,087 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 20:18:13,751 - telegram - INFO - runtime_logging_enabled pid=69077 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 20:18:13,755 - aiogram - INFO - runtime_logging_enabled pid=69077 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 20:18:13,755 - aiogram - INFO - runtime_logging_enabled pid=69077 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 20:18:13,766 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 20:18:13,766 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 20:18:13,767 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 20:18:13,767 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 20:18:13,830 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:18:13,830 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:18:15,126 - aiogram.event - INFO - Update id=261501757 is handled. Duration 182 ms by bot id=8749053931
+2026-03-21 20:18:15,126 - aiogram.event - INFO - Update id=261501757 is handled. Duration 182 ms by bot id=8749053931
+2026-03-21 20:18:29,075 - aiogram.event - INFO - Update id=261501758 is handled. Duration 342 ms by bot id=8749053931
+2026-03-21 20:18:29,075 - aiogram.event - INFO - Update id=261501758 is handled. Duration 342 ms by bot id=8749053931
+2026-03-21 20:18:37,256 - aiogram.event - INFO - Update id=261501759 is handled. Duration 532 ms by bot id=8749053931
+2026-03-21 20:18:37,256 - aiogram.event - INFO - Update id=261501759 is handled. Duration 532 ms by bot id=8749053931
+2026-03-21 20:18:45,230 - aiogram.event - INFO - Update id=261501760 is handled. Duration 176 ms by bot id=8749053931
+2026-03-21 20:18:45,230 - aiogram.event - INFO - Update id=261501760 is handled. Duration 176 ms by bot id=8749053931
+2026-03-21 20:19:26,806 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 20:19:26,806 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2026-03-21 20:19:26,808 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:19:26,808 - aiogram.dispatcher - INFO - Polling stopped for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:19:26,809 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 20:19:26,809 - aiogram.dispatcher - INFO - Polling stopped
+2026-03-21 20:19:27,059 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 20:19:27,059 - aiogram - INFO - aiogram adapter stopped
+2026-03-21 20:19:28,994 - telegram - INFO - runtime_logging_enabled pid=70027 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 20:19:28,997 - aiogram - INFO - runtime_logging_enabled pid=70027 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 20:19:28,997 - aiogram - INFO - runtime_logging_enabled pid=70027 cwd=/root/xiuxian_bot python=3.13.12
+2026-03-21 20:19:29,005 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 20:19:29,005 - aiogram - INFO - aiogram adapter starting (full_fsm_coverage)
+2026-03-21 20:19:29,005 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 20:19:29,005 - aiogram.dispatcher - INFO - Start polling
+2026-03-21 20:19:29,076 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:19:29,076 - aiogram.dispatcher - INFO - Run polling for bot @myfsgodbot id=8749053931 - 'myfsgodbot'
+2026-03-21 20:21:28,994 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=5 total_exceptions=0 levels={'INFO': 5}
+2026-03-21 20:21:28,994 - telegram.runtime - INFO - runtime_stats uptime_s=120 total_records=5 total_exceptions=0 levels={'INFO': 5}
+2026-03-21 20:21:28,997 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=5 total_exceptions=0 levels={'INFO': 5}
+2026-03-21 20:21:28,997 - aiogram.runtime - INFO - runtime_stats uptime_s=120 total_records=5 total_exceptions=0 levels={'INFO': 5}
+2026-03-21 20:23:28,995 - telegram.runtime - INFO - runtime_stats uptime_s=240 total_records=7 total_exceptions=0 levels={'INFO': 7}
+2026-03-21 20:23:28,995 - telegram.runtime - INFO - runtime_stats uptime_s=240 total_records=7 total_exceptions=0 levels={'INFO': 7}
+2026-03-21 20:23:28,997 - aiogram.runtime - INFO - runtime_stats uptime_s=240 total_records=7 total_exceptions=0 levels={'INFO': 7}
+2026-03-21 20:23:28,997 - aiogram.runtime - INFO - runtime_stats uptime_s=240 total_records=7 total_exceptions=0 levels={'INFO': 7}
+2026-03-21 20:25:28,995 - telegram.runtime - INFO - runtime_stats uptime_s=360 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-21 20:25:28,995 - telegram.runtime - INFO - runtime_stats uptime_s=360 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-21 20:25:28,997 - aiogram.runtime - INFO - runtime_stats uptime_s=360 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-21 20:25:28,997 - aiogram.runtime - INFO - runtime_stats uptime_s=360 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-21 20:27:28,996 - telegram.runtime - INFO - runtime_stats uptime_s=480 total_records=11 total_exceptions=0 levels={'INFO': 11}
+2026-03-21 20:27:28,996 - telegram.runtime - INFO - runtime_stats uptime_s=480 total_records=11 total_exceptions=0 levels={'INFO': 11}
+2026-03-21 20:27:28,997 - aiogram.runtime - INFO - runtime_stats uptime_s=480 total_records=11 total_exceptions=0 levels={'INFO': 11}
+2026-03-21 20:27:28,997 - aiogram.runtime - INFO - runtime_stats uptime_s=480 total_records=11 total_exceptions=0 levels={'INFO': 11}

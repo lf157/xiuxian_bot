@@ -1,10 +1,44 @@
 # 项目变更日志（Changelog）
 
-- 最后更新：2026-03-21 19:12 (UTC+8)
-- 本轮修复完成时间：2026-03-21 19:12 (UTC+8)
+- 最后更新：2026-03-21 20:24 (UTC+8)
+- 本轮修复完成时间：2026-03-21 20:24 (UTC+8)
 - 维护规则：新记录写在最前；每条记录必须包含“记录时间、影响范围、修改摘要”。
 
 ## 2026-03-21
+
+### [38] MiniApp 狩猎参数缺失修复（默认补齐 monster_id）
+- 记录时间：2026-03-21 20:24 (UTC+8)
+- 影响范围：`xiuxian-web/src/views/Hunt.vue`、`xiuxian-web/src/api/client.ts`。
+- 修改摘要：
+  - 修复 MiniApp 点击“狩猎”时报 `MISSING_PARAMS` 的问题：前端请求中 `monster_id` 为空。
+  - `Hunt.vue` 新增默认怪物探测逻辑：先调用 `/api/monsters` 获取可挑战目标，缓存 `monster_id`，再发起回合战斗和快速狩猎。
+  - `api/client.ts` 中 `hunt` / `turnStart` 调整为显式传递 `monster_id`，并为 `getMonsters` 增加可选 `user_id` 参数。
+  - 前端产物已重新构建并同步到 `/var/www/xiuxian-web`。
+
+### [37] MiniApp 按钮兼容策略调整（禁止降级到外部网页）
+- 记录时间：2026-03-21 20:13 (UTC+8)
+- 影响范围：`adapters/telegram/bot.py`、`adapters/aiogram/legacy_bridge.py`、`tests/test_aiogram_legacy_bridge.py`。
+- 修改摘要：
+  - 针对 `BUTTON_TYPE_INVALID`，不再把 `web_app` 按钮降级为 URL 网页按钮，改为降级到 `miniapp_private_hint` 回调提示（引导私聊打开 MiniApp）。
+  - Telegram 发送入口 `_reply_text` 新增按钮降级重试，避免 `/start` 直接回“服务器错误，请稍后重试”。
+  - Chat Menu 按钮在配置了 `miniapp.url` 时改为 `MenuButtonWebApp`，提供稳定的 MiniApp 入口。
+  - 更新桥接回归测试，覆盖“web_app 失败后降级为回调提示”的行为。
+
+### [36] WebApp 按钮兼容降级（修复 BUTTON_TYPE_INVALID 导致的“服务器错误”）
+- 记录时间：2026-03-21 20:04 (UTC+8)
+- 影响范围：`adapters/aiogram/legacy_bridge.py`、`tests/test_aiogram_legacy_bridge.py`。
+- 修改摘要：
+  - 兼容桥发送/编辑消息时，若 Telegram 返回 `BUTTON_TYPE_INVALID`，自动将 `web_app` 按钮降级为同 URL 的普通按钮后重试。
+  - 覆盖 `_CompatBot.send_message`、`_CompatMessage.reply_text`、`_CompatCallbackQuery.edit_message_text` 三条链路，避免 /start 等入口直接报“服务器错误，请稍后重试”。
+  - 新增回归测试，验证 `web_app` 保留、可降级与失败后自动重试。
+
+### [35] aiogram 兼容桥修复 WebApp 按钮丢失（进入修仙世界不再退化为状态）
+- 记录时间：2026-03-21 19:55 (UTC+8)
+- 影响范围：`adapters/aiogram/legacy_bridge.py`、`tests/test_aiogram_legacy_bridge.py`。
+- 修改摘要：
+  - 兼容桥 `InlineKeyboardButton` 转换补齐 `web_app` 字段，正确映射为 aiogram 的 `WebAppInfo`。
+  - 修复“🏯 进入修仙世界”按钮被降级为 `main_menu` 回调后只刷新状态、不打开 MiniApp 的问题。
+  - 新增回归测试覆盖 `web_app` 透传，防止后续迁移回归。
 
 ### [34] MiniApp 404 修复（Nginx root 与部署目录自动同步）
 - 记录时间：2026-03-21 19:12 (UTC+8)

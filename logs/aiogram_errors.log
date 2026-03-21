@@ -783,3 +783,4 @@ Traceback (most recent call last):
 aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 24 seconds.
 Original description: Too Many Requests: retry after 24
 (background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+2026-03-21 19:57:56,924 - telegram - ERROR - start error: Telegram server says - Bad Request: BUTTON_TYPE_INVALID

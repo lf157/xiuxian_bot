@@ -5,7 +5,7 @@ import IcFlask from '~icons/mdi/flask-round-bottom'
 import IcRun from '~icons/mdi/run-fast'
 import IcRefresh from '~icons/mdi/refresh'
 import { usePlayerStore } from '@/stores/player'
-import { hunt, turnStart, turnAction, getHuntStatus } from '@/api/client'
+import { hunt, turnStart, turnAction, getHuntStatus, getMonsters } from '@/api/client'
 
 type Phase = 'idle' | 'loading' | 'battle' | 'result'
 
@@ -18,6 +18,20 @@ const battleState = ref<Record<string, any>>({})
 const resultData = ref<Record<string, any> | null>(null)
 const logBox = ref<HTMLDivElement | null>(null)
 const storyUnlocked = ref(false)
+const defaultMonsterId = ref('')
+
+async function ensureDefaultMonsterId(): Promise<string> {
+  if (defaultMonsterId.value) return defaultMonsterId.value
+  if (!player.userId) throw new Error('缺少角色参数')
+
+  const r = await getMonsters(player.userId)
+  const list = Array.isArray((r as any)?.monsters) ? (r as any).monsters : []
+  const picked = list.find((m: any) => String(m?.monster_id || '').trim())?.monster_id
+  const resolved = String(picked || '').trim()
+  if (!resolved) throw new Error('未找到可狩猎目标')
+  defaultMonsterId.value = resolved
+  return resolved
+}
 
 onMounted(async () => {
   if (!player.loaded && player.userId) await player.init()
@@ -41,7 +55,8 @@ async function startHunt() {
   acting.value = true
   battleLog.value = []
   try {
-    const r = await turnStart(player.userId)
+    const monsterId = await ensureDefaultMonsterId()
+    const r = await turnStart(player.userId, monsterId)
     if (r.success === false) {
       alert(r.message || '无法狩猎')
       phase.value = 'idle'
@@ -93,7 +108,8 @@ async function quickHunt() {
   phase.value = 'loading'
   battleLog.value = []
   try {
-    const r = await hunt(player.userId)
+    const monsterId = await ensureDefaultMonsterId()
+    const r = await hunt(player.userId, monsterId)
     resultData.value = r
     if (r.log) battleLog.value = r.log
     phase.value = 'result'
