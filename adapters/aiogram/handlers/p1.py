@@ -769,22 +769,40 @@ async def cb_break_confirm(query: CallbackQuery, state: FSMContext) -> None:
             result["congrats_message"] = (
                 f"灵光一闪！恭喜 {mention} 道友，修为精进，成功突破至【{realm_name}】！"
             )
-        await _respond_query(
-            query,
-            ui.format_breakthrough_result(result),
-            reply_markup=ui.main_menu_keyboard(registered=True),
-            alert_text="突破成功",
-            parse_mode=ParseMode.MARKDOWN,
-        )
+        # 突破成功：发送新消息，让用户在聊天中直接看到结果
+        if query.message:
+            try:
+                await query.message.answer(
+                    ui.format_breakthrough_result(result),
+                    reply_markup=ui.main_menu_keyboard(registered=True),
+                    parse_mode=ParseMode.MARKDOWN,
+                )
+            except Exception:
+                await _respond_query(
+                    query,
+                    ui.format_breakthrough_result(result),
+                    reply_markup=ui.main_menu_keyboard(registered=True),
+                    parse_mode=ParseMode.MARKDOWN,
+                )
+        await _safe_answer_callback(query, text="突破成功", show_alert=False)
         return
 
     code = str(result.get("code", "")).upper()
     if code == "BREAKTHROUGH_FAILED":
-        await _respond_query(
-            query,
-            ui.format_breakthrough_result(result),
-            reply_markup=ui.breakthrough_keyboard(strategy, call_for_help),
-        )
+        # 突破失败：也发送新消息，让用户能看到结果
+        if query.message:
+            try:
+                await query.message.answer(
+                    ui.format_breakthrough_result(result),
+                    reply_markup=ui.breakthrough_keyboard(strategy, call_for_help),
+                )
+            except Exception:
+                await _respond_query(
+                    query,
+                    ui.format_breakthrough_result(result),
+                    reply_markup=ui.breakthrough_keyboard(strategy, call_for_help),
+                )
+        await _safe_answer_callback(query, text="突破失败", show_alert=False)
         return
 
     text = f"❌ {_error_text(result, '突破失败')}"

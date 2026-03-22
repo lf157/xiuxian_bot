@@ -709,76 +709,78 @@ def roll_targeted_equipment_drop(
 SHOP_ITEMS = {
     "copper": [
         # 丹药
-        {"item_id": "small_exp_pill", "name": "小修为丹", "price": 100, "stock": -1},
-        {"item_id": "medium_exp_pill", "name": "中修为丹", "price": 350, "stock": -1},
-        {"item_id": "hp_pill", "name": "回血丹", "price": 50, "stock": -1},
-        {"item_id": "mp_pill", "name": "回蓝丹", "price": 50, "stock": -1},
-        {"item_id": "breakthrough_pill", "name": "突破丹", "price": 500, "stock": -1},
-        {"item_id": "spirit_array_low", "name": "下品聚灵阵", "price": 650, "stock": -1},
-        {"item_id": "spirit_array_mid", "name": "中品聚灵阵", "price": 1800, "stock": -1},
-        {"item_id": "spirit_array_high", "name": "上品聚灵阵", "price": 3600, "stock": -1},
+        {"item_id": "small_exp_pill", "name": "小修为丹", "price": 100, "stock": -1, "category": "pill"},
+        {"item_id": "medium_exp_pill", "name": "中修为丹", "price": 350, "stock": -1, "category": "pill"},
+        {"item_id": "hp_pill", "name": "回血丹", "price": 50, "stock": -1, "category": "pill"},
+        {"item_id": "mp_pill", "name": "回蓝丹", "price": 50, "stock": -1, "category": "pill"},
+        {"item_id": "breakthrough_pill", "name": "突破丹", "price": 500, "stock": -1, "category": "pill"},
+        # 法阵（低级在铜币）
+        {"item_id": "spirit_array_low", "name": "下品聚灵阵", "price": 650, "stock": -1, "category": "array"},
         # 材料
-        {"item_id": "iron_ore", "name": "铁矿石", "price": 10, "stock": -1},
-        {"item_id": "herb", "name": "灵草", "price": 20, "stock": -1},
-        {"item_id": "spirit_stone", "name": "灵石", "price": 50, "stock": -1},
+        {"item_id": "iron_ore", "name": "铁矿石", "price": 10, "stock": -1, "category": "material"},
+        {"item_id": "herb", "name": "灵草", "price": 20, "stock": -1, "category": "material"},
+        {"item_id": "spirit_stone", "name": "灵石", "price": 50, "stock": -1, "category": "material"},
     ],
     "gold": [
-        {"item_id": "large_exp_pill", "name": "大修为丹", "price": 10, "stock": -1},
-        {"item_id": "super_exp_pill", "name": "超级修为丹", "price": 25, "stock": -1},
-        {"item_id": "advanced_breakthrough_pill", "name": "高级突破丹", "price": 15, "stock": -1},
-        {"item_id": "spirit_array_low", "name": "下品聚灵阵", "price": 5, "stock": -1},
-        {"item_id": "spirit_array_mid", "name": "中品聚灵阵", "price": 12, "stock": -1},
-        {"item_id": "spirit_array_high", "name": "上品聚灵阵", "price": 24, "stock": -1},
-        {"item_id": "cultivation_buff_pill", "name": "悟道丹", "price": 5, "stock": -1},
-        {"item_id": "cultivation_sprint_pill", "name": "修炼冲刺丹", "price": 8, "stock": -1},
-        {"item_id": "realm_drop_pill", "name": "秘境掉落丹", "price": 8, "stock": -1},
-        {"item_id": "breakthrough_guard_pill", "name": "突破保护丹", "price": 12, "stock": -1},
+        # 丹药
+        {"item_id": "large_exp_pill", "name": "大修为丹", "price": 10, "stock": -1, "category": "pill"},
+        {"item_id": "super_exp_pill", "name": "超级修为丹", "price": 25, "stock": -1, "category": "pill"},
+        {"item_id": "advanced_breakthrough_pill", "name": "高级突破丹", "price": 15, "stock": -1, "category": "pill"},
+        {"item_id": "cultivation_buff_pill", "name": "悟道丹", "price": 5, "stock": -1, "category": "pill"},
+        {"item_id": "cultivation_sprint_pill", "name": "修炼冲刺丹", "price": 8, "stock": -1, "category": "pill"},
+        {"item_id": "realm_drop_pill", "name": "秘境掉落丹", "price": 8, "stock": -1, "category": "pill"},
+        {"item_id": "breakthrough_guard_pill", "name": "突破保护丹", "price": 12, "stock": -1, "category": "pill"},
+        # 法阵（中高级在金币）
+        {"item_id": "spirit_array_mid", "name": "中品聚灵阵", "price": 12, "stock": -1, "category": "array"},
+        {"item_id": "spirit_array_high", "name": "上品聚灵阵", "price": 24, "stock": -1, "category": "array"},
     ],
     "spirit_high": [
-        {"item_id": "super_breakthrough_pill", "name": "超级突破丹", "price": 100, "stock": 10},
+        {"item_id": "super_breakthrough_pill", "name": "超级突破丹", "price": 100, "stock": 10, "category": "pill"},
     ]
 }
 
 SHOP_ROTATIONS = {
     "copper": {
         "daily_specials": [
-            {"item_id": "hp_pill", "price": 35, "stock": 3, "tag": "每日特惠", "limit": 3, "limit_period": "day"},
-            {"item_id": "mp_pill", "price": 35, "stock": 3, "tag": "每日特惠", "limit": 3, "limit_period": "day"},
-            {"item_id": "small_exp_pill", "price": 80, "stock": 2, "tag": "每日特惠", "limit": 2, "limit_period": "day"},
-            {"item_id": "spirit_array_low", "price": 520, "stock": 2, "tag": "聚灵阵补给", "limit": 2, "limit_period": "day"},
-            {"item_id": "iron_ore", "price": 8, "stock": 10, "tag": "每日特惠", "limit": 10, "limit_period": "day"},
-            {"item_id": "herb", "price": 15, "stock": 10, "tag": "每日特惠", "limit": 10, "limit_period": "day"},
+            # hp_pill / mp_pill / small_exp_pill / spirit_array_low / iron_ore / herb 均已在铜币常驻，此处为限时折扣版
+            {"item_id": "hp_pill", "price": 35, "stock": 3, "tag": "限时折扣", "category": "pill", "limit": 3, "limit_period": "day"},
+            {"item_id": "mp_pill", "price": 35, "stock": 3, "tag": "限时折扣", "category": "pill", "limit": 3, "limit_period": "day"},
+            {"item_id": "small_exp_pill", "price": 80, "stock": 2, "tag": "限时折扣", "category": "pill", "limit": 2, "limit_period": "day"},
+            {"item_id": "spirit_array_low", "price": 520, "stock": 2, "tag": "限时折扣", "category": "array", "limit": 2, "limit_period": "day"},
+            {"item_id": "iron_ore", "price": 8, "stock": 10, "tag": "限时折扣", "category": "material", "limit": 10, "limit_period": "day"},
+            {"item_id": "herb", "price": 15, "stock": 10, "tag": "限时折扣", "category": "material", "limit": 10, "limit_period": "day"},
         ],
         "weekly_rare": [
-            {"item_id": "spirit_stone", "price": 35, "stock": 12, "tag": "周稀有材料", "limit": 12, "limit_period": "week"},
-            {"item_id": "spirit_herb", "price": 70, "stock": 8, "tag": "周稀有材料", "limit": 8, "limit_period": "week"},
-            {"item_id": "spirit_array_mid", "price": 1450, "stock": 4, "tag": "周限聚灵阵", "limit": 4, "limit_period": "week"},
-            {"item_id": "spirit_array_high", "price": 3000, "stock": 2, "tag": "周限聚灵阵", "limit": 2, "limit_period": "week"},
-            {"item_id": "demon_core", "price": 220, "stock": 3, "tag": "周稀有材料", "limit": 3, "limit_period": "week"},
-            {"item_id": "skill_book_basic", "price": 90, "stock": 4, "tag": "技能成长", "limit": 4, "limit_period": "week"},
+            # spirit_stone 已在铜币常驻，此处为限时折扣版
+            {"item_id": "spirit_stone", "price": 35, "stock": 12, "tag": "限时折扣", "category": "material", "limit": 12, "limit_period": "week"},
+            {"item_id": "spirit_herb", "price": 70, "stock": 8, "tag": "周稀有材料", "category": "material", "limit": 8, "limit_period": "week"},
+            {"item_id": "demon_core", "price": 220, "stock": 3, "tag": "周稀有材料", "category": "material", "limit": 3, "limit_period": "week"},
+            {"item_id": "skill_book_basic", "price": 90, "stock": 4, "tag": "技能成长", "category": "book", "limit": 4, "limit_period": "week"},
         ],
     },
     "gold": {
         "daily_specials": [
-            {"item_id": "advanced_breakthrough_pill", "price": 10, "stock": 10, "tag": "限量突破资源", "limit": 10, "limit_period": "day"},
-            {"item_id": "spirit_array_low", "price": 4, "stock": 4, "tag": "聚灵阵补给", "limit": 4, "limit_period": "day"},
-            {"item_id": "cultivation_buff_pill", "price": 4, "stock": 2, "tag": "每日特惠", "limit": 2, "limit_period": "day"},
+            # advanced_breakthrough_pill / cultivation_buff_pill 已在金币常驻，此处为限时折扣版
+            {"item_id": "advanced_breakthrough_pill", "price": 10, "stock": 10, "tag": "限时折扣", "category": "pill", "limit": 10, "limit_period": "day"},
+            {"item_id": "cultivation_buff_pill", "price": 4, "stock": 2, "tag": "限时折扣", "category": "pill", "limit": 2, "limit_period": "day"},
         ],
         "weekly_rare": [
-            {"item_id": "demon_core", "price": 8, "stock": 2, "tag": "周稀有材料", "limit": 2, "limit_period": "week"},
-            {"item_id": "recipe_fragment", "price": 6, "stock": 3, "tag": "周稀有材料", "limit": 3, "limit_period": "week"},
-            {"item_id": "spirit_array_mid", "price": 10, "stock": 4, "tag": "周限聚灵阵", "limit": 4, "limit_period": "week"},
-            {"item_id": "spirit_array_high", "price": 20, "stock": 2, "tag": "周限聚灵阵", "limit": 2, "limit_period": "week"},
-            {"item_id": "phoenix_feather", "price": 15, "stock": 1, "tag": "限量突破资源", "limit": 1, "limit_period": "week", "min_rank": 20},
-            {"item_id": "cultivation_sprint_pill", "price": 6, "stock": 2, "tag": "短期目标丹", "limit": 2, "limit_period": "week"},
-            {"item_id": "realm_drop_pill", "price": 6, "stock": 2, "tag": "短期目标丹", "limit": 2, "limit_period": "week"},
-            {"item_id": "breakthrough_guard_pill", "price": 9, "stock": 1, "tag": "短期目标丹", "limit": 1, "limit_period": "week"},
-            {"item_id": "skill_book_advanced", "price": 6, "stock": 2, "tag": "技能成长", "limit": 2, "limit_period": "week", "min_rank": 12},
+            {"item_id": "demon_core", "price": 8, "stock": 2, "tag": "周稀有材料", "category": "material", "limit": 2, "limit_period": "week"},
+            {"item_id": "recipe_fragment", "price": 6, "stock": 3, "tag": "周稀有材料", "category": "material", "limit": 3, "limit_period": "week"},
+            # spirit_array_mid / spirit_array_high 已在金币常驻，此处为限时折扣版
+            {"item_id": "spirit_array_mid", "price": 10, "stock": 4, "tag": "限时折扣", "category": "array", "limit": 4, "limit_period": "week"},
+            {"item_id": "spirit_array_high", "price": 20, "stock": 2, "tag": "限时折扣", "category": "array", "limit": 2, "limit_period": "week"},
+            {"item_id": "phoenix_feather", "price": 15, "stock": 1, "tag": "限量突破资源", "category": "material", "limit": 1, "limit_period": "week", "min_rank": 20},
+            # cultivation_sprint_pill / realm_drop_pill / breakthrough_guard_pill 已在金币常驻，此处为限时折扣版
+            {"item_id": "cultivation_sprint_pill", "price": 6, "stock": 2, "tag": "限时折扣", "category": "pill", "limit": 2, "limit_period": "week"},
+            {"item_id": "realm_drop_pill", "price": 6, "stock": 2, "tag": "限时折扣", "category": "pill", "limit": 2, "limit_period": "week"},
+            {"item_id": "breakthrough_guard_pill", "price": 9, "stock": 1, "tag": "限时折扣", "category": "pill", "limit": 1, "limit_period": "week"},
+            {"item_id": "skill_book_advanced", "price": 6, "stock": 2, "tag": "技能成长", "category": "book", "limit": 2, "limit_period": "week", "min_rank": 12},
         ],
     },
     "spirit_high": {
         "daily_specials": [
-            {"item_id": "super_breakthrough_pill", "price": 100, "stock": 10, "tag": "上品限量丹", "limit": 10, "limit_period": "day"},
+            {"item_id": "super_breakthrough_pill", "price": 100, "stock": 10, "tag": "限时折扣", "category": "pill", "limit": 10, "limit_period": "day"},
         ],
         "weekly_rare": [],
     },
@@ -872,7 +874,13 @@ def list_all_shop_offers(currency: str = "copper") -> List[Dict[str, Any]]:
     items.extend(_pick_rotating_offers(currency, "weekly_rare"))
     dedup: dict[str, Dict[str, Any]] = {}
     for item in items:
-        dedup[item["item_id"]] = item
+        key = item["item_id"]
+        if key in dedup:
+            # 优先保留价格更低的版本（限时折扣）
+            if int(item.get("price", 0)) < int(dedup[key].get("price", 0)):
+                dedup[key] = item
+        else:
+            dedup[key] = item
     return list(dedup.values())
 
 
@@ -889,6 +897,12 @@ def get_shop_offer(item_id: str, currency: Optional[str] = None) -> Optional[Dic
 
 def get_shop_items(currency: str = "copper") -> List[Dict]:
     """获取商店物品列表"""
+    # item_type -> category 的映射，用于没有显式 category 的旧数据兜底
+    _type_to_category = {
+        ItemType.PILL: "pill",
+        ItemType.MATERIAL: "material",
+        ItemType.SKILL_BOOK: "book",
+    }
     result = []
     role = SHOP_CURRENCY_ROLES.get(currency, "")
     for item in list_all_shop_offers(currency):
@@ -904,6 +918,15 @@ def get_shop_items(currency: str = "copper") -> List[Dict]:
             enriched["usage"] = item_def["usage"]
         if item_def.get("stage_hint"):
             enriched["stage_hint"] = item_def["stage_hint"]
+        # 确保 category 字段存在
+        if not enriched.get("category"):
+            item_type = item_def.get("type")
+            if item_type and item_type in _type_to_category:
+                enriched["category"] = _type_to_category[item_type]
+            elif item_def.get("effect") == "spirit_array":
+                enriched["category"] = "array"
+            else:
+                enriched["category"] = "pill"
         enriched.setdefault("tag", "常驻货架")
         result.append(_enrich_shop_price(enriched))
     return result

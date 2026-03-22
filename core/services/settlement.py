@@ -308,7 +308,8 @@ def settle_hunt(
         if targeted_drop:
             drops.append(targeted_drop)
         rewards = result.get("rewards", {})
-        hp_after_battle = max(1, int(result.get("attacker_remaining_hp", user.get("max_hp", 100)) or 1))
+        db_max_hp = int(user.get("max_hp", 100) or 100)
+        hp_after_battle = max(1, min(db_max_hp, int(result.get("attacker_remaining_hp", db_max_hp) or 1)))
 
         # ---- 单事务原子结算 ----
         with db_transaction() as cur:
@@ -329,6 +330,8 @@ def settle_hunt(
                 )
 
             # 2. 原子更新用户数值（SQL加法，非读-改-写）
+            db_max_mp = int(user.get("max_mp", 50) or 50)
+            mp_after_battle = max(0, min(db_max_mp, int(result.get("attacker_remaining_mp", user.get("mp", db_max_mp)) or 0)))
             cur.execute(
                 """UPDATE users SET
                    exp = exp + ?, copper = copper + ?, gold = gold + ?, hp = ?, mp = ?, vitals_updated_at = ?,
@@ -336,7 +339,7 @@ def settle_hunt(
                    WHERE user_id = ?""",
                 (rewards.get("exp", 0), rewards.get("copper", 0),
                  rewards.get("gold", 0), hp_after_battle,
-                 int(result.get("attacker_remaining_mp", user.get("mp", user.get("max_mp", 50))) or 0),
+                 mp_after_battle,
                  now, now, user_id),
             )
 
@@ -780,14 +783,16 @@ def settle_secret_realm_explore(
                         drop.get("low_hp_shield_pct", 0),
                     ),
                 )
+            db_max_hp_sr = int(user.get("max_hp", 100) or 100)
+            db_max_mp_sr = int(user.get("max_mp", 50) or 50)
             cur.execute(
                 "UPDATE users SET exp = exp + ?, copper = copper + ?, gold = gold + ?, hp = ?, mp = ?, secret_loot_score = secret_loot_score + ?, vitals_updated_at = ? WHERE user_id = ?",
                 (
                     int(total_reward["exp"]),
                     int(total_reward["copper"]),
                     int(total_reward["gold"]),
-                    max(1, int(current_hp)),
-                    max(0, int(current_mp)),
+                    max(1, min(db_max_hp_sr, int(current_hp))),
+                    max(0, min(db_max_mp_sr, int(current_mp))),
                     loot_score,
                     now,
                     user_id,
@@ -1001,10 +1006,12 @@ def settle_secret_realm_explore(
     reward["copper"] = int(round(float(reward.get("copper", 0) or 0) * reward_mult))
     total_gold = int(round((battle_gold + realm_gold) * reward_mult))
     loot_score = int(reward["exp"] + reward["copper"] + total_gold * 300 + sum((d.get("quantity", 1) or 1) * 120 for d in drops))
-    hp_after_battle = max(1, int(battle_result.get("attacker_remaining_hp", user.get("max_hp", 100)) or 1))
+    db_max_hp_single = int(user.get("max_hp", 100) or 100)
+    db_max_mp_single = int(user.get("max_mp", 50) or 50)
+    hp_after_battle = max(1, min(db_max_hp_single, int(battle_result.get("attacker_remaining_hp", db_max_hp_single) or 1)))
     if encounter.get("monster_id") and not battle_result.get("victory", True):
         hp_after_battle = 1
-    mp_after_battle = int(battle_result.get("attacker_remaining_mp", user.get("mp", user.get("max_mp", 50))) or 0)
+    mp_after_battle = max(0, min(db_max_mp_single, int(battle_result.get("attacker_remaining_mp", user.get("mp", db_max_mp_single)) or 0)))
 
     with db_transaction() as cur:
         for drop in drops:

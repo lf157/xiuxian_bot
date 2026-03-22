@@ -79,34 +79,34 @@ def get_element_description(element: str) -> Dict[str, str]:
  
     descriptions = {
         "木": {
-            "name_en": "Dendro",
+            "name_en": "Wood",
             "name_zh": "木",
-            "description_en": "...",
-            "description_zh": "..."
+            "description_en": "Wood element: High HP regen and lifesteal, thrives in prolonged battles.",
+            "description_zh": "木灵根：生命恢复+25%，基础吸血+2%。擅长持久战，以生生不息克敌制胜。"
         },
         "土": {
-            "name_en": "Geo",
+            "name_en": "Earth",
             "name_zh": "土",
-            "description_en": "...",
-            "description_zh": "..."
+            "description_en": "Earth element: Solid defense and high HP, an immovable fortress.",
+            "description_zh": "土灵根：生命+15%，防御+10%。厚土护身，稳如磐石，适合以守为攻。"
         },
         "水": {
-            "name_en": "Hydro",
+            "name_en": "Water",
             "name_zh": "水",
-            "description_en": "...",
-            "description_zh": "..."
+            "description_en": "Water element: High dodge rate and skill damage, elusive and deadly.",
+            "description_zh": "水灵根：闪避+8%，技能伤害+6%，防御+5%。身法飘逸，以巧破力。"
         },
         "火": {
-            "name_en": "Pyro",
+            "name_en": "Fire",
             "name_zh": "火",
-            "description_en": "...",
-            "description_zh": "..."
+            "description_en": "Fire element: Highest attack and skill damage, a glass cannon.",
+            "description_zh": "火灵根：攻击+20%，技能伤害+10%。一力破万法，攻势如烈焰燎原。"
         },
         "金": {
-            "name_en": "Metallo",
+            "name_en": "Metal",
             "name_zh": "金",
-            "description_en": "...",
-            "description_zh": "..."
+            "description_en": "Metal element: High crit rate with balanced offense.",
+            "description_zh": "金灵根：攻击+15%，暴击率+5%。锋锐无匹，一击致命。"
         }
     }
     

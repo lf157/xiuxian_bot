@@ -17,6 +17,7 @@ from core.database.connection import (
     execute,
     add_item,
     fetch_one,
+    fetch_all,
     db_transaction,
     refresh_user_vitals,
     spend_user_stamina_tx,
@@ -278,6 +279,67 @@ def _active_buff_value(*, now: int, until: Any, value: Any, default: float = 0.0
         return float(default)
 
 
+# ── 突破关联道具 ──
+
+_BREAKTHROUGH_EFFECT_DESC: Dict[str, str] = {
+    "breakthrough_pill": "提升突破成功率 +10%",
+    "advanced_breakthrough_pill": "提升突破成功率 +20%，可豁免天雷劫压制",
+    "super_breakthrough_pill": "提升突破成功率 +50%，可豁免天雷劫压制",
+    "breakthrough_guard_pill": "突破保护：一段时间内突破失败不进虚弱状态，额外 +5% 成功率",
+}
+
+
+def _get_breakthrough_related_items(user_id: str) -> list:
+    """查询用户背包中与突破相关的道具列表。
+
+    匹配规则：item_id 包含 "breakthrough" 关键字（覆盖已知及将来新增道具）。
+
+    返回格式: [{"item_id": ..., "item_name": ..., "quantity": N, "effect": "..."}]
+    """
+    try:
+        rows = fetch_all(
+            "SELECT item_id, item_name, SUM(quantity) AS quantity "
+            "FROM items WHERE user_id = %s AND item_id LIKE %s "
+            "GROUP BY item_id, item_name "
+            "HAVING SUM(quantity) > 0 "
+            "ORDER BY item_id",
+            (user_id, "%breakthrough%"),
+        )
+    except Exception:
+        rows = []
+
+    result = []
+    for row in rows:
+        iid = str(row.get("item_id") or "")
+        qty = int(row.get("quantity", 0) or 0)
+        if qty <= 0:
+            continue
+        item_name = str(row.get("item_name") or "")
+        if not item_name:
+            defn = get_item_by_id(iid)
+            item_name = str((defn or {}).get("name", iid))
+        effect = _BREAKTHROUGH_EFFECT_DESC.get(iid, "")
+        if not effect:
+            defn = get_item_by_id(iid)
+            if defn:
+                val = defn.get("value", 0)
+                if defn.get("effect") == "breakthrough" and val:
+                    effect = f"提升突破成功率 +{val}%"
+                elif defn.get("effect") == "breakthrough_protect":
+                    effect = "突破保护：失败不进虚弱状态"
+                else:
+                    effect = "辅助突破"
+            else:
+                effect = "辅助突破"
+        result.append({
+            "item_id": iid,
+            "item_name": item_name,
+            "quantity": qty,
+            "effect": effect,
+        })
+    return result
+
+
 def get_breakthrough_preview(
     *,
     user_id: str,
@@ -521,6 +583,7 @@ def get_breakthrough_preview(
             "rate_parts": rate_parts,
             "preview_text": preview_text,
             "strategy_notes": strategy_notes,
+            "related_items": _get_breakthrough_related_items(user_id),
         },
     }, 200
 
@@ -1747,6 +1810,312 @@ def _consume_one_item_tx(cur: object, *, user_id: str, item_id: str) -> bool:
     return int(cur.rowcount or 0) == 1
 
 
+# ---------------------------------------------------------------------------
+# settle_use_item -- dict-dispatch 重构
+#
+# 每个 handler 签名统一:
+#   def _handle_xxx(*, cur, user_id, user, base_item, now) -> Dict[str, Any]
+#
+# handler 内部通过 cur 做 SQL 写操作（已在事务内）。
+# 返回 payload dict，由外层包装成 (payload, status_code) 元组。
+# 如需提前返回错误，抛出 _UseItemAbort(payload, status) 即可。
+# ---------------------------------------------------------------------------
+
+class _UseItemAbort(Exception):
+    """Handler 需要提前返回错误时抛出。"""
+    def __init__(self, payload: Dict[str, Any], status: int):
+        self.payload = payload
+        self.status = status
+
+
+def _handle_exp(*, cur, user_id, user, base_item, now) -> Dict[str, Any]:
+    value = base_item.get("value", 0)
+    cur.execute("UPDATE users SET exp = exp + %s WHERE user_id = %s", (value, user_id))
+    return {
+        "success": True,
+        "message": f"使用成功！获得 {value} 修为",
+        "effect": "exp",
+        "value": value,
+        "effect_type": "instant",
+        "effect_description": f"修为+{value}",
+        "effect_duration": 0,
+        "effect_value": value,
+    }
+
+
+def _handle_hp(*, cur, user_id, user, base_item, now) -> Dict[str, Any]:
+    value_pct = float(base_item.get("value_pct", 0) or 0)
+    heal_amount = max(1, int(round(int(user.get("max_hp", 100) or 100) * value_pct)))
+    cur.execute(
+        "UPDATE users SET hp = LEAST(max_hp, hp + %s), vitals_updated_at = %s WHERE user_id = %s",
+        (heal_amount, now, user_id),
+    )
+    return {
+        "success": True,
+        "message": f"使用成功！恢复 {heal_amount} HP",
+        "effect": "hp",
+        "value": heal_amount,
+        "effect_type": "instant",
+        "effect_description": f"恢复{heal_amount}HP",
+        "effect_duration": 0,
+        "effect_value": heal_amount,
+    }
+
+
+def _handle_mp(*, cur, user_id, user, base_item, now) -> Dict[str, Any]:
+    value_pct = float(base_item.get("value_pct", 0) or 0)
+    recover_amount = max(1, int(round(int(user.get("max_mp", 50) or 50) * value_pct)))
+    cur.execute(
+        "UPDATE users SET mp = LEAST(max_mp, mp + %s), vitals_updated_at = %s WHERE user_id = %s",
+        (recover_amount, now, user_id),
+    )
+    return {
+        "success": True,
+        "message": f"使用成功！恢复 {recover_amount} MP",
+        "effect": "mp",
+        "value": recover_amount,
+        "effect_type": "instant",
+        "effect_description": f"恢复{recover_amount}MP",
+        "effect_duration": 0,
+        "effect_value": recover_amount,
+    }
+
+
+def _handle_full_restore(*, cur, user_id, user, base_item, now) -> Dict[str, Any]:
+    cur.execute("UPDATE users SET hp = max_hp, mp = max_mp, vitals_updated_at = %s WHERE user_id = %s", (now, user_id))
+    return {
+        "success": True,
+        "message": "使用成功！完全恢复HP和MP",
+        "effect": "full_restore",
+        "value": 0,
+        "effect_type": "instant",
+        "effect_description": "完全恢复HP和MP",
+        "effect_duration": 0,
+        "effect_value": 0,
+    }
+
+
+def _handle_attack_buff(*, cur, user_id, user, base_item, now) -> Dict[str, Any]:
+    value = int(base_item.get("value", 0) or 0)
+    duration = int(base_item.get("duration", 3600) or 3600)
+    if value <= 0:
+        raise _UseItemAbort({"success": False, "code": "INVALID", "message": "此物品无法使用"}, 400)
+    current_until = int(user.get("attack_buff_until", 0) or 0)
+    active_val = int(_active_buff_value(now=now, until=current_until, value=user.get("attack_buff_value", 0), default=0.0))
+    new_until = max(current_until if current_until > now else 0, now + duration)
+    new_val = max(active_val, value)
+    cur.execute(
+        "UPDATE users SET attack_buff_until = %s, attack_buff_value = %s WHERE user_id = %s",
+        (new_until, new_val, user_id),
+    )
+    duration_minutes = duration // 60
+    return {
+        "success": True,
+        "message": f"使用成功！攻击+{new_val}（{duration_minutes}分钟内有效）",
+        "effect": "attack_buff",
+        "value": new_val,
+        "effect_type": "buff",
+        "effect_description": f"攻击+{new_val}",
+        "effect_duration": duration,
+        "effect_value": new_val,
+        "buff_until": new_until,
+    }
+
+
+def _handle_defense_buff(*, cur, user_id, user, base_item, now) -> Dict[str, Any]:
+    value = int(base_item.get("value", 0) or 0)
+    duration = int(base_item.get("duration", 3600) or 3600)
+    if value <= 0:
+        raise _UseItemAbort({"success": False, "code": "INVALID", "message": "此物品无法使用"}, 400)
+    current_until = int(user.get("defense_buff_until", 0) or 0)
+    active_val = int(_active_buff_value(now=now, until=current_until, value=user.get("defense_buff_value", 0), default=0.0))
+    new_until = max(current_until if current_until > now else 0, now + duration)
+    new_val = max(active_val, value)
+    cur.execute(
+        "UPDATE users SET defense_buff_until = %s, defense_buff_value = %s WHERE user_id = %s",
+        (new_until, new_val, user_id),
+    )
+    duration_minutes = duration // 60
+    return {
+        "success": True,
+        "message": f"使用成功！防御+{new_val}（{duration_minutes}分钟内有效）",
+        "effect": "defense_buff",
+        "value": new_val,
+        "effect_type": "buff",
+        "effect_description": f"防御+{new_val}",
+        "effect_duration": duration,
+        "effect_value": new_val,
+        "buff_until": new_until,
+    }
+
+
+def _handle_cultivation_buff(*, cur, user_id, user, base_item, now) -> Dict[str, Any]:
+    """cultivation_sprint / cultivation_buff 共用逻辑。"""
+    effect = base_item.get("effect")
+    if user.get("state"):
+        raise _UseItemAbort({"success": False, "code": "INVALID", "message": "修炼中无法使用，请先结算修炼"}, 400)
+    buffs = _pill_buff_cfg()
+    cfg = buffs["cultivation_sprint"]
+    duration = int(base_item.get("duration", cfg.get("duration_seconds", 7200)) or 7200)
+    bonus_pct = int(base_item.get("value", 0) or 0)
+    if bonus_pct <= 0:
+        exp_mult = float(cfg.get("exp_mult", 1.35))
+        bonus_pct = int(round((exp_mult - 1) * 100))
+    current_until = int(user.get("cultivation_boost_until", 0) or 0)
+    active_pct = _active_buff_value(now=now, until=current_until, value=user.get("cultivation_boost_pct", 0), default=0.0)
+    new_until = max(current_until if current_until > now else 0, now + duration)
+    new_pct = max(active_pct, bonus_pct)
+    item_name = str(base_item.get("name", "") or "")
+    if not item_name:
+        item_name = "悟道丹" if effect == "cultivation_buff" else "修炼冲刺丹"
+    duration_minutes = duration // 60
+    cur.execute(
+        "UPDATE users SET cultivation_boost_until = %s, cultivation_boost_pct = %s WHERE user_id = %s",
+        (new_until, new_pct, user_id),
+    )
+    return {
+        "success": True,
+        "message": f"使用成功！{item_name}生效，修炼收益+{int(new_pct)}%（{duration_minutes}分钟内有效）",
+        "effect": effect,
+        "value": int(new_pct),
+        "effect_type": "buff",
+        "effect_description": f"修炼收益+{int(new_pct)}%",
+        "effect_duration": duration,
+        "effect_value": int(new_pct),
+        "buff_until": new_until,
+    }
+
+
+def _handle_realm_drop_boost(*, cur, user_id, user, base_item, now) -> Dict[str, Any]:
+    if get_secret_realm_attempts_left(user) <= 0:
+        raise _UseItemAbort({"success": False, "code": "INVALID", "message": "今日秘境次数已用尽，无法使用"}, 400)
+    buffs = _pill_buff_cfg()
+    cfg = buffs["realm_drop"]
+    duration = int(cfg.get("duration_seconds", 3600))
+    drop_mul = float(cfg.get("drop_mul", 1.35))
+    bonus_pct = int(round((drop_mul - 1) * 100))
+    current_until = int(user.get("realm_drop_boost_until", 0) or 0)
+    new_until = max(current_until, now + duration)
+    cur.execute("UPDATE users SET realm_drop_boost_until = %s WHERE user_id = %s", (new_until, user_id))
+    return {
+        "success": True,
+        "message": f"使用成功！秘境掉落丹生效，秘境掉落+{bonus_pct}%（{duration // 60}分钟内有效）",
+        "effect": "realm_drop_boost",
+        "value": bonus_pct,
+        "effect_type": "buff",
+        "effect_description": f"秘境掉落+{bonus_pct}%",
+        "effect_duration": duration,
+        "effect_value": bonus_pct,
+        "buff_until": new_until,
+    }
+
+
+def _handle_breakthrough_protect(*, cur, user_id, user, base_item, now) -> Dict[str, Any]:
+    buffs = _pill_buff_cfg()
+    cfg = buffs["breakthrough_protect"]
+    duration = int(cfg.get("duration_seconds", 3600))
+    exp_loss_mult = float(cfg.get("exp_loss_mult", 0.5))
+    bonus_pct = int(round((1 - exp_loss_mult) * 100))
+    current_until = int(user.get("breakthrough_protect_until", 0) or 0)
+    new_until = max(current_until, now + duration)
+    cur.execute("UPDATE users SET breakthrough_protect_until = %s WHERE user_id = %s", (new_until, user_id))
+    return {
+        "success": True,
+        "message": f"使用成功！突破保护丹生效，下一次突破失败惩罚降低{bonus_pct}%（{duration // 60}分钟内有效）",
+        "effect": "breakthrough_protect",
+        "value": bonus_pct,
+        "effect_type": "buff",
+        "effect_description": f"突破失败惩罚降低{bonus_pct}%",
+        "effect_duration": duration,
+        "effect_value": bonus_pct,
+        "buff_until": new_until,
+    }
+
+
+def _handle_spirit_array(*, cur, user_id, user, base_item, now) -> Dict[str, Any]:
+    bonus_pct = int(base_item.get("value", 0) or 0)
+    duration = int(base_item.get("duration", 3600) or 3600)
+    mp_pct = float(base_item.get("value_pct", 0) or 0)
+    if bonus_pct <= 0:
+        raise _UseItemAbort({"success": False, "code": "INVALID", "message": "此物品无法使用"}, 400)
+    current_until = int(user.get("breakthrough_boost_until", 0) or 0)
+    active_pct = _active_buff_value(now=now, until=current_until, value=user.get("breakthrough_boost_pct", 0), default=0.0)
+    new_until = max(current_until if current_until > now else 0, now + duration)
+    new_pct = max(active_pct, bonus_pct)
+    recover_amount = 0
+    if mp_pct > 0:
+        recover_amount = max(1, int(round(int(user.get("max_mp", 50) or 50) * mp_pct)))
+    message = f"使用成功！聚灵阵已启动，当前聚灵增益+{int(new_pct)}%"
+    if recover_amount > 0:
+        message += f"，恢复 {recover_amount} MP"
+    message += f"（{duration // 60}分钟内有效）"
+    if recover_amount > 0:
+        cur.execute(
+            "UPDATE users SET breakthrough_boost_until = %s, breakthrough_boost_pct = %s, mp = LEAST(max_mp, mp + %s), vitals_updated_at = %s WHERE user_id = %s",
+            (new_until, new_pct, recover_amount, now, user_id),
+        )
+    else:
+        cur.execute(
+            "UPDATE users SET breakthrough_boost_until = %s, breakthrough_boost_pct = %s WHERE user_id = %s",
+            (new_until, new_pct, user_id),
+        )
+    return {
+        "success": True,
+        "message": message,
+        "effect": "spirit_array",
+        "value": int(new_pct),
+        "mp_recovered": recover_amount,
+        "effect_type": "buff",
+        "effect_description": f"聚灵增益+{int(new_pct)}%" + (f"，恢复{recover_amount}MP" if recover_amount > 0 else ""),
+        "effect_duration": duration,
+        "effect_value": int(new_pct),
+        "buff_until": new_until,
+    }
+
+
+def _handle_breakthrough(*, cur, user_id, user, base_item, now) -> Dict[str, Any]:
+    bonus_pct = int(base_item.get("value", 0) or 0)
+    duration = int(base_item.get("duration", 3600) or 3600)
+    if bonus_pct <= 0:
+        raise _UseItemAbort({"success": False, "code": "INVALID", "message": "此物品无法使用"}, 400)
+    current_until = int(user.get("breakthrough_boost_until", 0) or 0)
+    active_pct = _active_buff_value(now=now, until=current_until, value=user.get("breakthrough_boost_pct", 0), default=0.0)
+    new_until = max(current_until if current_until > now else 0, now + duration)
+    new_pct = max(active_pct, bonus_pct)
+    cur.execute(
+        "UPDATE users SET breakthrough_boost_until = %s, breakthrough_boost_pct = %s WHERE user_id = %s",
+        (new_until, new_pct, user_id),
+    )
+    return {
+        "success": True,
+        "message": f"使用成功！突破成功率+{int(new_pct)}%（{duration // 60}分钟内有效）",
+        "effect": "breakthrough",
+        "value": int(new_pct),
+        "effect_type": "buff",
+        "effect_description": f"突破成功率+{int(new_pct)}%",
+        "effect_duration": duration,
+        "effect_value": int(new_pct),
+        "buff_until": new_until,
+    }
+
+
+# 效果名 -> 处理函数 映射表
+_ITEM_EFFECT_HANDLERS: Dict[str, Any] = {
+    "exp": _handle_exp,
+    "hp": _handle_hp,
+    "mp": _handle_mp,
+    "full_restore": _handle_full_restore,
+    "attack_buff": _handle_attack_buff,
+    "defense_buff": _handle_defense_buff,
+    "cultivation_sprint": _handle_cultivation_buff,
+    "cultivation_buff": _handle_cultivation_buff,
+    "realm_drop_boost": _handle_realm_drop_boost,
+    "breakthrough_protect": _handle_breakthrough_protect,
+    "spirit_array": _handle_spirit_array,
+    "breakthrough": _handle_breakthrough,
+}
+
+
 def settle_use_item(*, user_id: str, item_id: str) -> Tuple[Dict[str, Any], int]:
     refresh_user_vitals(user_id)
     user = get_user_by_id(user_id)
@@ -1761,200 +2130,20 @@ def settle_use_item(*, user_id: str, item_id: str) -> Tuple[Dict[str, Any], int]
         return {"success": False, "code": "NOT_FOUND", "message": "未知物品"}, 400
 
     effect = base_item.get("effect")
-    value = base_item.get("value", 0)
-    value_pct = float(base_item.get("value_pct", 0) or 0)
     now = int(time.time())
 
-    if effect in ("exp", "hp", "mp", "full_restore"):
-        try:
-            with db_transaction() as cur:
-                if not _consume_one_item_tx(cur, user_id=user_id, item_id=item_id):
-                    raise ValueError("NOT_FOUND")
-                # 应用效果（SQL原子操作，避免读改写竞态）
-                if effect == "exp":
-                    cur.execute("UPDATE users SET exp = exp + %s WHERE user_id = %s", (value, user_id))
-                    message = f"使用成功！获得 {value} 修为"
-                elif effect == "hp":
-                    heal_amount = max(1, int(round(int(user.get("max_hp", 100) or 100) * value_pct)))
-                    cur.execute(
-                        "UPDATE users SET hp = LEAST(max_hp, hp + %s), vitals_updated_at = %s WHERE user_id = %s",
-                        (heal_amount, now, user_id),
-                    )
-                    message = f"使用成功！恢复 {heal_amount} HP"
-                elif effect == "mp":
-                    recover_amount = max(1, int(round(int(user.get("max_mp", 50) or 50) * value_pct)))
-                    cur.execute(
-                        "UPDATE users SET mp = LEAST(max_mp, mp + %s), vitals_updated_at = %s WHERE user_id = %s",
-                        (recover_amount, now, user_id),
-                    )
-                    message = f"使用成功！恢复 {recover_amount} MP"
-                else:  # full_restore
-                    cur.execute("UPDATE users SET hp = max_hp, mp = max_mp, vitals_updated_at = %s WHERE user_id = %s", (now, user_id))
-                    message = "使用成功！完全恢复HP和MP"
-        except ValueError:
-            return {"success": False, "code": "NOT_FOUND", "message": "物品不存在或数量不足"}, 400
+    handler = _ITEM_EFFECT_HANDLERS.get(effect)
+    if handler is None:
+        return {"success": False, "code": "INVALID", "message": "此物品无法使用"}, 400
 
-        return {
-            "success": True,
-            "message": message,
-            "effect": effect,
-            "value": value,
-        }, 200
+    try:
+        with db_transaction() as cur:
+            if not _consume_one_item_tx(cur, user_id=user_id, item_id=item_id):
+                raise ValueError("NOT_FOUND")
+            result = handler(cur=cur, user_id=user_id, user=user, base_item=base_item, now=now)
+    except _UseItemAbort as e:
+        return e.payload, e.status
+    except ValueError:
+        return {"success": False, "code": "NOT_FOUND", "message": "物品不存在或数量不足"}, 400
 
-    buffs = _pill_buff_cfg()
-    if effect in ("attack_buff", "defense_buff"):
-        value = int(base_item.get("value", 0) or 0)
-        duration = int(base_item.get("duration", 3600) or 3600)
-        if value <= 0:
-            return {"success": False, "code": "INVALID", "message": "此物品无法使用"}, 400
-        if effect == "attack_buff":
-            current_until = int(user.get("attack_buff_until", 0) or 0)
-            active_val = int(_active_buff_value(now=now, until=current_until, value=user.get("attack_buff_value", 0), default=0.0))
-            new_until = max(current_until if current_until > now else 0, now + duration)
-            new_val = max(active_val, value)
-            message = f"使用成功！攻击+{new_val}（{duration // 60}分钟内有效）"
-            update_sql = "UPDATE users SET attack_buff_until = %s, attack_buff_value = %s WHERE user_id = %s"
-            update_params = (new_until, new_val, user_id)
-        else:
-            current_until = int(user.get("defense_buff_until", 0) or 0)
-            active_val = int(_active_buff_value(now=now, until=current_until, value=user.get("defense_buff_value", 0), default=0.0))
-            new_until = max(current_until if current_until > now else 0, now + duration)
-            new_val = max(active_val, value)
-            message = f"使用成功！防御+{new_val}（{duration // 60}分钟内有效）"
-            update_sql = "UPDATE users SET defense_buff_until = %s, defense_buff_value = %s WHERE user_id = %s"
-            update_params = (new_until, new_val, user_id)
-        try:
-            with db_transaction() as cur:
-                if not _consume_one_item_tx(cur, user_id=user_id, item_id=item_id):
-                    raise ValueError("NOT_FOUND")
-                cur.execute(update_sql, update_params)
-        except ValueError:
-            return {"success": False, "code": "NOT_FOUND", "message": "物品不存在或数量不足"}, 400
-        return {"success": True, "message": message, "effect": effect, "value": value}, 200
-
-    if effect in ("cultivation_sprint", "cultivation_buff"):
-        if user.get("state"):
-            return {"success": False, "code": "INVALID", "message": "修炼中无法使用，请先结算修炼"}, 400
-        cfg = buffs["cultivation_sprint"]
-        duration = int(base_item.get("duration", cfg.get("duration_seconds", 7200)) or 7200)
-        bonus_pct = int(base_item.get("value", 0) or 0)
-        if bonus_pct <= 0:
-            exp_mult = float(cfg.get("exp_mult", 1.35))
-            bonus_pct = int(round((exp_mult - 1) * 100))
-        current_until = int(user.get("cultivation_boost_until", 0) or 0)
-        active_pct = _active_buff_value(now=now, until=current_until, value=user.get("cultivation_boost_pct", 0), default=0.0)
-        new_until = max(current_until if current_until > now else 0, now + duration)
-        new_pct = max(active_pct, bonus_pct)
-        message = f"使用成功！修炼冲刺丹生效，下一次修炼收益+{int(new_pct)}%（{duration // 60}分钟内有效）"
-        try:
-            with db_transaction() as cur:
-                if not _consume_one_item_tx(cur, user_id=user_id, item_id=item_id):
-                    raise ValueError("NOT_FOUND")
-                cur.execute(
-                    "UPDATE users SET cultivation_boost_until = %s, cultivation_boost_pct = %s WHERE user_id = %s",
-                    (new_until, new_pct, user_id),
-                )
-        except ValueError:
-            return {"success": False, "code": "NOT_FOUND", "message": "物品不存在或数量不足"}, 400
-        return {"success": True, "message": message, "effect": effect, "value": int(new_pct)}, 200
-
-    if effect == "realm_drop_boost":
-        if get_secret_realm_attempts_left(user) <= 0:
-            return {"success": False, "code": "INVALID", "message": "今日秘境次数已用尽，无法使用"}, 400
-        cfg = buffs["realm_drop"]
-        duration = int(cfg.get("duration_seconds", 3600))
-        drop_mul = float(cfg.get("drop_mul", 1.35))
-        bonus_pct = int(round((drop_mul - 1) * 100))
-        current_until = int(user.get("realm_drop_boost_until", 0) or 0)
-        new_until = max(current_until, now + duration)
-        message = f"使用成功！秘境掉落丹生效，秘境掉落+{bonus_pct}%（{duration // 60}分钟内有效）"
-        try:
-            with db_transaction() as cur:
-                if not _consume_one_item_tx(cur, user_id=user_id, item_id=item_id):
-                    raise ValueError("NOT_FOUND")
-                cur.execute("UPDATE users SET realm_drop_boost_until = %s WHERE user_id = %s", (new_until, user_id))
-        except ValueError:
-            return {"success": False, "code": "NOT_FOUND", "message": "物品不存在或数量不足"}, 400
-        return {"success": True, "message": message, "effect": effect, "value": bonus_pct}, 200
-
-    if effect == "breakthrough_protect":
-        cfg = buffs["breakthrough_protect"]
-        duration = int(cfg.get("duration_seconds", 3600))
-        exp_loss_mult = float(cfg.get("exp_loss_mult", 0.5))
-        bonus_pct = int(round((1 - exp_loss_mult) * 100))
-        current_until = int(user.get("breakthrough_protect_until", 0) or 0)
-        new_until = max(current_until, now + duration)
-        message = f"使用成功！突破保护丹生效，下一次突破失败惩罚降低{bonus_pct}%（{duration // 60}分钟内有效）"
-        try:
-            with db_transaction() as cur:
-                if not _consume_one_item_tx(cur, user_id=user_id, item_id=item_id):
-                    raise ValueError("NOT_FOUND")
-                cur.execute("UPDATE users SET breakthrough_protect_until = %s WHERE user_id = %s", (new_until, user_id))
-        except ValueError:
-            return {"success": False, "code": "NOT_FOUND", "message": "物品不存在或数量不足"}, 400
-        return {"success": True, "message": message, "effect": effect, "value": bonus_pct}, 200
-
-    if effect == "spirit_array":
-        bonus_pct = int(base_item.get("value", 0) or 0)
-        duration = int(base_item.get("duration", 3600) or 3600)
-        mp_pct = float(base_item.get("value_pct", 0) or 0)
-        if bonus_pct <= 0:
-            return {"success": False, "code": "INVALID", "message": "此物品无法使用"}, 400
-        current_until = int(user.get("breakthrough_boost_until", 0) or 0)
-        active_pct = _active_buff_value(now=now, until=current_until, value=user.get("breakthrough_boost_pct", 0), default=0.0)
-        new_until = max(current_until if current_until > now else 0, now + duration)
-        new_pct = max(active_pct, bonus_pct)
-        recover_amount = 0
-        if mp_pct > 0:
-            recover_amount = max(1, int(round(int(user.get("max_mp", 50) or 50) * mp_pct)))
-        message = f"使用成功！聚灵阵已启动，当前聚灵增益+{int(new_pct)}%"
-        if recover_amount > 0:
-            message += f"，恢复 {recover_amount} MP"
-        message += f"（{duration // 60}分钟内有效）"
-        try:
-            with db_transaction() as cur:
-                if not _consume_one_item_tx(cur, user_id=user_id, item_id=item_id):
-                    raise ValueError("NOT_FOUND")
-                if recover_amount > 0:
-                    cur.execute(
-                        "UPDATE users SET breakthrough_boost_until = %s, breakthrough_boost_pct = %s, mp = LEAST(max_mp, mp + %s), vitals_updated_at = %s WHERE user_id = %s",
-                        (new_until, new_pct, recover_amount, now, user_id),
-                    )
-                else:
-                    cur.execute(
-                        "UPDATE users SET breakthrough_boost_until = %s, breakthrough_boost_pct = %s WHERE user_id = %s",
-                        (new_until, new_pct, user_id),
-                    )
-        except ValueError:
-            return {"success": False, "code": "NOT_FOUND", "message": "物品不存在或数量不足"}, 400
-        return {
-            "success": True,
-            "message": message,
-            "effect": effect,
-            "value": int(new_pct),
-            "mp_recovered": recover_amount,
-        }, 200
-
-    if effect == "breakthrough":
-        bonus_pct = int(base_item.get("value", 0) or 0)
-        duration = int(base_item.get("duration", 3600) or 3600)
-        if bonus_pct <= 0:
-            return {"success": False, "code": "INVALID", "message": "此物品无法使用"}, 400
-        current_until = int(user.get("breakthrough_boost_until", 0) or 0)
-        active_pct = _active_buff_value(now=now, until=current_until, value=user.get("breakthrough_boost_pct", 0), default=0.0)
-        new_until = max(current_until if current_until > now else 0, now + duration)
-        new_pct = max(active_pct, bonus_pct)
-        message = f"使用成功！突破成功率+{int(new_pct)}%（{duration // 60}分钟内有效）"
-        try:
-            with db_transaction() as cur:
-                if not _consume_one_item_tx(cur, user_id=user_id, item_id=item_id):
-                    raise ValueError("NOT_FOUND")
-                cur.execute(
-                    "UPDATE users SET breakthrough_boost_until = %s, breakthrough_boost_pct = %s WHERE user_id = %s",
-                    (new_until, new_pct, user_id),
-                )
-        except ValueError:
-            return {"success": False, "code": "NOT_FOUND", "message": "物品不存在或数量不足"}, 400
-        return {"success": True, "message": message, "effect": effect, "value": int(new_pct)}, 200
-
-    return {"success": False, "code": "INVALID", "message": "此物品无法使用"}, 400
+    return result, 200

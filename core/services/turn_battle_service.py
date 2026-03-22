@@ -698,7 +698,7 @@ def _run_round(session: Dict[str, Any], action: str, skill_id: Optional[str] = N
     session["player_damage_dealt"] = int(session.get("player_damage_dealt", 0) or 0) + damage
     round_logs.append(f"🗡️ {player.get('name')}造成 {damage} 伤害，{enemy.get('name')}剩余 {enemy['hp']}/{enemy.get('max_hp', enemy['hp'])} HP")
     if heal > 0:
-        player["hp"] = min(int(player.get("max_hp", player["hp"]) or player["hp"]), int(player.get("hp", 0) or 0) + heal)
+        player["hp"] = min(int(player.get("max_hp") or player.get("hp") or 1), int(player.get("hp", 0) or 0) + heal)
     if selected_skill:
         session["skill_uses"] = int(session.get("skill_uses", 0) or 0) + 1
         try:

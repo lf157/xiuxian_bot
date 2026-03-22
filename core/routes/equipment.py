@@ -1,5 +1,6 @@
 """装备 / 强化 / 锻造路由。"""
 
+import math
 from flask import Blueprint, request, jsonify
 
 from core.routes._helpers import (
@@ -26,6 +27,41 @@ from core.services.stats_service import recalculate_user_combat_stats
 equipment_bp = Blueprint("equipment", __name__)
 
 
+def _parse_page_params():
+    """解析分页参数。返回 (page, page_size) 或 (None, None) 表示不分页。"""
+    raw_page = request.args.get("page")
+    raw_size = request.args.get("page_size")
+    if raw_page is None and raw_size is None:
+        return None, None
+    try:
+        page = max(1, int(raw_page or 1))
+    except (TypeError, ValueError):
+        page = 1
+    try:
+        page_size = max(1, int(raw_size or 10))
+    except (TypeError, ValueError):
+        page_size = 10
+    return page, page_size
+
+
+def _paginate(items: list, page, page_size):
+    """对列表做内存分页，返回 (paged_items, pagination_meta)。"""
+    if page is None:
+        return items, {}
+    total = len(items)
+    total_pages = max(1, math.ceil(total / page_size))
+    start = (page - 1) * page_size
+    end = start + page_size
+    return items[start:end], {
+        "page": page,
+        "page_size": page_size,
+        "total": total,
+        "total_pages": total_pages,
+        "has_next": page < total_pages,
+        "has_prev": page > 1,
+    }
+
+
 @equipment_bp.route("/api/items/<user_id>", methods=["GET"])
 def user_items(user_id):
     """获取用户物品"""
@@ -33,7 +69,9 @@ def user_items(user_id):
     if auth_error:
         return auth_error
     items = get_user_items(user_id)
-    return success(items=items)
+    page, page_size = _parse_page_params()
+    items, pagination = _paginate(items, page, page_size)
+    return success(items=items, **pagination)
 
 
 @equipment_bp.route("/api/equip", methods=["POST"])

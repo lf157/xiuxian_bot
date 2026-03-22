@@ -102,7 +102,7 @@ def cultivate_start():
     if sect_buffs.get("in_sect"):
         timing["base_gain"] = int(timing["base_gain"] * (1 + float(sect_buffs.get("cultivation_pct", 0.0)) / 100.0))
 
-    # Apply cultivation sprint pill bonus (next session only)
+    # Apply cultivation sprint pill bonus (time-based buff)
     now = time.time()
     boost_until = int(user.get("cultivation_boost_until", 0) or 0)
     boost_pct = float(user.get("cultivation_boost_pct", 0) or 0)
@@ -120,20 +120,12 @@ def cultivate_start():
     lock_now = int(time.time())
     try:
         with db_transaction() as cur:
-            if boost_applied:
-                cur.execute(
-                    """UPDATE users
-                       SET state = 1, cultivation_boost_until = 0, cultivation_boost_pct = 0
-                       WHERE user_id = %s AND state = 0 AND COALESCE(weak_until, 0) <= %s""",
-                    (user_id, lock_now),
-                )
-            else:
-                cur.execute(
-                    """UPDATE users
-                       SET state = 1
-                       WHERE user_id = %s AND state = 0 AND COALESCE(weak_until, 0) <= %s""",
-                    (user_id, lock_now),
-                )
+            cur.execute(
+                """UPDATE users
+                   SET state = 1
+                   WHERE user_id = %s AND state = 0 AND COALESCE(weak_until, 0) <= %s""",
+                (user_id, lock_now),
+            )
             if int(cur.rowcount or 0) != 1:
                 raise ValueError("STATE_OR_WEAK")
             # 清理历史脏会话，确保同一用户只有一个修炼会话。

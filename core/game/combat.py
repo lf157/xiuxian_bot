@@ -30,6 +30,99 @@ AFFIX_CAPS = {
 }
 
 
+# ---------------------------------------------------------------------------
+# Skill-effect dispatch tables for calculate_damage
+#
+# 每个 handler 签名统一:
+#   temp-mod handler:  (attacker, eff, temp_mods, _store) -> None
+#   self-effect handler: (attacker, eff, max_hp, max_mp, log) -> None
+# ---------------------------------------------------------------------------
+
+def _apply_ignore_def_pct(attacker, eff, temp_mods, _store):
+    if eff.get("ignore_def_pct"):
+        _store("ignore_def_pct")
+        attacker["ignore_def_pct"] = float(eff.get("ignore_def_pct"))
+
+
+def _apply_lifesteal_bonus(attacker, eff, temp_mods, _store):
+    if eff.get("lifesteal_bonus"):
+        _store("lifesteal")
+        attacker["lifesteal"] = float(attacker.get("lifesteal", 0.0) or 0.0) + float(eff.get("lifesteal_bonus"))
+
+
+def _apply_crit_rate_bonus(attacker, eff, temp_mods, _store):
+    if eff.get("crit_rate_bonus"):
+        _store("crit_rate")
+        attacker["crit_rate"] = float(attacker.get("crit_rate", 0.05) or 0.05) + float(eff.get("crit_rate_bonus"))
+
+
+def _apply_damage_taken_mul(attacker, eff, temp_mods, _store):
+    if eff.get("damage_taken_mul"):
+        _store("damage_taken_mul")
+        attacker["damage_taken_mul"] = float(attacker.get("damage_taken_mul", 1.0) or 1.0) * float(eff.get("damage_taken_mul"))
+
+
+# 临时属性修改处理器列表（按原始顺序）
+_SKILL_TEMP_MOD_HANDLERS = [
+    _apply_ignore_def_pct,
+    _apply_lifesteal_bonus,
+    _apply_crit_rate_bonus,
+    _apply_damage_taken_mul,
+]
+
+
+def _effect_self_shield_pct(attacker, eff, max_hp, max_mp, log):
+    if eff.get("self_shield_pct"):
+        shield = int(max_hp * float(eff.get("self_shield_pct")))
+        if shield > 0:
+            attacker["_shield"] = int(attacker.get("_shield", 0) or 0) + shield
+            log.append(f"🔰 护盾 +{shield}")
+
+
+def _effect_restore_hp_pct(attacker, eff, max_hp, max_mp, log):
+    if eff.get("restore_hp_pct"):
+        heal = int(max_hp * float(eff.get("restore_hp_pct")))
+        if heal > 0:
+            attacker["hp"] = min(max_hp, int(attacker.get("hp", 0) or 0) + heal)
+            log.append(f"✨ 回复生命 {heal}")
+
+
+def _effect_restore_mp_pct(attacker, eff, max_hp, max_mp, log):
+    if eff.get("restore_mp_pct"):
+        mp_gain = int(max_mp * float(eff.get("restore_mp_pct")))
+        if mp_gain > 0:
+            attacker["mp"] = min(max_mp, int(attacker.get("mp", 0) or 0) + mp_gain)
+            log.append(f"💠 回复灵力 {mp_gain}")
+
+
+def _effect_convert_hp_to_mp_pct(attacker, eff, max_hp, max_mp, log):
+    if eff.get("convert_hp_to_mp_pct"):
+        hp_cost = int(max_hp * float(eff.get("convert_hp_to_mp_pct")))
+        mp_gain = int(max_mp * float(eff.get("convert_hp_to_mp_pct")))
+        if hp_cost > 0:
+            attacker["hp"] = max(1, int(attacker.get("hp", 0) or 0) - hp_cost)
+            attacker["mp"] = min(max_mp, int(attacker.get("mp", 0) or 0) + mp_gain)
+            log.append(f"💠 转换灵力 {mp_gain}（消耗生命 {hp_cost}）")
+
+
+def _effect_self_damage_pct(attacker, eff, max_hp, max_mp, log):
+    if eff.get("self_damage_pct"):
+        recoil = int(max_hp * float(eff.get("self_damage_pct")))
+        if recoil > 0:
+            attacker["hp"] = max(1, int(attacker.get("hp", 0) or 0) - recoil)
+            log.append(f"⚠️ 反噬伤害 {recoil}")
+
+
+# 自身效果处理器列表（按原始顺序）
+_SKILL_SELF_EFFECT_HANDLERS = [
+    _effect_self_shield_pct,
+    _effect_restore_hp_pct,
+    _effect_restore_mp_pct,
+    _effect_convert_hp_to_mp_pct,
+    _effect_self_damage_pct,
+]
+
+
 MONSTERS = [
     {"id": "wild_boar", "name": "野猪", "element": "土", "hp": 50, "attack": 8, "defense": 3, "exp_reward": 20, "copper_reward": (5, 15), "min_rank": 1},
     {"id": "wolf", "name": "灰狼", "element": "木", "hp": 80, "attack": 12, "defense": 5, "exp_reward": 35, "copper_reward": (10, 25), "min_rank": 1},
@@ -97,18 +190,10 @@ class Combat:
                     if key not in temp_mods:
                         temp_mods[key] = (key in attacker, attacker.get(key))
 
-                if eff.get("ignore_def_pct"):
-                    _store("ignore_def_pct")
-                    attacker["ignore_def_pct"] = float(eff.get("ignore_def_pct"))
-                if eff.get("lifesteal_bonus"):
-                    _store("lifesteal")
-                    attacker["lifesteal"] = float(attacker.get("lifesteal", 0.0) or 0.0) + float(eff.get("lifesteal_bonus"))
-                if eff.get("crit_rate_bonus"):
-                    _store("crit_rate")
-                    attacker["crit_rate"] = float(attacker.get("crit_rate", 0.05) or 0.05) + float(eff.get("crit_rate_bonus"))
-                if eff.get("damage_taken_mul"):
-                    _store("damage_taken_mul")
-                    attacker["damage_taken_mul"] = float(attacker.get("damage_taken_mul", 1.0) or 1.0) * float(eff.get("damage_taken_mul"))
+                # dispatch: 临时属性修改
+                for _handler in _SKILL_TEMP_MOD_HANDLERS:
+                    _handler(attacker, eff, temp_mods, _store)
+
                 multiplier = float(eff.get("attack_multiplier", 1.0) or 1.0)
                 sd = float(attacker.get("skill_damage", 0.0) or 0.0)
                 skill_multiplier = multiplier * (1.0 + max(0.0, sd))
@@ -116,33 +201,11 @@ class Combat:
                     self.log.append(f"✨ 施展技能【{self.active_skill['name']}】！")
                 max_hp = int(attacker.get("max_hp", attacker.get("hp", 0)) or 0)
                 max_mp = int(attacker.get("max_mp", attacker.get("mp", 0)) or 0)
-                if eff.get("self_shield_pct"):
-                    shield = int(max_hp * float(eff.get("self_shield_pct")))
-                    if shield > 0:
-                        attacker["_shield"] = int(attacker.get("_shield", 0) or 0) + shield
-                        self.log.append(f"🔰 护盾 +{shield}")
-                if eff.get("restore_hp_pct"):
-                    heal = int(max_hp * float(eff.get("restore_hp_pct")))
-                    if heal > 0:
-                        attacker["hp"] = min(max_hp, int(attacker.get("hp", 0) or 0) + heal)
-                        self.log.append(f"✨ 回复生命 {heal}")
-                if eff.get("restore_mp_pct"):
-                    mp_gain = int(max_mp * float(eff.get("restore_mp_pct")))
-                    if mp_gain > 0:
-                        attacker["mp"] = min(max_mp, int(attacker.get("mp", 0) or 0) + mp_gain)
-                        self.log.append(f"💠 回复灵力 {mp_gain}")
-                if eff.get("convert_hp_to_mp_pct"):
-                    hp_cost = int(max_hp * float(eff.get("convert_hp_to_mp_pct")))
-                    mp_gain = int(max_mp * float(eff.get("convert_hp_to_mp_pct")))
-                    if hp_cost > 0:
-                        attacker["hp"] = max(1, int(attacker.get("hp", 0) or 0) - hp_cost)
-                        attacker["mp"] = min(max_mp, int(attacker.get("mp", 0) or 0) + mp_gain)
-                        self.log.append(f"💠 转换灵力 {mp_gain}（消耗生命 {hp_cost}）")
-                if eff.get("self_damage_pct"):
-                    recoil = int(max_hp * float(eff.get("self_damage_pct")))
-                    if recoil > 0:
-                        attacker["hp"] = max(1, int(attacker.get("hp", 0) or 0) - recoil)
-                        self.log.append(f"⚠️ 反噬伤害 {recoil}")
+
+                # dispatch: 自身效果（护盾/回复/转换/反噬）
+                for _handler in _SKILL_SELF_EFFECT_HANDLERS:
+                    _handler(attacker, eff, max_hp, max_mp, self.log)
+
                 self.skill_uses += 1
                 self.last_skill_round = round_num
 
@@ -169,12 +232,19 @@ class Combat:
         round_num = 0
         while round_num < max_rounds:
             round_num += 1
-            damage = self.calculate_damage(self.attacker, self.defender, round_num=round_num)
+            # --- 攻击者攻击防御者 ---
+            dodge_rate = float(self.defender.get("dodge_rate", 0.0) or 0.0)
+            if dodge_rate > 0 and random.random() < dodge_rate:
+                self.log.append(f"💨 {self.defender.get('name', '防御方')}闪避了攻击！")
+                damage = 0
+            else:
+                damage = self.calculate_damage(self.attacker, self.defender, round_num=round_num)
             # defender mitigation
-            dtm = float(self.defender.get("damage_taken_mul", 1.0) or 1.0)
-            if dtm != 1.0:
-                damage = int(damage * dtm)
-            damage = apply_defensive_affixes(self.defender, damage, round_num, self.log)
+            if damage > 0:
+                dtm = float(self.defender.get("damage_taken_mul", 1.0) or 1.0)
+                if dtm != 1.0:
+                    damage = int(damage * dtm)
+                damage = apply_defensive_affixes(self.defender, damage, round_num, self.log)
             self.defender["hp"] -= damage
             # lifesteal
             ls = float(self.attacker.get("lifesteal", 0.0) or 0.0)
@@ -189,7 +259,8 @@ class Combat:
                     heal += extra_heal
                     self.log.append(f"✨ 暴击回血 {extra_heal}")
             if heal > 0:
-                self.attacker["hp"] = min(self.attacker.get("max_hp", self.attacker["hp"]), self.attacker["hp"] + heal)
+                atk_max_hp = int(self.attacker.get("max_hp") or self.attacker.get("hp") or 1)
+                self.attacker["hp"] = min(atk_max_hp, int(self.attacker["hp"]) + heal)
                 if ls_heal > 0:
                     self.log.append(f"🩸 吸血回复 {ls_heal}")
             apply_poison_thorns(self.attacker, self.defender, damage, self.log)
@@ -209,11 +280,18 @@ class Combat:
                     "skill_uses": self.skill_uses,
                     "active_skill_id": self.active_skill.get("id") if self.active_skill else None,
                 }
-            damage = self.calculate_damage(self.defender, self.attacker, round_num=round_num)
-            dtm2 = float(self.attacker.get("damage_taken_mul", 1.0) or 1.0)
-            if dtm2 != 1.0:
-                damage = int(damage * dtm2)
-            damage = apply_defensive_affixes(self.attacker, damage, round_num, self.log)
+            # --- 防御者反击攻击者 ---
+            attacker_dodge = float(self.attacker.get("dodge_rate", 0.0) or 0.0)
+            if attacker_dodge > 0 and random.random() < attacker_dodge:
+                self.log.append(f"💨 {self.attacker.get('name', '攻击方')}闪避了反击！")
+                damage = 0
+            else:
+                damage = self.calculate_damage(self.defender, self.attacker, round_num=round_num)
+            if damage > 0:
+                dtm2 = float(self.attacker.get("damage_taken_mul", 1.0) or 1.0)
+                if dtm2 != 1.0:
+                    damage = int(damage * dtm2)
+                damage = apply_defensive_affixes(self.attacker, damage, round_num, self.log)
             self.attacker["hp"] -= damage
             apply_poison_thorns(self.defender, self.attacker, damage, self.log)
             if damage > 0 and float(self.attacker.get("counter_bonus_pct", 0.0) or 0.0) > 0 and self.attacker.get("hp", 0) > 0:
@@ -430,7 +508,18 @@ def create_combatant_from_user(
 
     if element and element in ELEMENT_BONUSES:
         bonus = ELEMENT_BONUSES[element]
-        combatant["crit_rate"] = max(combatant.get("crit_rate", 0.05), bonus.get("crit_rate", 0.05))
+        # 金: 暴击率
+        if bonus.get("crit_rate"):
+            combatant["crit_rate"] = float(combatant.get("crit_rate", 0.05)) + float(bonus["crit_rate"])
+        # 木: 基础吸血
+        if bonus.get("lifesteal_base"):
+            combatant["lifesteal"] = float(combatant.get("lifesteal", 0.0)) + float(bonus["lifesteal_base"])
+        # 水/火: 技能伤害加成
+        if bonus.get("skill_damage"):
+            combatant["skill_damage"] = float(combatant.get("skill_damage", 0.0)) + float(bonus["skill_damage"])
+        # 水: 闪避率
+        if bonus.get("dodge_rate"):
+            combatant["dodge_rate"] = float(combatant.get("dodge_rate", 0.0)) + float(bonus["dodge_rate"])
         combatant["element"] = element
 
     return combatant
