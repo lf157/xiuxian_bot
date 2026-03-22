@@ -20,6 +20,21 @@ def _fmt_num(value: Any) -> str:
     return f"{_to_int(value):,}"
 
 
+def _fmt_signed_pct_from_ratio(value: Any) -> str:
+    try:
+        ratio = float(value or 0.0)
+    except (TypeError, ValueError):
+        ratio = 0.0
+    pct = ratio * 100.0
+    if abs(pct) < 1e-9:
+        return "0%"
+    sign = "+" if pct > 0 else "-"
+    abs_pct = abs(pct)
+    if abs(abs_pct - round(abs_pct)) < 1e-9:
+        return f"{sign}{int(round(abs_pct))}%"
+    return f"{sign}{abs_pct:.1f}%"
+
+
 def _fmt_seconds(seconds: int) -> str:
     total = max(0, _to_int(seconds))
     if total >= 3600:
@@ -151,7 +166,7 @@ def hunt_settlement_keyboard() -> InlineKeyboardMarkup:
     return builder.as_markup()
 
 
-def breakthrough_keyboard(selected_strategy: str | None) -> InlineKeyboardMarkup:
+def breakthrough_keyboard(selected_strategy: str | None, call_for_help: bool = True) -> InlineKeyboardMarkup:
     current = (selected_strategy or "normal").strip().lower()
     options = [
         ("normal", "普通冲关"),
@@ -163,9 +178,11 @@ def breakthrough_keyboard(selected_strategy: str | None) -> InlineKeyboardMarkup
     for key, label in options:
         text = f"✅ {label}" if key == current else label
         builder.button(text=text, callback_data=f"break:preview:{key}")
+    help_text = "🤝 道友助阵：开" if call_for_help else "🤝 道友助阵：关"
+    builder.button(text=help_text, callback_data="break:help:toggle")
     builder.button(text="⚡ 执行突破", callback_data="break:confirm")
     builder.button(text="⬅️ 主菜单", callback_data="menu:home")
-    builder.adjust(2, 2, 1, 1)
+    builder.adjust(2, 2, 1, 1, 1)
     return builder.as_markup()
 
 
@@ -330,14 +347,34 @@ def format_hunt_settlement(payload: dict[str, Any]) -> str:
 
 def format_breakthrough_preview(preview: dict[str, Any]) -> str:
     strategy_name = preview.get("strategy_name", "普通冲关")
+    is_tribulation = bool(preview.get("is_tribulation", False))
+    location_name = str(preview.get("location_name") or preview.get("current_map") or "未知地带")
+    spirit_density = float(preview.get("spirit_density", 1.0) or 1.0)
+    location_bonus = _fmt_signed_pct_from_ratio(preview.get("location_bonus"))
+    fortune_label = str(preview.get("fortune_label") or "平")
+    fortune_bonus = _fmt_signed_pct_from_ratio(preview.get("fortune_bonus"))
+    call_for_help = bool(preview.get("call_for_help", True))
+    ally_bonus = _fmt_signed_pct_from_ratio(preview.get("ally_help_bonus"))
+    tribulation_flat_penalty = float(preview.get("tribulation_flat_penalty", 0.0) or 0.0)
+    tribulation_rate_multiplier = float(preview.get("tribulation_rate_multiplier", 1.0) or 1.0)
+    tribulation_extra_cost = _to_int(preview.get("tribulation_extra_cost_copper"), 0)
+    tribulation_extra_stamina = _to_int(preview.get("tribulation_extra_stamina"), 0)
     lines = [
-        "⚡ 突破预览",
+        "⛈️ 渡劫突破预览" if is_tribulation else "⚡ 突破预览",
         f"策略: {strategy_name}",
+        f"关卡类型: {'圆满渡劫（天雷劫）' if is_tribulation else '常规破境'}",
         f"当前境界: {preview.get('current_realm', '未知')} → {preview.get('next_realm', '未知')}",
+        f"所在地: {location_name}（灵气×{spirit_density:.2f}，地脉{location_bonus}）",
+        f"今日运势: {fortune_label}（{fortune_bonus}）",
+        f"道友助阵: {'已召集' if call_for_help else '未召集'}（{ally_bonus if call_for_help else '0%'}）",
         f"成功率: {preview.get('success_rate_pct', 0)}%",
         f"消耗: {_fmt_num(preview.get('cost_copper', 0))} 下品灵石 + {preview.get('stamina_cost', 1)} 精力",
-        f"保底进度: {preview.get('pity', 0)}/{preview.get('pity_threshold', 0)}",
     ]
+    if is_tribulation:
+        lines.append(
+            f"雷劫压制: {_fmt_signed_pct_from_ratio(-tribulation_flat_penalty)}，倍率 x{tribulation_rate_multiplier:.2f}"
+        )
+        lines.append(f"雷劫附加消耗: +{_fmt_num(tribulation_extra_cost)} 下品灵石，+{tribulation_extra_stamina} 精力")
     rate_parts = list(preview.get("rate_parts") or [])
     if rate_parts:
         lines.append("加成构成：")
@@ -352,8 +389,10 @@ def format_breakthrough_preview(preview: dict[str, Any]) -> str:
 
 def format_breakthrough_result(payload: dict[str, Any]) -> str:
     if payload.get("success"):
+        congrats = str(payload.get("congrats_message", "") or "").strip()
         lines = [
             f"✅ 突破成功：{payload.get('new_realm', '未知境界')}",
+            f"*{congrats}*" if congrats else "",
             payload.get("message", ""),
         ]
         if payload.get("strategy_cost_text"):

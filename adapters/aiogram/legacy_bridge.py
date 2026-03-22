@@ -462,6 +462,11 @@ _COMMAND_DISPATCH: dict[str, Any] = {
     "xian_alchemy": legacy_bot.alchemy_cmd,
     "currency": legacy_bot.currency_cmd,
     "xian_currency": legacy_bot.currency_cmd,
+    "xian_give_low": legacy_bot.xian_give_low_cmd,
+    "xian_give_mid": legacy_bot.xian_give_mid_cmd,
+    "xian_give_high": legacy_bot.xian_give_high_cmd,
+    "xian_give_uhigh": legacy_bot.xian_give_uhigh_cmd,
+    "xian_give_xhigh": legacy_bot.xian_give_xhigh_cmd,
     "convert": legacy_bot.convert_cmd,
     "xian_convert": legacy_bot.convert_cmd,
     "ach": legacy_bot.achievements_cmd,
@@ -484,6 +489,8 @@ _COMMAND_DISPATCH: dict[str, Any] = {
     "xian_realms": legacy_bot.guide_cmd,
     "version": legacy_bot.version_cmd,
     "xian_version": legacy_bot.version_cmd,
+    "test": legacy_bot.admin_test_cmd,
+    "xian_test": legacy_bot.admin_test_cmd,
 }
 
 

@@ -227,3 +227,25 @@ Traceback (most recent call last):
 psycopg2.errors.UniqueViolation: duplicate key value violates unique constraint "event_claims_user_id_event_id_key"
 DETAIL:  Key (user_id, event_id)=(1000008, moon_market) already exists.
 
+2026-03-22 15:53:28,810 - core - ERROR - Unhandled core exception path=/api/sect/daily_claim method=POST
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/core/routes/sect.py", line 500, in sect_daily_claim
+    member = fetch_one(
+        "SELECT sect_id, role, daily_claimed FROM sect_members WHERE player_id = %s",
+        (user_id,)
+    )
+  File "/root/xiuxian_bot/core/database/connection.py", line 200, in fetch_one
+    cur.execute(_normalize_query_placeholders(query), params)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/psycopg2/extras.py", line 236, in execute
+    return super().execute(query, vars)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column "daily_claimed" does not exist
+LINE 1: SELECT sect_id, role, daily_claimed FROM sect_members WHERE ...
+                              ^
+

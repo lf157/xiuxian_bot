@@ -220,8 +220,6 @@ def attempt_breakthrough(user_data: Dict[str, Any], use_pill: bool = False, extr
     金丹期及以上需要特定突破材料（全局限量物品）。
     材料检查由调用方在调用前完成，本函数通过 user_data["has_break_material"] 判断。
     """
-    from core.services.breakthrough_pity import bonus as pity_bonus, is_hard_pity
-
     realm_id = user_data.get("rank", 1)
     realm = get_realm_by_id(realm_id)
     next_realm = get_next_realm(realm_id)
@@ -243,30 +241,25 @@ def attempt_breakthrough(user_data: Dict[str, Any], use_pill: bool = False, extr
                 f"💡 线索：{hint}"
             )
 
-    # 检查硬保底
-    current_pity = int(user_data.get("breakthrough_pity", 0) or 0)
-    if is_hard_pity(current_pity, realm_id):
-        return True, f"恭喜！触发硬保底，突破成功，进入【{next_realm['name']}】境界！"
-
-    # 计算成功率
-    success_rate = next_realm["break_rate"]
-
-    # 保底加成
-    success_rate = min(1.0, success_rate + pity_bonus(current_pity))
+    # 计算成功率（一次性汇总后再截断，避免中间截断导致显示与实际不一致）
+    success_rate = float(next_realm["break_rate"] or 0.0)
+    total_bonus = 0.0
 
     steady_bonus = float(config.get_nested("balance", "breakthrough", "steady_bonus", default=0.10) or 0.10)
     if use_pill:
-        success_rate = min(1.0, success_rate + steady_bonus)
+        total_bonus += steady_bonus
 
     if extra_bonus:
-        success_rate = min(1.0, success_rate + float(extra_bonus))
+        total_bonus += float(extra_bonus)
 
     # 五行影响
     element = user_data.get("element")
     if element and element in ELEMENT_BONUSES:
         fire_bonus = float(config.get_nested("balance", "breakthrough", "fire_bonus", default=0.03) or 0.03)
         if element == "火":
-            success_rate = min(1.0, success_rate + fire_bonus)
+            total_bonus += fire_bonus
+
+    success_rate = max(0.0, min(1.0, success_rate + total_bonus))
 
     # 随机判定
     success = random.random() < success_rate

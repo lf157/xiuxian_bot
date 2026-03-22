@@ -40,6 +40,21 @@ from core.utils.timeutil import local_day_key
 cultivation_bp = Blueprint("cultivation", __name__)
 
 
+def _parse_bool_value(value, *, default: bool) -> bool:
+    if value is None:
+        return default
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        return bool(value)
+    text = str(value).strip().lower()
+    if text in {"1", "true", "yes", "y", "on"}:
+        return True
+    if text in {"0", "false", "no", "n", "off", ""}:
+        return False
+    return default
+
+
 @cultivation_bp.route("/api/cultivate/start", methods=["POST"])
 def cultivate_start():
     data, payload_error = parse_json_payload()
@@ -388,7 +403,13 @@ def breakthrough_preview(user_id: str):
     strategy = str(request.args.get("strategy", "steady") or "steady")
     use_pill_raw = str(request.args.get("use_pill", "false") or "false").strip().lower()
     use_pill = use_pill_raw in ("1", "true", "yes", "on")
-    resp, http_status = get_breakthrough_preview(user_id=user_id, use_pill=use_pill, strategy=strategy)
+    call_for_help = _parse_bool_value(request.args.get("call_for_help"), default=True)
+    resp, http_status = get_breakthrough_preview(
+        user_id=user_id,
+        use_pill=use_pill,
+        strategy=strategy,
+        call_for_help=call_for_help,
+    )
     return jsonify(resp), http_status
 
 
@@ -403,12 +424,24 @@ def breakthrough():
         return auth_error
     use_pill = data.get("use_pill", False)
     strategy = data.get("strategy", "normal")
-    log_action("breakthrough", user_id=user_id, use_pill=bool(use_pill), strategy=strategy)
+    call_for_help = _parse_bool_value(data.get("call_for_help"), default=True)
+    log_action(
+        "breakthrough",
+        user_id=user_id,
+        use_pill=bool(use_pill),
+        strategy=strategy,
+        call_for_help=call_for_help,
+    )
 
     if not user_id:
         return error("MISSING_PARAMS", "Missing user_id", 400)
 
-    resp, http_status = settle_breakthrough(user_id=user_id, use_pill=bool(use_pill), strategy=strategy)
+    resp, http_status = settle_breakthrough(
+        user_id=user_id,
+        use_pill=bool(use_pill),
+        strategy=strategy,
+        call_for_help=call_for_help,
+    )
 
     # success: ensure final stats include equipment bonuses (and refill hp/mp)
     if resp.get("success"):

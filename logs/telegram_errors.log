@@ -794,3 +794,19 @@ Original description: Too Many Requests: retry after 4
 2026-03-22 11:46:07,795 - telegram - ERROR - worldboss attack error: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 13 seconds.
 Original description: Too Many Requests: retry after 13
 (background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+2026-03-22 16:59:51,810 - adapters.aiogram.legacy_bridge - ERROR - legacy_command_bridge_failed cmd=xian_give_low error=AttributeError
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/adapters/aiogram/legacy_bridge.py", line 512, in bridge_command_handler
+    await handler(update, context)
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 7380, in xian_give_low_cmd
+    await _admin_give_currency_cmd(update, context, tier="low")
+  File "/root/xiuxian_bot/adapters/telegram/bot.py", line 7327, in _admin_give_currency_cmd
+    target_user = get_user_by_id(target_uid)
+  File "/root/xiuxian_bot/core/database/connection.py", line 1603, in get_user_by_id
+    return fetch_one("SELECT * FROM users WHERE user_id = %s", (user_id,))
+  File "/root/xiuxian_bot/core/database/connection.py", line 198, in fetch_one
+    conn = get_sqlite()
+  File "/root/xiuxian_bot/core/database/connection.py", line 129, in get_sqlite
+    conn = _pool.getconn()
+           ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'getconn'

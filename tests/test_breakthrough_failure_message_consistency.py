@@ -30,6 +30,16 @@ def test_attempt_breakthrough_failure_message_has_no_hardcoded_penalty(monkeypat
     assert "1小时" not in msg
 
 
+def test_attempt_breakthrough_bonus_clamp_is_applied_at_end(monkeypatch):
+    user = {"rank": 1, "exp": 10000, "element": "火"}
+    # 对应服务端可能出现的组合：展示概率=100%，传入额外加成为负值用于抵消重复项。
+    monkeypatch.setattr(realms_module.random, "random", lambda: 0.99)
+
+    ok, _ = realms_module.attempt_breakthrough(user, use_pill=True, extra_bonus=-0.08)
+
+    assert ok is True
+
+
 @pytest.mark.skipif(not HAS_PG_DRIVER, reason="psycopg2 not installed")
 def test_settle_breakthrough_failure_message_uses_actual_penalty(monkeypatch, test_db):
     from core.services import settlement_extra
@@ -45,7 +55,7 @@ def test_settle_breakthrough_failure_message_uses_actual_penalty(monkeypatch, te
         strategy="desperate",
     )
 
-    assert status == 200
+    assert status == 400
     assert not resp.get("success")
     assert resp.get("code") == "BREAKTHROUGH_FAILED"
 
@@ -55,3 +65,34 @@ def test_settle_breakthrough_failure_message_uses_actual_penalty(monkeypatch, te
     assert "虚弱状态90分钟" in str(resp.get("message", ""))
     assert "1小时" not in str(resp.get("message", ""))
     assert int(resp.get("weak_seconds", 0) or 0) == 5400
+
+
+@pytest.mark.skipif(not HAS_PG_DRIVER, reason="psycopg2 not installed")
+def test_settle_breakthrough_tribulation_failure_has_extra_penalty(monkeypatch, test_db):
+    from core.services import settlement_extra
+
+    _create_user("bt_fail_tribulation", rank=5)
+
+    monkeypatch.setattr(settlement_extra, "is_realm_trial_complete", lambda _uid, _rank: True)
+    monkeypatch.setattr(realms_module.random, "random", lambda: 1.0)
+
+    resp, status = settlement_extra.settle_breakthrough(
+        user_id="bt_fail_tribulation",
+        use_pill=False,
+        strategy="normal",
+        call_for_help=False,
+    )
+
+    assert status == 400
+    assert not resp.get("success")
+    assert resp.get("code") == "BREAKTHROUGH_FAILED"
+    assert resp.get("is_tribulation") is True
+    assert "渡劫失败" in str(resp.get("message", ""))
+    # default tribulation multiplier applies: 100 -> 120
+    assert int(resp.get("cost", 0) or 0) == 120
+    # default stamina 1 + tribulation extra 1
+    assert int(resp.get("stamina_cost", 0) or 0) == 2
+    # default fail 10% + tribulation fail add 5% = 15%
+    assert "损失15%修为" in str(resp.get("message", ""))
+    # default weak 3600 + tribulation weak add 1200 = 4800s => 80分钟
+    assert int(resp.get("weak_seconds", 0) or 0) == 4800

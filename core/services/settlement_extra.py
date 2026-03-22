@@ -6,6 +6,7 @@ Each function returns (response_dict, http_status).
 
 from __future__ import annotations
 
+import hashlib
 import time
 import psycopg2.errors
 from typing import Any, Dict, Tuple
@@ -73,6 +74,8 @@ def _breakthrough_cfg() -> Dict[str, Any]:
     return {
         "fire_bonus": _cfg_float(cfg.get("fire_bonus"), 0.03),
         "steady_bonus": _cfg_float(cfg.get("steady_bonus"), 0.10),
+        "ally_help_bonus": _cfg_float(cfg.get("ally_help_bonus"), 0.06),
+        "spirit_density_bonus_scale": _cfg_float(cfg.get("spirit_density_bonus_scale"), 0.20),
         "post_breakthrough_restore_ratio": min(1.0, max(0.0, _cfg_float(cfg.get("post_breakthrough_restore_ratio"), 0.30))),
         "stamina_cost": max(1, _cfg_int(cfg.get("stamina_cost"), 1)),
         "protect_material_base": max(0, _cfg_int(cfg.get("protect_material_base"), 2)),
@@ -83,6 +86,12 @@ def _breakthrough_cfg() -> Dict[str, Any]:
         "desperate_success_gold_bonus": max(0, _cfg_int(cfg.get("desperate_success_gold_bonus"), 1)),
         "desperate_success_copper_min": max(0, _cfg_int(cfg.get("desperate_success_copper_min"), 50)),
         "desperate_success_copper_cost_divisor": max(1, _cfg_int(cfg.get("desperate_success_copper_cost_divisor"), 5)),
+        "tribulation_flat_penalty": max(0.0, min(0.95, _cfg_float(cfg.get("tribulation_flat_penalty"), 0.10))),
+        "tribulation_rate_multiplier": max(0.05, min(1.0, _cfg_float(cfg.get("tribulation_rate_multiplier"), 0.70))),
+        "tribulation_extra_cost_multiplier": max(1.0, _cfg_float(cfg.get("tribulation_extra_cost_multiplier"), 1.20)),
+        "tribulation_extra_stamina": max(0, _cfg_int(cfg.get("tribulation_extra_stamina"), 1)),
+        "tribulation_fail_exp_penalty_add": max(0.0, _cfg_float(cfg.get("tribulation_fail_exp_penalty_add"), 0.05)),
+        "tribulation_fail_weak_seconds_add": max(0, _cfg_int(cfg.get("tribulation_fail_weak_seconds_add"), 1200)),
     }
 
 
@@ -90,6 +99,83 @@ def _protect_material_need(rank: int, bt_cfg: Dict[str, Any]) -> int:
     base = int(bt_cfg.get("protect_material_base", 2) or 2)
     per_10 = int(bt_cfg.get("protect_material_per_10_rank", 1) or 1)
     return base + max(0, int(rank or 1) // 10) * per_10
+
+
+def _is_tribulation_breakthrough(*, current_realm: Dict[str, Any], next_realm: Dict[str, Any]) -> bool:
+    if not current_realm or not next_realm:
+        return False
+    try:
+        sub_level = int(current_realm.get("sub_level", 0) or 0)
+    except (TypeError, ValueError):
+        sub_level = 0
+    if sub_level == 4:
+        return True
+    return "圆满" in str(current_realm.get("name") or "")
+
+
+def _apply_tribulation_rate_adjustment(*, rate: float, is_tribulation: bool, bt_cfg: Dict[str, Any]) -> float:
+    value = min(1.0, max(0.0, float(rate or 0.0)))
+    if not is_tribulation:
+        return value
+    flat_penalty = float(bt_cfg.get("tribulation_flat_penalty", 0.10) or 0.10)
+    multiplier = float(bt_cfg.get("tribulation_rate_multiplier", 0.70) or 0.70)
+    value = max(0.0, value - flat_penalty)
+    value = min(1.0, max(0.0, value * multiplier))
+    return value
+
+
+def _build_breakthrough_congrats_message(*, new_realm: str, display_name: str = "") -> str:
+    clean_name = str(display_name or "").strip().replace("\n", "").replace("\r", "")
+    target = f"{clean_name} 道友" if clean_name else "道友"
+    return f"灵光一闪！恭喜 {target}，修为精进，成功突破至【{new_realm}】！"
+
+
+def _format_signed_ratio_percent(ratio: float) -> str:
+    value = float(ratio or 0.0) * 100.0
+    rounded = round(value, 2)
+    if abs(rounded) < 1e-9:
+        return "0%"
+    sign = "+" if rounded > 0 else "-"
+    abs_value = abs(rounded)
+    if abs(abs_value - round(abs_value)) < 1e-9:
+        return f"{sign}{int(round(abs_value))}%"
+    if abs(abs_value * 10 - round(abs_value * 10)) < 1e-9:
+        return f"{sign}{abs_value:.1f}%"
+    return f"{sign}{abs_value:.2f}%"
+
+
+def _resolve_breakthrough_environment(*, user_id: str, user: Dict[str, Any], bt_cfg: Dict[str, Any]) -> Dict[str, Any]:
+    from core.game.maps import get_map, get_spirit_density
+
+    current_map = str(user.get("current_map") or "canglan_city")
+    map_info = get_map(current_map) or {}
+    location_name = str(map_info.get("name") or current_map)
+    spirit_density = float(get_spirit_density(current_map) or 1.0)
+
+    density_scale = float(bt_cfg.get("spirit_density_bonus_scale", 0.20) or 0.20)
+    location_bonus = max(-0.08, min(0.12, (spirit_density - 1.0) * density_scale))
+
+    seed = f"{local_day_key()}:{user_id}"
+    roll = int(hashlib.sha256(seed.encode("utf-8")).hexdigest()[:8], 16) % 100
+    if roll < 8:
+        fortune_label, fortune_bonus = "大凶", -0.06
+    elif roll < 25:
+        fortune_label, fortune_bonus = "小凶", -0.03
+    elif roll < 65:
+        fortune_label, fortune_bonus = "平", 0.00
+    elif roll < 88:
+        fortune_label, fortune_bonus = "吉", 0.04
+    else:
+        fortune_label, fortune_bonus = "大吉", 0.08
+
+    return {
+        "current_map": current_map,
+        "location_name": location_name,
+        "spirit_density": spirit_density,
+        "location_bonus": float(location_bonus),
+        "fortune_label": fortune_label,
+        "fortune_bonus": float(fortune_bonus),
+    }
 
 
 def _realm_trial_requirement_payload(trial: Dict[str, Any]) -> Dict[str, Any]:
@@ -149,9 +235,14 @@ def _format_weak_penalty_text(weak_seconds: int) -> str:
     return f"进入虚弱状态{seconds}秒"
 
 
-def get_breakthrough_preview(*, user_id: str, use_pill: bool = False, strategy: str = "steady") -> Tuple[Dict[str, Any], int]:
+def get_breakthrough_preview(
+    *,
+    user_id: str,
+    use_pill: bool = False,
+    strategy: str = "steady",
+    call_for_help: bool = True,
+) -> Tuple[Dict[str, Any], int]:
     from core.game.realms import get_next_realm, calculate_breakthrough_cost, get_realm_by_id
-    from core.services.breakthrough_pity import bonus as pity_bonus, get_hard_pity_threshold
 
     user = get_user_by_id(user_id)
     if not user:
@@ -178,6 +269,7 @@ def get_breakthrough_preview(*, user_id: str, use_pill: bool = False, strategy: 
         strategy = "normal"
     if use_pill and strategy == "normal":
         strategy = "steady"
+    call_for_help = bool(call_for_help)
 
     now = int(time.time())
     protect_cfg = _pill_buff_cfg()["breakthrough_protect"]
@@ -188,11 +280,27 @@ def get_breakthrough_preview(*, user_id: str, use_pill: bool = False, strategy: 
     boost_active = boost_until > now and boost_pct > 0
 
     bt_cfg = _breakthrough_cfg()
+    is_tribulation = _is_tribulation_breakthrough(current_realm=current_realm, next_realm=next_realm)
+    if is_tribulation:
+        # 圆满关口仅开放渡劫突破单一路线，避免前端残留按钮导致分流。
+        strategy = "steady"
+    tribulation_flat_penalty = float(bt_cfg.get("tribulation_flat_penalty", 0.10) or 0.10) if is_tribulation else 0.0
+    tribulation_rate_multiplier = float(bt_cfg.get("tribulation_rate_multiplier", 0.70) or 0.70) if is_tribulation else 1.0
+    tribulation_cost_multiplier = float(bt_cfg.get("tribulation_extra_cost_multiplier", 1.20) or 1.20) if is_tribulation else 1.0
+    tribulation_extra_stamina = int(bt_cfg.get("tribulation_extra_stamina", 1) or 1) if is_tribulation else 0
+    env_ctx = _resolve_breakthrough_environment(user_id=user_id, user=user, bt_cfg=bt_cfg)
+    location_bonus = float(env_ctx.get("location_bonus", 0.0) or 0.0)
+    fortune_bonus = float(env_ctx.get("fortune_bonus", 0.0) or 0.0)
+    ally_help_bonus = float(bt_cfg.get("ally_help_bonus", 0.06) or 0.06) if call_for_help else 0.0
     base_cost = calculate_breakthrough_cost(current_rank)
     protect_need = _protect_material_need(current_rank, bt_cfg) if strategy == "protect" else 0
-    cost = int(base_cost + protect_need)
-    threshold = get_hard_pity_threshold(current_rank)
-    pity = int(user.get("breakthrough_pity", 0) or 0)
+    base_total_cost = int(base_cost + protect_need)
+    if is_tribulation:
+        cost = int(max(base_total_cost, round(base_total_cost * tribulation_cost_multiplier)))
+    else:
+        cost = base_total_cost
+    tribulation_extra_cost = max(0, int(cost - base_total_cost))
+    stamina_cost = int(bt_cfg.get("stamina_cost", 1) or 1) + tribulation_extra_stamina
     base_rate = float(next_realm.get("break_rate", 0.0) or 0.0)
     fire_bonus = float(bt_cfg.get("fire_bonus", 0.03) or 0.03)
     steady_bonus = float(bt_cfg.get("steady_bonus", 0.10) or 0.10)
@@ -210,8 +318,17 @@ def get_breakthrough_preview(*, user_id: str, use_pill: bool = False, strategy: 
     if boost_active:
         shown_rate = min(1.0, shown_rate + boost_pct / 100.0)
         rate_parts.append(f"突破增益 +{int(boost_pct)}%")
+    if abs(location_bonus) > 1e-9:
+        shown_rate = min(1.0, max(0.0, shown_rate + location_bonus))
+        rate_parts.append(f"地脉灵气 {_format_signed_ratio_percent(location_bonus)}")
+    if abs(fortune_bonus) > 1e-9:
+        shown_rate = min(1.0, max(0.0, shown_rate + fortune_bonus))
+        rate_parts.append(f"今日运势 {_format_signed_ratio_percent(fortune_bonus)}")
+    if call_for_help and ally_help_bonus > 0:
+        shown_rate = min(1.0, shown_rate + ally_help_bonus)
+        rate_parts.append(f"道友相助 +{int(ally_help_bonus * 100)}%")
 
-    strategy_name = {
+    strategy_name = "渡劫突破" if is_tribulation else {
         "normal": "普通冲关",
         "steady": "稳妥突破",
         "protect": "护脉突破",
@@ -229,11 +346,6 @@ def get_breakthrough_preview(*, user_id: str, use_pill: bool = False, strategy: 
     elif strategy == "desperate":
         extra_cost_text = "额外效果: 成功额外奖励，失败惩罚更重"
 
-    pity_rate = pity_bonus(pity)
-    if pity_rate > 0:
-        shown_rate = min(1.0, shown_rate + pity_rate)
-        rate_parts.append(f"心魔值加成 +{int(pity_rate * 100)}%")
-
     base_for_notes = float(next_realm.get("break_rate", 0.0) or 0.0)
     if user.get("element") == "火":
         base_for_notes = min(1.0, base_for_notes + fire_bonus)
@@ -241,28 +353,67 @@ def get_breakthrough_preview(*, user_id: str, use_pill: bool = False, strategy: 
         base_for_notes = min(1.0, base_for_notes + float(protect_cfg.get("success_bonus", 0.05)))
     if boost_active:
         base_for_notes = min(1.0, base_for_notes + boost_pct / 100.0)
-    base_for_notes = min(1.0, base_for_notes + pity_bonus(pity))
-    steady_rate = min(1.0, base_for_notes + steady_bonus)
-    protect_rate = base_for_notes
-    desperate_rate = base_for_notes
-    stamina_cost = int(bt_cfg.get("stamina_cost", 1) or 1)
+    base_for_notes = min(1.0, max(0.0, base_for_notes + location_bonus + fortune_bonus + ally_help_bonus))
+    steady_rate = _apply_tribulation_rate_adjustment(
+        rate=min(1.0, base_for_notes + steady_bonus),
+        is_tribulation=is_tribulation,
+        bt_cfg=bt_cfg,
+    )
+    protect_rate = _apply_tribulation_rate_adjustment(
+        rate=base_for_notes,
+        is_tribulation=is_tribulation,
+        bt_cfg=bt_cfg,
+    )
+    desperate_rate = _apply_tribulation_rate_adjustment(
+        rate=base_for_notes,
+        is_tribulation=is_tribulation,
+        bt_cfg=bt_cfg,
+    )
+    shown_rate = _apply_tribulation_rate_adjustment(rate=shown_rate, is_tribulation=is_tribulation, bt_cfg=bt_cfg)
+    if is_tribulation:
+        rate_parts.append(f"天雷劫压制 {_format_signed_ratio_percent(-tribulation_flat_penalty)}")
+        rate_parts.append(f"雷劫强度倍率 x{tribulation_rate_multiplier:.2f}")
+
+    title_text = "⛈️ *渡劫突破·天雷劫*" if is_tribulation else "⚡ *突破预告*"
+    mode_text = "圆满渡劫（天雷劫）" if is_tribulation else "常规破境"
+    tribulation_line = ""
+    if is_tribulation:
+        tribulation_line = (
+            f"雷劫压制: 固定{_format_signed_ratio_percent(-tribulation_flat_penalty)}，"
+            f"再乘以 {tribulation_rate_multiplier:.2f} 倍\n"
+            f"雷劫附加消耗: +{tribulation_extra_cost} 下品灵石，+{tribulation_extra_stamina} 点精力\n"
+        )
 
     preview_text = (
-        f"⚡ *渡劫预告*\n"
+        f"{title_text}\n"
         f"策略: *{strategy_name}*\n"
+        f"关卡类型: *{mode_text}*\n"
         f"你将从 *{current_realm.get('name', '当前境界')}* 冲击 *{next_realm.get('name', '下一境界')}*。\n"
+        f"所在地: *{env_ctx.get('location_name', env_ctx.get('current_map', '未知'))}*"
+        f"（灵气×{float(env_ctx.get('spirit_density', 1.0) or 1.0):.2f}，地脉{_format_signed_ratio_percent(location_bonus)}）\n"
+        f"今日运势: *{env_ctx.get('fortune_label', '平')}*（{_format_signed_ratio_percent(fortune_bonus)}）\n"
+        f"道友相助: *{'已召集' if call_for_help else '未召集'}*"
+        f"（{_format_signed_ratio_percent(ally_help_bonus if call_for_help else 0.0)}）\n"
+        f"{tribulation_line}"
         f"消耗: {cost:,} 下品灵石\n"
         f"额外消耗: {stamina_cost} 点精力\n"
         f"{extra_cost_text}\n"
         f"预计成功率: *{int(shown_rate * 100)}%*\n"
-        f"保底进度: {pity}/{threshold}\n"
         f"加成构成: {' ｜ '.join(rate_parts)}"
     )
-    strategy_notes = (
-        f"稳妥突破：消耗下品灵石 + 突破丹 x1，成功率约 *{int(steady_rate * 100)}%*，失败损失减半\n"
-        f"护脉突破：消耗下品灵石（含附加 x{protect_need}），成功率约 *{int(protect_rate * 100)}%*，失败不进虚弱\n"
-        f"生死突破：只消耗下品灵石，成功率约 *{int(desperate_rate * 100)}%*，成功有额外奖励，失败惩罚更重"
-    )
+    if is_tribulation:
+        strategy_notes = (
+            f"当前为【{current_realm.get('name', '圆满境')}】圆满关口，仅开放 *渡劫突破*。\n"
+            f"渡劫突破：消耗下品灵石 + 突破丹 x1，成功率约 *{int(steady_rate * 100)}%*。\n"
+            "说明：渡劫成功率由灵根、增益、地脉、运势、道友助阵与天雷劫共同决定，不含保底机制。"
+        )
+    else:
+        strategy_notes = (
+            f"稳妥突破：消耗下品灵石 + 突破丹 x1，成功率约 *{int(steady_rate * 100)}%*，失败损失减半\n"
+            f"护脉突破：消耗下品灵石（含附加 x{protect_need}），成功率约 *{int(protect_rate * 100)}%*，失败不进虚弱\n"
+            f"生死突破：只消耗下品灵石，成功率约 *{int(desperate_rate * 100)}%*，成功有额外奖励，失败惩罚更重\n"
+            "说明：突破结果按实时成功率判定，不再包含保底机制。"
+        )
 
     return {
         "success": True,
@@ -275,11 +426,23 @@ def get_breakthrough_preview(*, user_id: str, use_pill: bool = False, strategy: 
             "cost_copper": int(cost),
             "base_cost_copper": int(base_cost),
             "extra_cost_copper": int(protect_need if strategy == "protect" else 0),
+            "is_tribulation": bool(is_tribulation),
+            "tribulation_name": "天雷劫" if is_tribulation else "",
+            "tribulation_flat_penalty": float(tribulation_flat_penalty if is_tribulation else 0.0),
+            "tribulation_rate_multiplier": float(tribulation_rate_multiplier if is_tribulation else 1.0),
+            "tribulation_extra_cost_copper": int(tribulation_extra_cost),
+            "tribulation_extra_stamina": int(tribulation_extra_stamina),
             "stamina_cost": stamina_cost,
             "success_rate": float(shown_rate),
             "success_rate_pct": int(shown_rate * 100),
-            "pity": int(pity),
-            "pity_threshold": int(threshold),
+            "current_map": env_ctx.get("current_map"),
+            "location_name": env_ctx.get("location_name"),
+            "spirit_density": float(env_ctx.get("spirit_density", 1.0) or 1.0),
+            "location_bonus": float(location_bonus),
+            "fortune_label": env_ctx.get("fortune_label"),
+            "fortune_bonus": float(fortune_bonus),
+            "call_for_help": bool(call_for_help),
+            "ally_help_bonus": float(ally_help_bonus if call_for_help else 0.0),
             "rate_parts": rate_parts,
             "preview_text": preview_text,
             "strategy_notes": strategy_notes,
@@ -737,7 +900,13 @@ def settle_signin(*, user_id: str) -> Tuple[Dict[str, Any], int]:
     return {"success": True, "message": message, "rewards": rewards, "story_update": story_update}, 200
 
 
-def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal") -> Tuple[Dict[str, Any], int]:
+def settle_breakthrough(
+    *,
+    user_id: str,
+    use_pill: bool,
+    strategy: str = "normal",
+    call_for_help: bool = True,
+) -> Tuple[Dict[str, Any], int]:
     from core.game.realms import (
         get_next_realm,
         can_breakthrough,
@@ -746,8 +915,6 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
         calculate_user_stats,
         get_realm_by_id,
     )
-    from core.database.connection import log_breakthrough
-    from core.services.breakthrough_pity import bonus as pity_bonus, apply_on_failure, apply_on_success, get_hard_pity_threshold
     from core.utils.number import format_stamina_value
 
     user = get_user_by_id(user_id)
@@ -792,21 +959,7 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
         return {"success": False, "code": "INSUFFICIENT_EXP", "message": "修为不足，无法突破"}, 400
 
     bt_cfg = _breakthrough_cfg()
-    base_cost = calculate_breakthrough_cost(current_rank)
-    protect_material_need = _protect_material_need(current_rank, bt_cfg) if strategy == "protect" else 0
-    cost = int(base_cost + protect_material_need)
-    if user.get("copper", 0) < cost:
-        log_event(
-            "breakthrough",
-            user_id=user_id,
-            success=False,
-            rank=rank,
-            reason="INSUFFICIENT_COPPER",
-            meta={"strategy": strategy, "cost": cost, "base_cost": base_cost, "extra_cost": protect_material_need},
-        )
-        return {"success": False, "code": "INSUFFICIENT_COPPER", "message": f"下品灵石不足，需要 {cost} 下品灵石"}, 400
-
-    # Compute displayed success rate with pity (without changing the realm module).
+    current_realm = get_realm_by_id(current_rank) or {"name": "当前境界"}
     next_realm = get_next_realm(current_rank)
     if not next_realm:
         log_event(
@@ -818,7 +971,46 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
             meta={"strategy": strategy},
         )
         return {"success": False, "code": "MAX", "message": "你已达到最高境界！"}, 400
+    is_tribulation = _is_tribulation_breakthrough(current_realm=current_realm, next_realm=next_realm)
+    if is_tribulation:
+        # 圆满关口统一为渡劫突破，忽略其他策略入参。
+        strategy = "steady"
+    tribulation_flat_penalty = float(bt_cfg.get("tribulation_flat_penalty", 0.10) or 0.10) if is_tribulation else 0.0
+    tribulation_rate_multiplier = float(bt_cfg.get("tribulation_rate_multiplier", 0.70) or 0.70) if is_tribulation else 1.0
+    tribulation_cost_multiplier = float(bt_cfg.get("tribulation_extra_cost_multiplier", 1.20) or 1.20) if is_tribulation else 1.0
+    tribulation_extra_stamina = int(bt_cfg.get("tribulation_extra_stamina", 1) or 1) if is_tribulation else 0
+
+    base_cost = calculate_breakthrough_cost(current_rank)
+    protect_material_need = _protect_material_need(current_rank, bt_cfg) if strategy == "protect" else 0
+    base_total_cost = int(base_cost + protect_material_need)
+    if is_tribulation:
+        cost = int(max(base_total_cost, round(base_total_cost * tribulation_cost_multiplier)))
+    else:
+        cost = base_total_cost
+    tribulation_extra_cost = max(0, int(cost - base_total_cost))
+    if user.get("copper", 0) < cost:
+        log_event(
+            "breakthrough",
+            user_id=user_id,
+            success=False,
+            rank=rank,
+            reason="INSUFFICIENT_COPPER",
+            meta={
+                "strategy": strategy,
+                "cost": cost,
+                "base_cost": base_cost,
+                "extra_cost": protect_material_need,
+                "is_tribulation": bool(is_tribulation),
+                "tribulation_extra_cost": tribulation_extra_cost,
+            },
+        )
+        return {"success": False, "code": "INSUFFICIENT_COPPER", "message": f"下品灵石不足，需要 {cost} 下品灵石"}, 400
+
     base_rate = float(next_realm.get("break_rate", 0.0) or 0.0)
+    env_ctx = _resolve_breakthrough_environment(user_id=user_id, user=user, bt_cfg=bt_cfg)
+    location_bonus = float(env_ctx.get("location_bonus", 0.0) or 0.0)
+    fortune_bonus = float(env_ctx.get("fortune_bonus", 0.0) or 0.0)
+    ally_help_bonus = float(bt_cfg.get("ally_help_bonus", 0.06) or 0.06) if call_for_help else 0.0
     consume_item_id = None
     consume_item_type = None
     consume_item_qty = 0
@@ -828,7 +1020,6 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
         consume_item_type = "pill"
         consume_item_qty = 1
         pill_bonus = float(bt_cfg.get("steady_bonus", 0.10) or 0.10)
-    hard_pity_threshold = get_hard_pity_threshold(current_rank)
 
     item_row = None
     if consume_item_id:
@@ -855,17 +1046,23 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
                 return {"success": False, "code": "INSUFFICIENT_ITEM", "message": f"{item_name}不足，无法使用当前冲关策略"}, 400
 
     fire_bonus = float(bt_cfg.get("fire_bonus", 0.03) or 0.03)
+    shown_rate = base_rate
     if user.get("element") == "火":
-        base_rate = min(1.0, base_rate + fire_bonus)
+        shown_rate = min(1.0, shown_rate + fire_bonus)
     if protect_active:
-        base_rate = min(1.0, base_rate + float(protect_cfg.get("success_bonus", 0.05)))
+        shown_rate = min(1.0, shown_rate + float(protect_cfg.get("success_bonus", 0.05)))
     if boost_active:
-        base_rate = min(1.0, base_rate + float(boost_pct) / 100.0)
+        shown_rate = min(1.0, shown_rate + float(boost_pct) / 100.0)
+    if abs(location_bonus) > 1e-9:
+        shown_rate = min(1.0, max(0.0, shown_rate + location_bonus))
+    if abs(fortune_bonus) > 1e-9:
+        shown_rate = min(1.0, max(0.0, shown_rate + fortune_bonus))
+    if call_for_help and ally_help_bonus > 0:
+        shown_rate = min(1.0, shown_rate + ally_help_bonus)
     if pill_bonus > 0:
-        base_rate = min(1.0, base_rate + pill_bonus)
-    extra = pity_bonus(int(user.get("breakthrough_pity", 0) or 0))
-    shown_rate = min(1.0, base_rate + extra)
-    stamina_cost = int(bt_cfg.get("stamina_cost", 1) or 1)
+        shown_rate = min(1.0, shown_rate + pill_bonus)
+    shown_rate = _apply_tribulation_rate_adjustment(rate=shown_rate, is_tribulation=is_tribulation, bt_cfg=bt_cfg)
+    stamina_cost = int(bt_cfg.get("stamina_cost", 1) or 1) + tribulation_extra_stamina
 
     try:
         current_stamina = float(user.get("stamina", 0) or 0)
@@ -888,12 +1085,13 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
             "stamina_cost": stamina_cost,
         }, 400
 
-    extra_bonus = 0.0
-    if protect_active:
-        extra_bonus += float(protect_cfg.get("success_bonus", 0.05))
-    if boost_active:
-        extra_bonus += float(boost_pct) / 100.0
     use_pill_effective = pill_bonus > 0
+    attempt_base_rate = base_rate
+    if user.get("element") == "火":
+        attempt_base_rate += fire_bonus
+    if use_pill_effective:
+        attempt_base_rate += pill_bonus
+    extra_bonus = shown_rate - attempt_base_rate
     ok, message = attempt_breakthrough(user, use_pill_effective, extra_bonus=extra_bonus)
 
     new_rank = next_realm["id"]
@@ -921,7 +1119,6 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
             )
 
         new_stats = calculate_user_stats({"rank": new_rank, "element": user.get("element")})
-        pity_fields = apply_on_success(user)
         restore_ratio = float(bt_cfg.get("post_breakthrough_restore_ratio", 0.30) or 0.30)
         current_hp = max(0, int(user.get("hp", 0) or 0))
         current_mp = max(0, int(user.get("mp", 0) or 0))
@@ -953,7 +1150,7 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
                            rank = %s, copper = copper - %s + %s, gold = gold + %s,
                            max_hp = %s, max_mp = %s, hp = %s, mp = %s,
                            attack = %s, defense = %s,
-                           weak_until = 0, breakthrough_pity = %s, breakthrough_protect_until = 0,
+                           weak_until = 0, breakthrough_pity = 0, breakthrough_protect_until = 0,
                            breakthrough_boost_until = 0, breakthrough_boost_pct = 0
                            WHERE user_id = %s AND copper >= %s""",
                         (
@@ -967,7 +1164,6 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
                             restored_mp,
                             new_stats["attack"],
                             new_stats["defense"],
-                            pity_fields.get("breakthrough_pity", 0),
                             user_id,
                             cost,
                         ),
@@ -978,7 +1174,7 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
                            rank = %s, copper = copper - %s + %s, gold = gold + %s,
                            max_hp = %s, max_mp = %s, hp = %s, mp = %s,
                            attack = %s, defense = %s,
-                           weak_until = 0, breakthrough_pity = %s,
+                           weak_until = 0, breakthrough_pity = 0,
                            breakthrough_boost_until = 0, breakthrough_boost_pct = 0
                            WHERE user_id = %s AND copper >= %s""",
                         (
@@ -992,7 +1188,6 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
                             restored_mp,
                             new_stats["attack"],
                             new_stats["defense"],
-                            pity_fields.get("breakthrough_pity", 0),
                             user_id,
                             cost,
                         ),
@@ -1047,16 +1242,37 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
             "new_realm": next_realm["name"] if next_realm else "未知",
             "cost": cost,
             "success_rate": shown_rate,
-            "pity": 0,
             "strategy": strategy,
-            "event_title": "天劫已破，道心更进一步",
-            "event_flavor": f"你熬过了从【{(get_realm_by_id(current_rank) or {}).get('name', '当前境界')}】到【{next_realm['name']}】的瓶颈，气海与经脉一同蜕变。",
-            "next_goal": "建议立刻查看新解锁内容，并准备下一阶段的修炼、秘境和炼丹路线。",
+            "is_tribulation": bool(is_tribulation),
+            "tribulation_name": "天雷劫" if is_tribulation else "",
+            "tribulation_flat_penalty": float(tribulation_flat_penalty if is_tribulation else 0.0),
+            "tribulation_rate_multiplier": float(tribulation_rate_multiplier if is_tribulation else 1.0),
+            "tribulation_extra_cost_copper": int(tribulation_extra_cost),
+            "tribulation_extra_stamina": int(tribulation_extra_stamina),
+            "call_for_help": bool(call_for_help),
+            "location_name": env_ctx.get("location_name"),
+            "spirit_density": float(env_ctx.get("spirit_density", 1.0) or 1.0),
+            "location_bonus": float(location_bonus),
+            "fortune_label": env_ctx.get("fortune_label"),
+            "fortune_bonus": float(fortune_bonus),
+            "ally_help_bonus": float(ally_help_bonus if call_for_help else 0.0),
+            "event_title": "天雷劫已渡，道基蜕变" if is_tribulation else "天劫已破，道心更进一步",
+            "event_flavor": (
+                f"你顶住了从【{current_realm.get('name', '当前境界')}】到【{next_realm['name']}】的天雷洗礼，"
+                "经脉重铸，根基更坚。"
+                if is_tribulation
+                else f"你熬过了从【{current_realm.get('name', '当前境界')}】到【{next_realm['name']}】的瓶颈，气海与经脉一同蜕变。"
+            ),
+            "next_goal": "建议优先补齐渡劫资源，再规划下一阶段修炼与秘境路线。" if is_tribulation else "建议立刻查看新解锁内容，并准备下一阶段的修炼、秘境和炼丹路线。",
             "stamina_cost": stamina_cost,
             "post_breakthrough_restore_ratio": restore_ratio,
             "post_breakthrough_hp": restored_hp,
             "post_breakthrough_mp": restored_mp,
         }
+        resp["congrats_message"] = _build_breakthrough_congrats_message(
+            new_realm=str(resp.get("new_realm", "未知境界") or "未知境界"),
+            display_name=str(user.get("in_game_username") or user.get("username") or ""),
+        )
         if protect_active:
             resp["protect_pill_used"] = True
             resp["message"] += "\n🛡️ 突破保护丹已生效。"
@@ -1089,6 +1305,15 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
                 "shown_rate": shown_rate,
                 "protect_active": protect_active,
                 "boost_active": boost_active,
+                "location_bonus": location_bonus,
+                "fortune_bonus": fortune_bonus,
+                "call_for_help": bool(call_for_help),
+                "ally_help_bonus": ally_help_bonus if call_for_help else 0.0,
+                "is_tribulation": bool(is_tribulation),
+                "tribulation_flat_penalty": tribulation_flat_penalty if is_tribulation else 0.0,
+                "tribulation_rate_multiplier": tribulation_rate_multiplier if is_tribulation else 1.0,
+                "tribulation_extra_cost": tribulation_extra_cost,
+                "tribulation_extra_stamina": tribulation_extra_stamina,
                 "item_id": consume_item_id,
                 "item_qty": consume_item_qty,
             },
@@ -1110,6 +1335,15 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
                 "from_rank": current_rank,
                 "to_rank": new_rank,
                 "shown_rate": shown_rate,
+                "location_bonus": location_bonus,
+                "fortune_bonus": fortune_bonus,
+                "call_for_help": bool(call_for_help),
+                "ally_help_bonus": ally_help_bonus if call_for_help else 0.0,
+                "is_tribulation": bool(is_tribulation),
+                "tribulation_flat_penalty": tribulation_flat_penalty if is_tribulation else 0.0,
+                "tribulation_rate_multiplier": tribulation_rate_multiplier if is_tribulation else 1.0,
+                "tribulation_extra_cost": tribulation_extra_cost,
+                "tribulation_extra_stamina": tribulation_extra_stamina,
             },
         )
         return resp, 200
@@ -1124,18 +1358,23 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
             float(bt_cfg.get("desperate_exp_penalty_cap", 0.30) or 0.30),
             exp_lost_pct + float(bt_cfg.get("desperate_exp_penalty_add", 0.05) or 0.05),
         )
+    if is_tribulation:
+        exp_lost_pct = min(
+            0.95,
+            exp_lost_pct + float(bt_cfg.get("tribulation_fail_exp_penalty_add", 0.05) or 0.05),
+        )
     weak_seconds = int(app_cfg.get("balance", {}).get("breakthrough", {}).get("weak_seconds", 3600))
     if strategy == "protect":
         weak_seconds = 0
     elif strategy == "desperate":
         weak_seconds += int(bt_cfg.get("desperate_weak_seconds_add", 1800) or 1800)
+    if is_tribulation:
+        weak_seconds += int(bt_cfg.get("tribulation_fail_weak_seconds_add", 1200) or 1200)
     if protect_active:
         exp_lost_pct *= float(protect_cfg.get("exp_loss_mult", 0.5))
         weak_seconds = int(weak_seconds * float(protect_cfg.get("weak_seconds_mult", 0.0)))
     exp_lost = int(user.get("exp", 0) * exp_lost_pct)
     weak_until = int(time.time()) + weak_seconds
-
-    pity_updates = apply_on_failure(user)
 
     # ---- 单事务原子突破失败 ----
     try:
@@ -1158,14 +1397,13 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
                 cur.execute(
                     """UPDATE users SET
                        exp = GREATEST(0, exp - %s), copper = copper - %s,
-                       weak_until = %s, breakthrough_pity = %s, breakthrough_protect_until = 0,
+                       weak_until = %s, breakthrough_pity = 0, breakthrough_protect_until = 0,
                        breakthrough_boost_until = 0, breakthrough_boost_pct = 0
                        WHERE user_id = %s AND copper >= %s""",
                     (
                         exp_lost,
                         cost,
                         weak_until,
-                        pity_updates.get("breakthrough_pity", 0),
                         user_id,
                         cost,
                     ),
@@ -1174,14 +1412,13 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
                 cur.execute(
                     """UPDATE users SET
                        exp = GREATEST(0, exp - %s), copper = copper - %s,
-                       weak_until = %s, breakthrough_pity = %s,
+                       weak_until = %s, breakthrough_pity = 0,
                        breakthrough_boost_until = 0, breakthrough_boost_pct = 0
                        WHERE user_id = %s AND copper >= %s""",
                     (
                         exp_lost,
                         cost,
                         weak_until,
-                        pity_updates.get("breakthrough_pity", 0),
                         user_id,
                         cost,
                     ),
@@ -1229,30 +1466,37 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
             return {"success": False, "code": "INSUFFICIENT_ITEM", "message": f"{item_name}不足，无法使用当前冲关策略"}, 400
         raise
 
-    # flavor text: show pity progress
-    realm_name = (get_realm_by_id(current_rank) or {}).get("name", "当前境界")
-    pity_now = int(pity_updates.get("breakthrough_pity", 0) or 0)
-    extra2 = pity_bonus(pity_now)
-    penalty_message = (
-        f"突破失败，损失{_format_ratio_percent(exp_lost_pct)}修为，"
-        f"{_format_weak_penalty_text(weak_seconds)}"
-    )
+    realm_name = current_realm.get("name", "当前境界")
+    penalty_prefix = "渡劫失败，遭天雷反噬，" if is_tribulation else "突破失败，"
+    penalty_message = penalty_prefix + f"损失{_format_ratio_percent(exp_lost_pct)}修为，{_format_weak_penalty_text(weak_seconds)}"
 
     resp = {
         "success": False,
         "code": "BREAKTHROUGH_FAILED",
-        "message": penalty_message + f"\n\n💢 心魔值+1（{pity_now}），下次突破成功率额外 +{int(extra2*100)}%",
+        "message": penalty_message + "\n\n本次突破按实时成功率判定，不含保底机制。",
         "exp_lost": exp_lost,
         "weak_seconds": weak_seconds,
         "cost": cost,
         "success_rate": shown_rate,
-        "pity": pity_now,
         "realm": realm_name,
         "strategy": strategy,
+        "is_tribulation": bool(is_tribulation),
+        "tribulation_name": "天雷劫" if is_tribulation else "",
+        "tribulation_flat_penalty": float(tribulation_flat_penalty if is_tribulation else 0.0),
+        "tribulation_rate_multiplier": float(tribulation_rate_multiplier if is_tribulation else 1.0),
+        "tribulation_extra_cost_copper": int(tribulation_extra_cost),
+        "tribulation_extra_stamina": int(tribulation_extra_stamina),
+        "call_for_help": bool(call_for_help),
+        "location_name": env_ctx.get("location_name"),
+        "spirit_density": float(env_ctx.get("spirit_density", 1.0) or 1.0),
+        "location_bonus": float(location_bonus),
+        "fortune_label": env_ctx.get("fortune_label"),
+        "fortune_bonus": float(fortune_bonus),
+        "ally_help_bonus": float(ally_help_bonus if call_for_help else 0.0),
         "stamina_cost": stamina_cost,
-        "event_title": "天劫未过，但道心未碎",
-        "event_flavor": f"这次冲关虽然折戟，但你已经摸到瓶颈裂缝。当前保底进度 {pity_now}/{hard_pity_threshold}。",
-        "next_goal": "建议先恢复状态，补齐突破丹或下品灵石，再择时再次冲关。",
+        "event_title": "天雷劫未渡，道心仍可重铸" if is_tribulation else "天劫未过，但道心未碎",
+        "event_flavor": "本次雷劫过于凶险，但你已摸清劫雷节奏，调整准备后仍可再战。" if is_tribulation else "这次冲关虽然折戟，但你已积累了更清晰的破境经验，调整状态后可再次尝试。",
+        "next_goal": "建议补足丹药、灵石与精力后再渡劫，并尽量选择高灵气地脉与道友助阵。" if is_tribulation else "建议先恢复状态，补齐突破丹或下品灵石，再择时再次冲关。",
         "strategy_cost_text": (
             "已消耗突破丹 x1" if strategy == "steady"
             else (f"已额外消耗下品灵石 x{protect_material_need}" if strategy == "protect" else "")
@@ -1275,6 +1519,15 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
             "exp_lost": exp_lost,
             "protect_active": protect_active,
             "boost_active": boost_active,
+            "location_bonus": location_bonus,
+            "fortune_bonus": fortune_bonus,
+            "call_for_help": bool(call_for_help),
+            "ally_help_bonus": ally_help_bonus if call_for_help else 0.0,
+            "is_tribulation": bool(is_tribulation),
+            "tribulation_flat_penalty": tribulation_flat_penalty if is_tribulation else 0.0,
+            "tribulation_rate_multiplier": tribulation_rate_multiplier if is_tribulation else 1.0,
+            "tribulation_extra_cost": tribulation_extra_cost,
+            "tribulation_extra_stamina": tribulation_extra_stamina,
             "item_id": consume_item_id,
             "item_qty": consume_item_qty,
         },
@@ -1297,6 +1550,15 @@ def settle_breakthrough(*, user_id: str, use_pill: bool, strategy: str = "normal
             "from_rank": current_rank,
             "to_rank": current_rank,
             "shown_rate": shown_rate,
+            "location_bonus": location_bonus,
+            "fortune_bonus": fortune_bonus,
+            "call_for_help": bool(call_for_help),
+            "ally_help_bonus": ally_help_bonus if call_for_help else 0.0,
+            "is_tribulation": bool(is_tribulation),
+            "tribulation_flat_penalty": tribulation_flat_penalty if is_tribulation else 0.0,
+            "tribulation_rate_multiplier": tribulation_rate_multiplier if is_tribulation else 1.0,
+            "tribulation_extra_cost": tribulation_extra_cost,
+            "tribulation_extra_stamina": tribulation_extra_stamina,
         },
     )
     return resp, 400
@@ -1495,4 +1757,3 @@ def settle_use_item(*, user_id: str, item_id: str) -> Tuple[Dict[str, Any], int]
         return {"success": True, "message": message, "effect": effect, "value": int(new_pct)}, 200
 
     return {"success": False, "code": "INVALID", "message": "此物品无法使用"}, 400
-

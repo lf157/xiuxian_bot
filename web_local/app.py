@@ -431,6 +431,22 @@ def search_user():
         logger.error(f"Error in search_user: {str(e)}", exc_info=True)
         return jsonify({'status': 'error', 'message': f'服务器错误：{str(e)}'}), 500
 
+
+@app.route('/admin/field_options')
+@require_admin_auth
+def admin_field_options():
+    try:
+        from core.admin.user_management import get_modifiable_fields
+
+        return jsonify({
+            'status': 'ok',
+            'fields': get_modifiable_fields(),
+        })
+    except Exception as e:
+        logger.error(f"Error in admin_field_options: {e}", exc_info=True)
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
 @app.route('/admin/modify_user', methods=['POST'])
 @require_admin_auth
 def modify_user():
@@ -447,12 +463,13 @@ def modify_user():
         if not all([user_id, field, action, value is not None]):
             return jsonify({'status': 'error', 'message': '缺少必填字段'}), 400
         
-        from core.admin.user_management import modify_user_field
-        
+        from core.admin.user_management import modify_user_field, get_user
+
         success, message = modify_user_field(user_id, field, action, value)
-        
+
         if success:
-            return jsonify({'status': 'ok', 'message': message})
+            user = get_user(user_id)
+            return jsonify({'status': 'ok', 'message': message, 'user': user})
         else:
             return jsonify({'status': 'error', 'message': message}), 400
     except Exception as e:

@@ -116,6 +116,44 @@ _MENU_COMMANDS = [
     BotCommand("xian_version", "Version"),
 ]
 
+ADMIN_GIVE_CURRENCY_FIELDS: dict[str, tuple[str, str]] = {
+    "low": ("copper", "下品灵石"),
+    "mid": ("gold", "中品灵石"),
+    "high": ("spirit_high", "上品灵石"),
+    "uhigh": ("spirit_exquisite", "精品灵石"),
+    "xhigh": ("spirit_supreme", "极品灵石"),
+}
+
+ADMIN_PANEL_ACTION_LABELS: dict[str, str] = {
+    "set": "设置",
+    "add": "增加",
+    "minus": "扣减",
+}
+
+ADMIN_PRESET_SPECS: list[dict[str, object]] = [
+    {"id": "c1k", "label": "下灵+1k", "kind": "modify", "field": "copper", "action": "add", "value": 1_000},
+    {"id": "c1w", "label": "下灵+1w", "kind": "modify", "field": "copper", "action": "add", "value": 10_000},
+    {"id": "c10w", "label": "下灵+10w", "kind": "modify", "field": "copper", "action": "add", "value": 100_000},
+    {"id": "g10", "label": "中灵+10", "kind": "modify", "field": "gold", "action": "add", "value": 10},
+    {"id": "g100", "label": "中灵+100", "kind": "modify", "field": "gold", "action": "add", "value": 100},
+    {"id": "g1000", "label": "中灵+1000", "kind": "modify", "field": "gold", "action": "add", "value": 1_000},
+    {"id": "h10", "label": "上灵+10", "kind": "modify", "field": "spirit_high", "action": "add", "value": 10},
+    {"id": "u10", "label": "精品+10", "kind": "modify", "field": "spirit_exquisite", "action": "add", "value": 10},
+    {"id": "x10", "label": "极品+10", "kind": "modify", "field": "spirit_supreme", "action": "add", "value": 10},
+    {"id": "e1w", "label": "修为+1w", "kind": "modify", "field": "exp", "action": "add", "value": 10_000},
+    {"id": "e10w", "label": "修为+10w", "kind": "modify", "field": "exp", "action": "add", "value": 100_000},
+    {"id": "r1", "label": "境界+1", "kind": "modify", "field": "rank", "action": "add", "value": 1},
+    {"id": "st24", "label": "精力=24", "kind": "modify", "field": "stamina", "action": "set", "value": 24},
+    {"id": "st10", "label": "精力+10", "kind": "modify", "field": "stamina", "action": "add", "value": 10},
+    {"id": "pity1", "label": "破境计数+1", "kind": "modify", "field": "breakthrough_pity", "action": "add", "value": 1},
+    {"id": "heal", "label": "满血满蓝", "kind": "heal_full"},
+    {"id": "hunt0", "label": "狩猎清零", "kind": "hunt_reset"},
+    {"id": "pvp0", "label": "PVP日清", "kind": "pvp_daily_reset"},
+]
+ADMIN_PRESET_MAP: dict[str, dict[str, object]] = {
+    str(item.get("id") or ""): item for item in ADMIN_PRESET_SPECS if str(item.get("id") or "")
+}
+
 
 def _is_live_telegram_adapter(pid: int) -> bool:
     try:
@@ -192,6 +230,13 @@ def _mask_telegram_bot_urls(text: str) -> str:
         lambda m: m.group(1) + _mask_bot_token(m.group(2)),
         str(text or ""),
     )
+
+
+def _markdown_safe_tg_mention(username: str | None) -> str:
+    clean = re.sub(r"[^A-Za-z0-9_]", "", str(username or "").strip())
+    if not clean:
+        return ""
+    return "@" + clean.replace("_", "\\_")
 
 
 class _TelegramTokenRedactionFilter(logging.Filter):
@@ -296,10 +341,54 @@ def _breakthrough_stamina_cost() -> int:
     return max(1, _cfg_int("balance", "breakthrough", "stamina_cost", default=1))
 
 
+def _breakthrough_ally_help_bonus() -> float:
+    return _cfg_float("balance", "breakthrough", "ally_help_bonus", default=0.06)
+
+
+def _breakthrough_spirit_density_bonus_scale() -> float:
+    return _cfg_float("balance", "breakthrough", "spirit_density_bonus_scale", default=0.20)
+
+
+def _breakthrough_tribulation_flat_penalty() -> float:
+    return max(0.0, min(0.95, _cfg_float("balance", "breakthrough", "tribulation_flat_penalty", default=0.10)))
+
+
+def _breakthrough_tribulation_rate_multiplier() -> float:
+    return max(0.05, min(1.0, _cfg_float("balance", "breakthrough", "tribulation_rate_multiplier", default=0.70)))
+
+
+def _breakthrough_tribulation_extra_cost_multiplier() -> float:
+    return max(1.0, _cfg_float("balance", "breakthrough", "tribulation_extra_cost_multiplier", default=1.20))
+
+
+def _breakthrough_tribulation_extra_stamina() -> int:
+    return max(0, _cfg_int("balance", "breakthrough", "tribulation_extra_stamina", default=1))
+
+
 def _breakthrough_protect_material_need(rank: int) -> int:
     base = max(0, _cfg_int("balance", "breakthrough", "protect_material_base", default=2))
     per_10 = max(0, _cfg_int("balance", "breakthrough", "protect_material_per_10_rank", default=1))
     return base + max(0, int(rank or 1) // 10) * per_10
+
+
+def _is_consummation_breakthrough_rank(rank: int) -> bool:
+    realm = get_realm_by_id(int(rank or 1)) or {}
+    try:
+        sub_level = int(realm.get("sub_level", 0) or 0)
+    except (TypeError, ValueError):
+        sub_level = 0
+    if sub_level == 4:
+        return True
+    return "圆满" in str(realm.get("name") or "")
+
+
+def _super_admin_tg_ids() -> set[str]:
+    raw = str(os.getenv("SUPER_ADMIN_TG_IDS", "") or "")
+    return {part.strip() for part in raw.split(",") if part.strip()}
+
+
+def _is_super_admin_tg(user_id: str | int | None) -> bool:
+    return str(user_id or "").strip() in _super_admin_tg_ids()
 
 
 def _build_telegram_request(*, for_updates: bool) -> HTTPXRequest:
@@ -1144,6 +1233,99 @@ async def text_message_handler(update: Update, context: ContextTypes.DEFAULT_TYP
             await message.reply_text("❌ 服务器错误，请稍后重试", reply_markup=back_keyboard)
         return
 
+    if _matches_pending_action(update, context, "admin_modify"):
+        message = update.message
+        if message is None:
+            return
+        operator = str(getattr(update.effective_user, "id", "") or "")
+        if not _is_super_admin_tg(operator):
+            _clear_pending_action(context)
+            await message.reply_text("❌ 权限不足：仅超管可使用该功能。")
+            return
+
+        text = (message.text or "").strip()
+        if text in ("/cancel", "取消"):
+            _clear_pending_action(context)
+            await message.reply_text("已取消管理修改。")
+            return
+
+        default_action = str(context.user_data.get("admin_panel_action", "set") or "set").strip().lower()
+        if default_action not in ADMIN_PANEL_ACTION_LABELS:
+            default_action = "set"
+        reply_target = _admin_reply_target_token(message)
+        fallback_target = (
+            reply_target
+            or str(context.user_data.get("admin_target_uid", "") or "").strip()
+            or str(context.user_data.get("admin_target_token", "") or "").strip()
+        )
+
+        parts = text.split()
+        target_token = ""
+        action = default_action
+        field = ""
+        value_raw = ""
+
+        if len(parts) >= 4:
+            target_token = str(parts[0] or "").strip()
+            action = str(parts[1] or "").strip().lower()
+            field = str(parts[2] or "").strip()
+            value_raw = str(parts[3] or "").strip()
+        elif len(parts) == 3:
+            if str(parts[0] or "").strip().lower() in ADMIN_PANEL_ACTION_LABELS:
+                target_token = fallback_target
+                action = str(parts[0] or "").strip().lower()
+                field = str(parts[1] or "").strip()
+                value_raw = str(parts[2] or "").strip()
+            else:
+                target_token = str(parts[0] or "").strip()
+                field = str(parts[1] or "").strip()
+                value_raw = str(parts[2] or "").strip()
+        elif len(parts) == 2:
+            target_token = fallback_target
+            field = str(parts[0] or "").strip()
+            value_raw = str(parts[1] or "").strip()
+        else:
+            await message.reply_text(
+                "❌ 输入格式错误。\n"
+                "请输入：`字段 数值` 或 `UID 字段 数值` 或 `UID 操作 字段 数值`",
+                parse_mode=ParseMode.MARKDOWN,
+            )
+            return
+
+        if action not in ADMIN_PANEL_ACTION_LABELS:
+            await message.reply_text("❌ 操作类型错误，仅支持 set / add / minus。")
+            return
+        if not target_token:
+            await message.reply_text("❌ 未指定目标，请回复目标玩家消息或在输入中携带 UID/TG_ID。")
+            return
+        if not field or not value_raw:
+            await message.reply_text("❌ 参数错误，field 和 value 不能为空。")
+            return
+
+        try:
+            ok, result_text, resolved_uid = await _admin_apply_modify(
+                operator_tg_id=operator,
+                target_token=target_token,
+                action=action,
+                field=field,
+                value_raw=value_raw,
+            )
+        except Exception as exc:
+            logger.error("admin_pending_modify_failed error=%s", type(exc).__name__)
+            _clear_pending_action(context)
+            await message.reply_text("❌ 管理操作失败，请稍后重试。")
+            return
+        if resolved_uid:
+            context.user_data["admin_target_uid"] = resolved_uid
+        context.user_data["admin_target_token"] = target_token
+        context.user_data["admin_panel_action"] = action
+        _clear_pending_action(context)
+        await message.reply_text(result_text, parse_mode=ParseMode.MARKDOWN)
+
+        if ok:
+            await _show_admin_test_panel(update, context, selected_action=action)
+        return
+
     message = update.message
     if message is not None and getattr(getattr(message, "chat", None), "type", "") == "private":
         await message.reply_text(
@@ -1981,8 +2163,28 @@ async def breakthrough_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     [InlineKeyboardButton("❌ 返回", callback_data="main_menu")],
                 ]
             else:
+                is_tribulation = _is_consummation_breakthrough_rank(int(user_data.get("rank", 1) or 1))
                 preview_block = await _build_breakthrough_preview_block(uid, user_data, strategy="steady")
-                text = f"""
+                if is_tribulation:
+                    text = f"""
+🔥 *突破*
+
+{format_realm_progress(user_data)}
+
+✨ 可以渡劫！
+
+当前已至圆满关口，本次突破将直接触发天雷劫。
+
+请确认准备后执行：
+
+{preview_block}
+"""
+                    keyboard = [
+                        [InlineKeyboardButton("⛈️ 渡劫突破", callback_data="breakthrough_tribulation")],
+                        [InlineKeyboardButton("❌ 取消", callback_data="main_menu")],
+                    ]
+                else:
+                    text = f"""
 🔥 *突破*
 
 {format_realm_progress(user_data)}
@@ -1995,14 +2197,14 @@ async def breakthrough_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 {preview_block}
 """
-                keyboard = [
-                    [
-                        InlineKeyboardButton("🛡️ 稳妥突破", callback_data="breakthrough_steady"),
-                        InlineKeyboardButton("🌿 护脉突破", callback_data="breakthrough_protect"),
-                    ],
-                    [InlineKeyboardButton("⚡ 生死突破", callback_data="breakthrough_desperate")],
-                    [InlineKeyboardButton("❌ 取消", callback_data="main_menu")],
-                ]
+                    keyboard = [
+                        [
+                            InlineKeyboardButton("🛡️ 稳妥突破", callback_data="breakthrough_steady"),
+                            InlineKeyboardButton("🌿 护脉突破", callback_data="breakthrough_protect"),
+                        ],
+                        [InlineKeyboardButton("⚡ 生死突破", callback_data="breakthrough_desperate")],
+                        [InlineKeyboardButton("❌ 取消", callback_data="main_menu")],
+                    ]
             await _reply_with_owned_panel(
                 update,
                 context,
@@ -3140,7 +3342,7 @@ def _format_realm_trial_text(trial: dict | None) -> str:
 
 
 def _build_breakthrough_preview(user_data: dict, *, strategy: str = "normal") -> str:
-    from core.services.breakthrough_pity import bonus as pity_bonus, get_hard_pity_threshold
+    from core.game.maps import get_map, get_spirit_density
 
     current_rank = int(user_data.get("rank", 1) or 1)
     current_realm = get_realm_by_id(current_rank) or {"name": "当前境界"}
@@ -3148,9 +3350,32 @@ def _build_breakthrough_preview(user_data: dict, *, strategy: str = "normal") ->
     if not next_realm:
         return "你已站上当前世界的修行尽头。"
 
-    cost = calculate_breakthrough_cost(current_rank)
-    pity = int(user_data.get("breakthrough_pity", 0) or 0)
-    threshold = get_hard_pity_threshold(current_rank)
+    map_id = str(user_data.get("current_map") or "canglan_city")
+    map_info = get_map(map_id) or {}
+    location_name = str(map_info.get("name") or map_id)
+    spirit_density = float(get_spirit_density(map_id) or 1.0)
+    location_bonus = max(
+        -0.08,
+        min(0.12, (spirit_density - 1.0) * _breakthrough_spirit_density_bonus_scale()),
+    )
+    ally_bonus = max(0.0, _breakthrough_ally_help_bonus())
+    is_tribulation = int(current_realm.get("sub_level", 0) or 0) == 4 or "圆满" in str(current_realm.get("name") or "")
+    tribulation_flat_penalty = _breakthrough_tribulation_flat_penalty() if is_tribulation else 0.0
+    tribulation_rate_multiplier = _breakthrough_tribulation_rate_multiplier() if is_tribulation else 1.0
+    tribulation_cost_multiplier = _breakthrough_tribulation_extra_cost_multiplier() if is_tribulation else 1.0
+    tribulation_extra_stamina = _breakthrough_tribulation_extra_stamina() if is_tribulation else 0
+
+    strategy = (strategy or "normal").strip().lower()
+    if is_tribulation:
+        strategy = "steady"
+    base_cost = calculate_breakthrough_cost(current_rank)
+    protect_need = _breakthrough_protect_material_need(current_rank) if strategy == "protect" else 0
+    base_total_cost = int(base_cost + protect_need)
+    if is_tribulation:
+        cost = int(max(base_total_cost, round(base_total_cost * tribulation_cost_multiplier)))
+    else:
+        cost = base_total_cost
+    tribulation_extra_cost = max(0, int(cost - base_total_cost))
     base_rate = float(next_realm.get("break_rate", 0.0) or 0.0)
     rate_parts = [f"基础成功率 {int(base_rate * 100)}%"]
     shown_rate = base_rate
@@ -3159,8 +3384,11 @@ def _build_breakthrough_preview(user_data: dict, *, strategy: str = "normal") ->
     if user_data.get("element") == "火":
         shown_rate = min(1.0, shown_rate + fire_bonus)
         rate_parts.append(f"火灵根 +{int(fire_bonus * 100)}%")
-    strategy = (strategy or "normal").strip().lower()
-    strategy_name = {
+    shown_rate = min(1.0, max(0.0, shown_rate + location_bonus))
+    rate_parts.append(f"地脉灵气 {location_bonus * 100:+.1f}%")
+    shown_rate = min(1.0, shown_rate + ally_bonus)
+    rate_parts.append(f"道友相助 +{int(ally_bonus * 100)}%")
+    strategy_name = "渡劫突破" if is_tribulation else {
         "normal": "普通冲关",
         "steady": "稳妥突破",
         "protect": "护脉突破",
@@ -3172,46 +3400,83 @@ def _build_breakthrough_preview(user_data: dict, *, strategy: str = "normal") ->
         rate_parts.append(f"突破丹 +{int(steady_bonus * 100)}%")
         extra_cost_text = "额外消耗: 突破丹 x1"
     elif strategy == "protect":
-        need = _breakthrough_protect_material_need(current_rank)
-        extra_cost_text = f"额外消耗: 下品灵石 x{need}"
+        extra_cost_text = f"额外消耗: 下品灵石 x{protect_need}"
         rate_parts.append("护脉: 失败不进虚弱")
     elif strategy == "desperate":
         extra_cost_text = "额外效果: 成功额外奖励，失败惩罚更重"
-    pity_rate = pity_bonus(pity)
-    if pity_rate > 0:
-        shown_rate = min(1.0, shown_rate + pity_rate)
-        rate_parts.append(f"心魔值加成 +{int(pity_rate * 100)}%")
+    if is_tribulation:
+        shown_rate = max(0.0, shown_rate - tribulation_flat_penalty)
+        shown_rate = min(1.0, max(0.0, shown_rate * tribulation_rate_multiplier))
+        rate_parts.append(f"天雷劫压制 {-tribulation_flat_penalty * 100:+.1f}%")
+        rate_parts.append(f"雷劫强度倍率 x{tribulation_rate_multiplier:.2f}")
 
+    title_text = "⛈️ *渡劫突破·天雷劫*" if is_tribulation else "⚡ *突破预告*"
+    mode_text = "圆满渡劫（天雷劫）" if is_tribulation else "常规破境"
+    tribulation_line = ""
+    if is_tribulation:
+        tribulation_line = (
+            f"雷劫压制: 固定{-tribulation_flat_penalty * 100:+.1f}%，再乘以 {tribulation_rate_multiplier:.2f} 倍\n"
+            f"雷劫附加消耗: +{tribulation_extra_cost:,} 下品灵石，+{tribulation_extra_stamina} 点精力\n"
+        )
     return (
-        f"⚡ *渡劫预告*\n"
+        f"{title_text}\n"
         f"策略: *{strategy_name}*\n"
+        f"关卡类型: *{mode_text}*\n"
         f"你将从 *{current_realm['name']}* 冲击 *{next_realm['name']}*。\n"
+        f"所在地: *{location_name}*（灵气×{spirit_density:.2f}，地脉{location_bonus * 100:+.1f}%）\n"
+        "今日运势: *平*（0%）\n"
+        f"道友相助: *已召集*（+{int(ally_bonus * 100)}%）\n"
+        f"{tribulation_line}"
         f"消耗: {cost:,} 下品灵石\n"
-        f"额外消耗: {_breakthrough_stamina_cost()} 点精力\n"
+        f"额外消耗: {_breakthrough_stamina_cost() + tribulation_extra_stamina} 点精力\n"
         f"{extra_cost_text}\n"
         f"预计成功率: *{int(shown_rate * 100)}%*\n"
-        f"保底进度: {pity}/{threshold}\n"
         f"加成构成: {' ｜ '.join(rate_parts)}\n"
-        "这不是普通操作，而是一次值得期待的破境尝试。"
+        "这不是普通操作，而是一次值得期待的破境尝试。\n"
+        "说明：突破按实时成功率判定，不再包含保底。"
     )
 
 
 def _build_breakthrough_strategy_notes(user_data: dict) -> str:
-    from core.services.breakthrough_pity import bonus as pity_bonus
+    from core.game.maps import get_spirit_density
 
     current_rank = int(user_data.get("rank", 1) or 1)
+    current_realm = get_realm_by_id(current_rank) or {}
     next_realm = get_next_realm(current_rank) or {}
+    is_tribulation = int(current_realm.get("sub_level", 0) or 0) == 4 or "圆满" in str(current_realm.get("name") or "")
     base_rate = float(next_realm.get("break_rate", 0.0) or 0.0)
     fire_bonus = _breakthrough_fire_bonus()
     steady_bonus = _breakthrough_steady_bonus()
+    ally_bonus = max(0.0, _breakthrough_ally_help_bonus())
+    map_id = str(user_data.get("current_map") or "canglan_city")
+    spirit_density = float(get_spirit_density(map_id) or 1.0)
+    location_bonus = max(
+        -0.08,
+        min(0.12, (spirit_density - 1.0) * _breakthrough_spirit_density_bonus_scale()),
+    )
+    tribulation_flat_penalty = _breakthrough_tribulation_flat_penalty() if is_tribulation else 0.0
+    tribulation_rate_multiplier = _breakthrough_tribulation_rate_multiplier() if is_tribulation else 1.0
+
+    def _apply_tribulation(rate: float) -> float:
+        value = min(1.0, max(0.0, float(rate or 0.0)))
+        if not is_tribulation:
+            return value
+        value = max(0.0, value - tribulation_flat_penalty)
+        return min(1.0, max(0.0, value * tribulation_rate_multiplier))
+
     if user_data.get("element") == "火":
         base_rate = min(1.0, base_rate + fire_bonus)
-    pity = int(user_data.get("breakthrough_pity", 0) or 0)
-    base_rate = min(1.0, base_rate + pity_bonus(pity))
+    base_rate = min(1.0, max(0.0, base_rate + location_bonus + ally_bonus))
     protect_need = _breakthrough_protect_material_need(current_rank)
-    steady_rate = min(1.0, base_rate + steady_bonus)
-    protect_rate = base_rate
-    desperate_rate = base_rate
+    steady_rate = _apply_tribulation(min(1.0, base_rate + steady_bonus))
+    protect_rate = _apply_tribulation(base_rate)
+    desperate_rate = _apply_tribulation(base_rate)
+    if is_tribulation:
+        return (
+            f"当前为【{current_realm.get('name', '圆满境')}】圆满关口，仅开放 *渡劫突破*。\n"
+            f"渡劫突破：消耗下品灵石 + 突破丹 x1，成功率约 *{int(steady_rate * 100)}%*。\n"
+            "说明：渡劫成功率由灵根、地脉、道友助阵与天雷劫共同决定，不含保底。"
+        )
     return (
         f"稳妥突破：消耗下品灵石 + 突破丹 x1，成功率约 *{int(steady_rate * 100)}%*，失败损失减半\n"
         f"护脉突破：消耗下品灵石（含附加 x{protect_need}），成功率约 *{int(protect_rate * 100)}%*，失败不进虚弱\n"
@@ -3224,7 +3489,7 @@ async def _build_breakthrough_preview_block(uid: str, user_data: dict, *, strate
     try:
         data = await http_get(
             f"{SERVER_URL}/api/breakthrough/preview/{uid}",
-            params={"strategy": strategy},
+            params={"strategy": strategy, "call_for_help": "true"},
             timeout=15,
         )
         if data.get("success"):
@@ -3407,6 +3672,97 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return True
     
     data = query.data
+
+    if data.startswith("admin_test_"):
+        if not _is_super_admin_tg(user_id):
+            await _safe_edit(
+                "❌ 权限不足：仅超管可使用该面板。",
+                reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")]]),
+            )
+            return
+
+        if data == "admin_test_refresh":
+            await _show_admin_test_panel(update, context)
+            return
+
+        if data == "admin_test_target_self":
+            context.user_data["admin_target_token"] = user_id
+            context.user_data["admin_target_uid"] = ""
+            await _show_admin_test_panel(update, context)
+            return
+
+        if data == "admin_test_target_clear":
+            context.user_data.pop("admin_target_token", None)
+            context.user_data.pop("admin_target_uid", None)
+            await _show_admin_test_panel(update, context)
+            return
+
+        action_map = {
+            "admin_test_action_set": "set",
+            "admin_test_action_add": "add",
+            "admin_test_action_minus": "minus",
+        }
+        action = action_map.get(data)
+        if action:
+            context.user_data["admin_panel_action"] = action
+            await _show_admin_test_panel(update, context, selected_action=action)
+            return
+
+        if data == "admin_test_manual":
+            prompt = await query.message.reply_text(
+                "请输入修改内容：\n"
+                "1) `字段 数值`（使用当前目标）\n"
+                "2) `UID 字段 数值`\n"
+                "3) `UID 操作 字段 数值`\n\n"
+                "输入 `取消` 退出本次修改。",
+                parse_mode=ParseMode.MARKDOWN,
+                reply_markup=ForceReply(selective=True),
+            )
+            _set_pending_action(
+                context,
+                action="admin_modify",
+                prompt_message=prompt,
+                user_id=user_id,
+            )
+            await _show_admin_test_panel(update, context)
+            return
+
+        if data.startswith("admin_test_quick_"):
+            preset_id = str(data[len("admin_test_quick_"):] or "").strip()
+            target_token = _admin_current_target_token(context)
+            if not target_token:
+                await _safe_edit(
+                    "❌ 还没有目标玩家，请先回复玩家消息发 /test，或点击“目标自己”。",
+                    reply_markup=_admin_panel_keyboard(context),
+                )
+                return
+            try:
+                ok, result_text, resolved_uid = await _admin_apply_preset(
+                    operator_tg_id=user_id,
+                    target_token=target_token,
+                    preset_id=preset_id,
+                )
+            except Exception as exc:
+                logger.error("admin_quick_preset_failed preset=%s error=%s", preset_id, type(exc).__name__)
+                await _safe_edit("❌ 预设执行失败，请稍后重试。", reply_markup=_admin_panel_keyboard(context))
+                return
+
+            if resolved_uid:
+                context.user_data["admin_target_uid"] = resolved_uid
+                context.user_data["admin_target_token"] = resolved_uid
+
+            if ok:
+                try:
+                    await query.message.reply_text(result_text, parse_mode=ParseMode.MARKDOWN)
+                except Exception:
+                    pass
+                await _show_admin_test_panel(update, context)
+            else:
+                await _safe_edit(result_text, reply_markup=_admin_panel_keyboard(context))
+            return
+
+        await _safe_edit("❌ 未知管理员操作。", reply_markup=_admin_panel_keyboard(context))
+        return
 
     intro_targets = {
         "shop_all": ("shop_all", "万宝楼"),
@@ -5081,18 +5437,30 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             ]
                         else:
                             preview_block = await _build_breakthrough_preview_block(uid, user_data, strategy="steady")
-                            text = (
-                                f"🔥 *突破*\n\n{progress}\n\n✨ 可以突破！\n"
-                                f"请选择冲关策略：\n\n{preview_block}"
-                            )
-                            keyboard = [
-                                [
-                                    InlineKeyboardButton("🛡️ 稳妥突破", callback_data="breakthrough_steady"),
-                                    InlineKeyboardButton("🌿 护脉突破", callback_data="breakthrough_protect"),
-                                ],
-                                [InlineKeyboardButton("⚡ 生死突破", callback_data="breakthrough_desperate")],
-                                [InlineKeyboardButton("🔙 返回", callback_data="main_menu")],
-                            ]
+                            is_tribulation = _is_consummation_breakthrough_rank(int(user_data.get("rank", 1) or 1))
+                            if is_tribulation:
+                                text = (
+                                    f"🔥 *突破*\n\n{progress}\n\n✨ 可以渡劫！\n"
+                                    "当前已至圆满关口，本次突破将直接触发天雷劫。\n\n"
+                                    f"请确认准备后执行：\n\n{preview_block}"
+                                )
+                                keyboard = [
+                                    [InlineKeyboardButton("⛈️ 渡劫突破", callback_data="breakthrough_tribulation")],
+                                    [InlineKeyboardButton("🔙 返回", callback_data="main_menu")],
+                                ]
+                            else:
+                                text = (
+                                    f"🔥 *突破*\n\n{progress}\n\n✨ 可以突破！\n"
+                                    f"请选择冲关策略：\n\n{preview_block}"
+                                )
+                                keyboard = [
+                                    [
+                                        InlineKeyboardButton("🛡️ 稳妥突破", callback_data="breakthrough_steady"),
+                                        InlineKeyboardButton("🌿 护脉突破", callback_data="breakthrough_protect"),
+                                    ],
+                                    [InlineKeyboardButton("⚡ 生死突破", callback_data="breakthrough_desperate")],
+                                    [InlineKeyboardButton("🔙 返回", callback_data="main_menu")],
+                                ]
                     else:
                         text = f"🔥 *突破*\n\n{progress}\n\n修为不足，继续修炼吧！"
                         keyboard = [[InlineKeyboardButton("🔙 返回", callback_data="main_menu")]]
@@ -5113,7 +5481,7 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     # 突破 - 执行
-    if data in ("breakthrough_start", "breakthrough_pill", "breakthrough_steady", "breakthrough_protect", "breakthrough_desperate"):
+    if data in ("breakthrough_start", "breakthrough_pill", "breakthrough_steady", "breakthrough_protect", "breakthrough_desperate", "breakthrough_tribulation"):
         try:
             r = await http_get(
                 f"{SERVER_URL}/api/user/lookup",
@@ -5130,20 +5498,34 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     "breakthrough_steady": "steady",
                     "breakthrough_protect": "protect",
                     "breakthrough_desperate": "desperate",
+                    "breakthrough_tribulation": "steady",
                 }.get(data, "normal")
                 use_pill = strategy == "steady"
                 result = await http_post(
                     f"{SERVER_URL}/api/breakthrough",
-                    json={"user_id": uid, "use_pill": use_pill, "strategy": strategy},
+                    json={
+                        "user_id": uid,
+                        "use_pill": use_pill,
+                        "strategy": strategy,
+                        "call_for_help": True,
+                    },
                     timeout=15,
                 )
                 if result.get("success"):
+                    realm_name = str(result.get("new_realm", "") or "").strip() or "未知境界"
+                    mention = _markdown_safe_tg_mention(getattr(query.from_user, "username", ""))
+                    congrats_message = str(result.get("congrats_message", "") or "").strip()
+                    if mention:
+                        congrats_message = f"灵光一闪！恭喜 {mention} 道友，修为精进，成功突破至【{realm_name}】！"
+                    elif not congrats_message:
+                        congrats_message = f"灵光一闪！恭喜 道友，修为精进，成功突破至【{realm_name}】！"
                     text = (
                         f"🔥 *突破成功！*\n\n"
+                        f"*{congrats_message}*\n\n"
                         f"{result.get('event_title', '你成功破境了')}\n"
                         f"{result.get('event_flavor', '')}\n\n"
                         f"{result.get('message', '')}\n"
-                        f"新境界: *{result.get('new_realm', '')}*\n"
+                        f"新境界: *{realm_name}*\n"
                         f"{result.get('strategy_cost_text', '')}\n"
                         f"建议: {result.get('next_goal', '继续稳固境界，准备下一阶段修行。')}"
                     )
@@ -7092,6 +7474,559 @@ async def currency_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ 服务器错误")
 
 
+def _admin_panel_keyboard(context: ContextTypes.DEFAULT_TYPE | None = None) -> InlineKeyboardMarkup:
+    current_action = "set"
+    if context is not None:
+        action = str(context.user_data.get("admin_panel_action", "set") or "set").strip().lower()
+        if action in ADMIN_PANEL_ACTION_LABELS:
+            current_action = action
+    set_label = "✅ 设置" if current_action == "set" else "🛠 设置"
+    add_label = "✅ 增加" if current_action == "add" else "➕ 增加"
+    minus_label = "✅ 扣减" if current_action == "minus" else "➖ 扣减"
+    return InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton(set_label, callback_data="admin_test_action_set"),
+                InlineKeyboardButton(add_label, callback_data="admin_test_action_add"),
+                InlineKeyboardButton(minus_label, callback_data="admin_test_action_minus"),
+            ],
+            [
+                InlineKeyboardButton("🎯 目标自己", callback_data="admin_test_target_self"),
+                InlineKeyboardButton("🧹 清空目标", callback_data="admin_test_target_clear"),
+                InlineKeyboardButton("🔄 刷新", callback_data="admin_test_refresh"),
+            ],
+            [
+                InlineKeyboardButton("下灵+1k", callback_data="admin_test_quick_c1k"),
+                InlineKeyboardButton("下灵+1w", callback_data="admin_test_quick_c1w"),
+                InlineKeyboardButton("下灵+10w", callback_data="admin_test_quick_c10w"),
+            ],
+            [
+                InlineKeyboardButton("中灵+10", callback_data="admin_test_quick_g10"),
+                InlineKeyboardButton("中灵+100", callback_data="admin_test_quick_g100"),
+                InlineKeyboardButton("中灵+1000", callback_data="admin_test_quick_g1000"),
+            ],
+            [
+                InlineKeyboardButton("上灵+10", callback_data="admin_test_quick_h10"),
+                InlineKeyboardButton("精品+10", callback_data="admin_test_quick_u10"),
+                InlineKeyboardButton("极品+10", callback_data="admin_test_quick_x10"),
+            ],
+            [
+                InlineKeyboardButton("修为+1w", callback_data="admin_test_quick_e1w"),
+                InlineKeyboardButton("修为+10w", callback_data="admin_test_quick_e10w"),
+                InlineKeyboardButton("境界+1", callback_data="admin_test_quick_r1"),
+            ],
+            [
+                InlineKeyboardButton("精力=24", callback_data="admin_test_quick_st24"),
+                InlineKeyboardButton("精力+10", callback_data="admin_test_quick_st10"),
+                InlineKeyboardButton("破境计数+1", callback_data="admin_test_quick_pity1"),
+            ],
+            [
+                InlineKeyboardButton("满血满蓝", callback_data="admin_test_quick_heal"),
+                InlineKeyboardButton("狩猎清零", callback_data="admin_test_quick_hunt0"),
+                InlineKeyboardButton("PVP日清", callback_data="admin_test_quick_pvp0"),
+            ],
+            [InlineKeyboardButton("✍️ 手动输入", callback_data="admin_test_manual")],
+            [InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")],
+        ]
+    )
+
+
+def _admin_reply_target_token(message) -> str:
+    reply_message = getattr(message, "reply_to_message", None) if message else None
+    reply_user = getattr(reply_message, "from_user", None) if reply_message else None
+    if reply_user and not bool(getattr(reply_user, "is_bot", False)):
+        return str(getattr(reply_user, "id", "") or "").strip()
+    return ""
+
+
+async def _admin_modifiable_fields_snapshot() -> tuple[list[dict], dict[str, str]]:
+    from core.database import connection as db_conn
+    from core.admin.user_management import get_modifiable_fields
+
+    if getattr(db_conn, "_pool", None) is None:
+        db_conn.connect_sqlite()
+    rows = get_modifiable_fields()
+    labels = {str(row.get("field") or ""): str(row.get("label") or row.get("field") or "") for row in rows}
+    return rows, labels
+
+
+def _admin_fields_preview_text(fields: list[dict], *, limit: int = 24) -> str:
+    if not fields:
+        return "（当前未检测到可编辑字段）"
+    groups: dict[str, list[str]] = {}
+    for row in fields[: max(1, int(limit))]:
+        group_label = str(row.get("group_label") or row.get("group") or "其他")
+        groups.setdefault(group_label, []).append(str(row.get("field") or ""))
+    lines: list[str] = []
+    for group, names in groups.items():
+        clean = [n for n in names if n]
+        if not clean:
+            continue
+        lines.append(f"{group}: " + ", ".join(clean))
+    return "\n".join(lines) if lines else "（当前未检测到可编辑字段）"
+
+
+def _admin_current_target_hint(context: ContextTypes.DEFAULT_TYPE) -> str:
+    token = str(context.user_data.get("admin_target_token", "") or "").strip()
+    uid = str(context.user_data.get("admin_target_uid", "") or "").strip()
+    if uid:
+        return f"UID {uid}"
+    if token:
+        return f"TG_ID {token}"
+    return "未指定（请回复目标玩家消息，或在输入中携带 UID/TG_ID）"
+
+
+def _admin_current_target_token(context: ContextTypes.DEFAULT_TYPE) -> str:
+    uid = str(context.user_data.get("admin_target_uid", "") or "").strip()
+    if uid:
+        return uid
+    return str(context.user_data.get("admin_target_token", "") or "").strip()
+
+
+async def _admin_resolve_target_user(target_token: str) -> tuple[str, dict | None]:
+    from core.database import connection as db_conn
+
+    token = str(target_token or "").strip()
+    if not token:
+        return "", None
+    if getattr(db_conn, "_pool", None) is None:
+        db_conn.connect_sqlite()
+
+    target_uid = token
+    target_user = db_conn.get_user_by_id(target_uid)
+    if not target_user and token.isdigit():
+        try:
+            lookup = await http_get(
+                f"{SERVER_URL}/api/user/lookup",
+                params={"platform": "telegram", "platform_id": token},
+                timeout=15,
+            )
+        except Exception:
+            lookup = {}
+        if lookup.get("success"):
+            target_uid = str(lookup.get("user_id") or "").strip()
+            target_user = db_conn.get_user_by_id(target_uid) if target_uid else None
+
+    return target_uid, target_user
+
+
+async def _admin_apply_preset(
+    *,
+    operator_tg_id: str,
+    target_token: str,
+    preset_id: str,
+) -> tuple[bool, str, str]:
+    preset = ADMIN_PRESET_MAP.get(str(preset_id or "").strip())
+    if not preset:
+        return False, "❌ 未知预设操作。", ""
+
+    kind = str(preset.get("kind") or "modify").strip().lower()
+    if kind == "modify":
+        field = str(preset.get("field") or "").strip()
+        action = str(preset.get("action") or "add").strip().lower()
+        value = str(preset.get("value") or "0")
+        return await _admin_apply_modify(
+            operator_tg_id=operator_tg_id,
+            target_token=target_token,
+            action=action,
+            field=field,
+            value_raw=value,
+        )
+
+    from core.database import connection as db_conn
+    from core.services.audit_log_service import write_audit_log
+
+    target_uid, target_user = await _admin_resolve_target_user(target_token)
+    if not target_user:
+        return False, "❌ 未找到目标玩家，请先指定有效目标。", ""
+
+    if getattr(db_conn, "_pool", None) is None:
+        db_conn.connect_sqlite()
+
+    label = str(preset.get("label") or preset_id)
+    detail: dict[str, object] = {"preset_id": preset_id, "preset_label": label}
+    if kind == "heal_full":
+        db_conn.execute(
+            "UPDATE users SET hp = GREATEST(COALESCE(max_hp, 0), 0), mp = GREATEST(COALESCE(max_mp, 0), 0) WHERE user_id = %s",
+            (target_uid,),
+        )
+    elif kind == "hunt_reset":
+        db_conn.execute(
+            "UPDATE users SET dy_times = 0, hunts_today = 0 WHERE user_id = %s",
+            (target_uid,),
+        )
+    elif kind == "pvp_daily_reset":
+        db_conn.execute(
+            "UPDATE users SET pvp_daily_count = 0 WHERE user_id = %s",
+            (target_uid,),
+        )
+    else:
+        return False, "❌ 预设类型不支持。", target_uid
+
+    latest = db_conn.get_user_by_id(target_uid) or target_user
+    detail["after"] = {
+        "hp": int((latest or {}).get("hp", 0) or 0),
+        "mp": int((latest or {}).get("mp", 0) or 0),
+        "dy_times": int((latest or {}).get("dy_times", 0) or 0),
+        "hunts_today": int((latest or {}).get("hunts_today", 0) or 0),
+        "pvp_daily_count": int((latest or {}).get("pvp_daily_count", 0) or 0),
+    }
+    try:
+        write_audit_log(
+            module="admin",
+            action=f"panel_preset_{preset_id}",
+            user_id=operator_tg_id,
+            success=True,
+            detail={
+                "target_uid": target_uid,
+                "operator_tg_id": operator_tg_id,
+                **detail,
+            },
+        )
+    except Exception:
+        pass
+
+    return True, f"✅ 预设执行成功：`{target_uid}` 已应用「{label}」", target_uid
+
+
+async def _admin_apply_modify(
+    *,
+    operator_tg_id: str,
+    target_token: str,
+    action: str,
+    field: str,
+    value_raw: str,
+) -> tuple[bool, str, str]:
+    from core.database import connection as db_conn
+    from core.admin.user_management import modify_user_field
+    from core.services.audit_log_service import write_audit_log
+
+    target_uid, target_user = await _admin_resolve_target_user(target_token)
+    if not target_user:
+        return False, "❌ 未找到目标玩家，请传入有效游戏UID或TG_ID。", ""
+
+    success, msg = modify_user_field(target_uid, field, action, value_raw)
+    if not success:
+        return False, f"❌ {msg}", target_uid
+
+    latest = db_conn.get_user_by_id(target_uid) or target_user
+    latest_value = (latest or {}).get(field, 0)
+    try:
+        value_for_audit = float(value_raw)
+    except Exception:
+        value_for_audit = str(value_raw)
+
+    try:
+        write_audit_log(
+            module="admin",
+            action=f"panel_{action}_{field}",
+            user_id=operator_tg_id,
+            success=True,
+            detail={
+                "target_uid": target_uid,
+                "field": field,
+                "action": action,
+                "value": value_for_audit,
+                "new_value": latest_value,
+                "operator_tg_id": operator_tg_id,
+                "target_token": str(target_token or ""),
+            },
+        )
+    except Exception as exc:
+        logger.warning("admin_audit_log_failed error=%s", type(exc).__name__)
+
+    action_text = ADMIN_PANEL_ACTION_LABELS.get(action, action)
+    return (
+        True,
+        f"✅ 管理操作成功：{action_text} `{target_uid}` 的 `{field}` = `{latest_value}`",
+        target_uid,
+    )
+
+
+async def _show_admin_test_panel(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+    *,
+    selected_action: str | None = None,
+) -> None:
+    message = update.effective_message
+    if message is None:
+        return
+    operator = str(getattr(update.effective_user, "id", "") or "")
+    if not _is_super_admin_tg(operator):
+        await message.reply_text("❌ 权限不足：仅超管可使用该命令。")
+        return
+
+    if selected_action in ADMIN_PANEL_ACTION_LABELS:
+        context.user_data["admin_panel_action"] = selected_action
+    current_action = str(context.user_data.get("admin_panel_action", "set") or "set").strip().lower()
+    if current_action not in ADMIN_PANEL_ACTION_LABELS:
+        current_action = "set"
+        context.user_data["admin_panel_action"] = current_action
+
+    reply_target = _admin_reply_target_token(message)
+    if reply_target:
+        context.user_data["admin_target_token"] = reply_target
+
+    try:
+        fields, labels = await _admin_modifiable_fields_snapshot()
+    except Exception as exc:
+        logger.warning("admin_field_snapshot_failed error=%s", type(exc).__name__)
+        fields = []
+        labels = {}
+
+    preview = _admin_fields_preview_text(fields, limit=24)
+    example_field = next(iter(labels.keys()), "exp")
+    action_label = ADMIN_PANEL_ACTION_LABELS.get(current_action, current_action)
+    target_hint = _admin_current_target_hint(context)
+
+    text = (
+        "🛡️ 超管管理面板\n\n"
+        f"当前操作: {action_label}\n"
+        f"当前目标: {target_hint}\n\n"
+        "使用方式：\n"
+        "1. 回复目标玩家消息后点击上方按钮，或直接输入 UID/TG_ID。\n"
+        "2. 直接点下方预设按钮，一键执行。\n"
+        "3. 点“手动输入”后可输入：字段 数值（使用当前操作/目标）\n"
+        "4. 或直接发：UID 字段 数值 / UID 操作 字段 数值\n\n"
+        f"快速示例：\n/test 8516652120 add {example_field} 1000\n\n"
+        "可编辑字段（节选）：\n"
+        f"{preview}"
+    )
+    await _reply_with_owned_panel(
+        update,
+        context,
+        text,
+        reply_markup=_admin_panel_keyboard(context),
+    )
+
+
+async def admin_test_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    message = update.effective_message
+    if message is None:
+        return
+    operator = str(getattr(update.effective_user, "id", "") or "")
+    if not _is_super_admin_tg(operator):
+        await message.reply_text("❌ 权限不足：仅超管可使用该命令。")
+        return
+
+    reply_target = _admin_reply_target_token(message)
+    if reply_target:
+        context.user_data["admin_target_token"] = reply_target
+
+    args = context.args or []
+    if not args:
+        await _show_admin_test_panel(update, context)
+        return
+
+    default_action = str(context.user_data.get("admin_panel_action", "set") or "set").strip().lower()
+    if default_action not in ADMIN_PANEL_ACTION_LABELS:
+        default_action = "set"
+
+    action = default_action
+    target_token = ""
+    field = ""
+    value_raw = ""
+
+    if len(args) >= 4:
+        target_token = str(args[0] or "").strip()
+        action = str(args[1] or "").strip().lower()
+        field = str(args[2] or "").strip()
+        value_raw = str(args[3] or "").strip()
+    elif len(args) == 3:
+        first = str(args[0] or "").strip()
+        if first.lower() in ADMIN_PANEL_ACTION_LABELS:
+            action = first.lower()
+            field = str(args[1] or "").strip()
+            value_raw = str(args[2] or "").strip()
+            target_token = reply_target or _admin_current_target_token(context)
+        else:
+            target_token = first
+            field = str(args[1] or "").strip()
+            value_raw = str(args[2] or "").strip()
+    elif len(args) == 2:
+        target_token = reply_target or _admin_current_target_token(context)
+        field = str(args[0] or "").strip()
+        value_raw = str(args[1] or "").strip()
+    else:
+        await message.reply_text(
+            "❌ 参数不足。\n"
+            "用法：/test <UID|TG_ID> <set|add|minus> <field> <value>\n"
+            "或：回复目标消息后 /test <set|add|minus> <field> <value>\n"
+            "或：/test <UID|TG_ID> <field> <value>"
+        )
+        return
+
+    if action not in ADMIN_PANEL_ACTION_LABELS:
+        await message.reply_text("❌ 操作类型错误，仅支持 set / add / minus。")
+        return
+    if not target_token:
+        await message.reply_text("❌ 未指定目标，请回复目标玩家消息或传入 UID/TG_ID。")
+        return
+    if not field or not value_raw:
+        await message.reply_text("❌ 参数错误，field 和 value 不能为空。")
+        return
+
+    try:
+        ok, result_text, resolved_uid = await _admin_apply_modify(
+            operator_tg_id=operator,
+            target_token=target_token,
+            action=action,
+            field=field,
+            value_raw=value_raw,
+        )
+    except Exception as exc:
+        logger.error("admin_test_modify_failed error=%s", type(exc).__name__)
+        await message.reply_text("❌ 管理操作失败，请稍后重试。")
+        return
+    if resolved_uid:
+        context.user_data["admin_target_uid"] = resolved_uid
+    if target_token:
+        context.user_data["admin_target_token"] = target_token
+    context.user_data["admin_panel_action"] = action
+    await message.reply_text(result_text, parse_mode=ParseMode.MARKDOWN)
+    await _show_admin_test_panel(update, context, selected_action=action)
+
+
+async def _admin_give_currency_cmd(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+    *,
+    tier: str,
+) -> None:
+    message = update.effective_message
+    if message is None:
+        return
+    operator = str(getattr(update.effective_user, "id", "") or "")
+    if not _is_super_admin_tg(operator):
+        await message.reply_text("❌ 权限不足：仅超管可使用该命令。")
+        return
+
+    field_label = ADMIN_GIVE_CURRENCY_FIELDS.get(tier)
+    if not field_label:
+        await message.reply_text("❌ 未知发放类型。")
+        return
+    field, label = field_label
+
+    args = context.args or []
+    target_token = ""
+    amount = 0
+    mode = "explicit"
+
+    if len(args) >= 2:
+        target_token = str(args[0] or "").strip()
+        try:
+            amount = int(args[1])
+        except (TypeError, ValueError):
+            await message.reply_text("❌ 参数错误：数量必须是整数。")
+            return
+    elif len(args) == 1:
+        try:
+            amount = int(args[0])
+        except (TypeError, ValueError):
+            await message.reply_text("❌ 参数错误：数量必须是整数。")
+            return
+        reply_message = getattr(message, "reply_to_message", None)
+        reply_user = getattr(reply_message, "from_user", None) if reply_message else None
+        if reply_user and not bool(getattr(reply_user, "is_bot", False)):
+            target_token = str(getattr(reply_user, "id", "") or "").strip()
+            mode = "reply"
+        else:
+            target_token = operator
+            mode = "self"
+    else:
+        await message.reply_text(
+            f"用法1：/xian_give_{tier} <数量>（回复他人消息=给对方；不回复=给自己）\n"
+            f"用法2：/xian_give_{tier} <游戏UID|TG_ID> <数量>"
+        )
+        return
+
+    if not target_token:
+        await message.reply_text("❌ 参数错误：目标不能为空。")
+        return
+    if amount <= 0:
+        await message.reply_text("❌ 参数错误：数量必须大于 0。")
+        return
+
+    from core.database import connection as db_conn
+    from core.services.audit_log_service import write_audit_log
+
+    if getattr(db_conn, "_pool", None) is None:
+        db_conn.connect_sqlite()
+
+    target_uid = target_token
+    target_user = db_conn.get_user_by_id(target_uid)
+    if not target_user and target_token.isdigit():
+        try:
+            lookup = await http_get(
+                f"{SERVER_URL}/api/user/lookup",
+                params={"platform": "telegram", "platform_id": target_token},
+                timeout=15,
+            )
+        except Exception:
+            lookup = {}
+        if lookup.get("success"):
+            target_uid = str(lookup.get("user_id") or "").strip()
+            target_user = db_conn.get_user_by_id(target_uid) if target_uid else None
+
+    if not target_user:
+        await message.reply_text("❌ 未找到目标玩家，请传入有效游戏UID或TG_ID。")
+        return
+
+    db_conn.execute(
+        f"UPDATE users SET {field} = COALESCE({field}, 0) + %s WHERE user_id = %s",
+        (amount, target_uid),
+    )
+    latest = db_conn.get_user_by_id(target_uid) or target_user
+    new_amount = int((latest or {}).get(field, 0) or 0)
+
+    write_audit_log(
+        module="admin",
+        action=f"give_{field}",
+        user_id=operator,
+        success=True,
+        detail={
+            "target_uid": target_uid,
+            "field": field,
+            "amount": amount,
+            "new_amount": new_amount,
+            "operator_tg_id": operator,
+            "mode": mode,
+        },
+    )
+
+    target_desc = {
+        "reply": "回复目标",
+        "self": "自己",
+        "explicit": "指定目标",
+    }.get(mode, "指定目标")
+    await message.reply_text(
+        f"✅ 发放成功（{target_desc}）：已向 `{target_uid}` 增加 {amount:,} {label}。\n"
+        f"当前{label}: {new_amount:,}",
+        parse_mode=ParseMode.MARKDOWN,
+    )
+
+
+async def xian_give_low_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await _admin_give_currency_cmd(update, context, tier="low")
+
+
+async def xian_give_mid_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await _admin_give_currency_cmd(update, context, tier="mid")
+
+
+async def xian_give_high_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await _admin_give_currency_cmd(update, context, tier="high")
+
+
+async def xian_give_uhigh_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await _admin_give_currency_cmd(update, context, tier="uhigh")
+
+
+async def xian_give_xhigh_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await _admin_give_currency_cmd(update, context, tier="xhigh")
+
+
 @require_account
 async def convert_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     uid = context.user_data["uid"]
@@ -7521,6 +8456,11 @@ def main():
     app.add_handler(CommandHandler(["xian_sect", "sect"], sect_cmd, filters=_chat_filter))
     app.add_handler(CommandHandler(["xian_alchemy", "alchemy"], alchemy_cmd, filters=_chat_filter))
     app.add_handler(CommandHandler(["xian_currency", "currency"], currency_cmd, filters=_chat_filter))
+    app.add_handler(CommandHandler(["xian_give_low"], xian_give_low_cmd, filters=_chat_filter))
+    app.add_handler(CommandHandler(["xian_give_mid"], xian_give_mid_cmd, filters=_chat_filter))
+    app.add_handler(CommandHandler(["xian_give_high"], xian_give_high_cmd, filters=_chat_filter))
+    app.add_handler(CommandHandler(["xian_give_uhigh"], xian_give_uhigh_cmd, filters=_chat_filter))
+    app.add_handler(CommandHandler(["xian_give_xhigh"], xian_give_xhigh_cmd, filters=_chat_filter))
     app.add_handler(CommandHandler(["xian_convert", "convert"], convert_cmd, filters=_chat_filter))
     app.add_handler(CommandHandler(["xian_achievements", "xian_ach", "achievements", "ach"], achievements_cmd, filters=_chat_filter))
     app.add_handler(CommandHandler(["xian_codex", "codex"], codex_cmd, filters=_chat_filter))
@@ -7529,6 +8469,7 @@ def main():
     app.add_handler(CommandHandler(["xian_worldboss", "xian_boss", "worldboss", "boss"], worldboss_cmd, filters=_chat_filter))
     app.add_handler(CommandHandler(["xian_guide", "xian_realms", "guide", "realms"], guide_cmd, filters=_chat_filter))
     app.add_handler(CommandHandler(["xian_version", "version"], version_cmd, filters=_chat_filter))
+    app.add_handler(CommandHandler(["test", "xian_test"], admin_test_cmd, filters=_chat_filter))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND & _chat_filter, text_message_handler))
 
     # 回调处理器

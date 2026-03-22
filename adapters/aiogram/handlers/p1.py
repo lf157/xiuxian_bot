@@ -9,6 +9,7 @@ import sys
 from typing import Any
 
 from aiogram import F, Router
+from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message, User
@@ -62,6 +63,16 @@ def _pick_username(user: User, explicit_name: str | None = None) -> str:
     return raw
 
 
+def _markdown_safe_tg_mention(user: User | None) -> str:
+    username = ""
+    if user is not None:
+        username = str(getattr(user, "username", "") or "").strip()
+    clean = re.sub(r"[^A-Za-z0-9_]", "", username)
+    if not clean:
+        return ""
+    return "@" + clean.replace("_", "\\_")
+
+
 def _extract_callback_tail(query: CallbackQuery, prefix: str) -> str:
     data = str(query.data or "")
     if not data.startswith(prefix):
@@ -104,12 +115,13 @@ async def _respond_query(
     reply_markup=None,
     alert_text: str | None = None,
     show_alert: bool = False,
+    parse_mode: ParseMode | str | None = None,
 ) -> None:
     if query.message:
         try:
-            await query.message.edit_text(text, reply_markup=reply_markup)
+            await query.message.edit_text(text, reply_markup=reply_markup, parse_mode=parse_mode)
         except Exception:
-            await query.message.answer(text, reply_markup=reply_markup)
+            await query.message.answer(text, reply_markup=reply_markup, parse_mode=parse_mode)
     await _safe_answer_callback(query, text=alert_text, show_alert=show_alert)
 
 
@@ -583,9 +595,14 @@ async def cmd_breakthrough(message: Message, state: FSMContext) -> None:
     if not uid:
         return
     strategy = "normal"
+    call_for_help = True
     preview_resp = await api_get(
         f"/api/breakthrough/preview/{uid}",
-        params={"strategy": strategy, "use_pill": "false"},
+        params={
+            "strategy": strategy,
+            "use_pill": "false",
+            "call_for_help": "true" if call_for_help else "false",
+        },
     )
     if not preview_resp.get("success"):
         text = f"❌ {_error_text(preview_resp, '突破预览失败')}"
@@ -598,10 +615,14 @@ async def cmd_breakthrough(message: Message, state: FSMContext) -> None:
 
     preview = preview_resp.get("preview") or {}
     await state.set_state(BreakthroughFSM.selecting_strategy)
-    await state.update_data(uid=uid, breakthrough_strategy=strategy)
+    await state.update_data(
+        uid=uid,
+        breakthrough_strategy=strategy,
+        breakthrough_call_for_help=call_for_help,
+    )
     await message.answer(
         ui.format_breakthrough_preview(preview),
-        reply_markup=ui.breakthrough_keyboard(strategy),
+        reply_markup=ui.breakthrough_keyboard(strategy, call_for_help),
     )
 
 
@@ -611,9 +632,14 @@ async def cb_menu_break(query: CallbackQuery, state: FSMContext) -> None:
     if not uid:
         return
     strategy = "normal"
+    call_for_help = True
     preview_resp = await api_get(
         f"/api/breakthrough/preview/{uid}",
-        params={"strategy": strategy, "use_pill": "false"},
+        params={
+            "strategy": strategy,
+            "use_pill": "false",
+            "call_for_help": "true" if call_for_help else "false",
+        },
     )
     if not preview_resp.get("success"):
         await _respond_query(
@@ -626,11 +652,15 @@ async def cb_menu_break(query: CallbackQuery, state: FSMContext) -> None:
 
     preview = preview_resp.get("preview") or {}
     await state.set_state(BreakthroughFSM.selecting_strategy)
-    await state.update_data(uid=uid, breakthrough_strategy=strategy)
+    await state.update_data(
+        uid=uid,
+        breakthrough_strategy=strategy,
+        breakthrough_call_for_help=call_for_help,
+    )
     await _respond_query(
         query,
         ui.format_breakthrough_preview(preview),
-        reply_markup=ui.breakthrough_keyboard(strategy),
+        reply_markup=ui.breakthrough_keyboard(strategy, call_for_help),
     )
 
 
@@ -639,16 +669,22 @@ async def cb_break_preview(query: CallbackQuery, state: FSMContext) -> None:
     uid = await _require_uid_from_query(query, state)
     if not uid:
         return
+    data = await state.get_data()
+    call_for_help = bool(data.get("breakthrough_call_for_help", True))
     strategy = _extract_callback_tail(query, "break:preview:").strip().lower() or "normal"
     preview_resp = await api_get(
         f"/api/breakthrough/preview/{uid}",
-        params={"strategy": strategy, "use_pill": "false"},
+        params={
+            "strategy": strategy,
+            "use_pill": "false",
+            "call_for_help": "true" if call_for_help else "false",
+        },
     )
     if not preview_resp.get("success"):
         await _respond_query(
             query,
             f"❌ {_error_text(preview_resp, '突破预览失败')}",
-            reply_markup=ui.breakthrough_keyboard(strategy),
+            reply_markup=ui.breakthrough_keyboard(strategy, call_for_help),
             alert_text="预览失败",
         )
         return
@@ -656,11 +692,55 @@ async def cb_break_preview(query: CallbackQuery, state: FSMContext) -> None:
     preview = preview_resp.get("preview") or {}
     strategy = str(preview.get("strategy") or strategy)
     await state.set_state(BreakthroughFSM.selecting_strategy)
-    await state.update_data(uid=uid, breakthrough_strategy=strategy)
+    await state.update_data(
+        uid=uid,
+        breakthrough_strategy=strategy,
+        breakthrough_call_for_help=call_for_help,
+    )
     await _respond_query(
         query,
         ui.format_breakthrough_preview(preview),
-        reply_markup=ui.breakthrough_keyboard(strategy),
+        reply_markup=ui.breakthrough_keyboard(strategy, call_for_help),
+    )
+
+
+@router.callback_query(F.data == "break:help:toggle")
+async def cb_break_help_toggle(query: CallbackQuery, state: FSMContext) -> None:
+    uid = await _require_uid_from_query(query, state)
+    if not uid:
+        return
+    data = await state.get_data()
+    strategy = str(data.get("breakthrough_strategy") or "normal").strip().lower() or "normal"
+    call_for_help = not bool(data.get("breakthrough_call_for_help", True))
+    preview_resp = await api_get(
+        f"/api/breakthrough/preview/{uid}",
+        params={
+            "strategy": strategy,
+            "use_pill": "false",
+            "call_for_help": "true" if call_for_help else "false",
+        },
+    )
+    if not preview_resp.get("success"):
+        await _respond_query(
+            query,
+            f"❌ {_error_text(preview_resp, '突破预览失败')}",
+            reply_markup=ui.breakthrough_keyboard(strategy, call_for_help),
+            alert_text="预览失败",
+        )
+        return
+    preview = preview_resp.get("preview") or {}
+    strategy = str(preview.get("strategy") or strategy)
+    await state.set_state(BreakthroughFSM.selecting_strategy)
+    await state.update_data(
+        uid=uid,
+        breakthrough_strategy=strategy,
+        breakthrough_call_for_help=call_for_help,
+    )
+    await _respond_query(
+        query,
+        ui.format_breakthrough_preview(preview),
+        reply_markup=ui.breakthrough_keyboard(strategy, call_for_help),
+        alert_text="已切换道友助阵",
     )
 
 
@@ -671,17 +751,30 @@ async def cb_break_confirm(query: CallbackQuery, state: FSMContext) -> None:
         return
     data = await state.get_data()
     strategy = str(data.get("breakthrough_strategy") or "normal").strip().lower()
+    call_for_help = bool(data.get("breakthrough_call_for_help", True))
 
     result = await api_post(
         "/api/breakthrough",
-        payload={"user_id": uid, "strategy": strategy, "use_pill": False},
+        payload={
+            "user_id": uid,
+            "strategy": strategy,
+            "use_pill": False,
+            "call_for_help": call_for_help,
+        },
     )
     if result.get("success"):
+        mention = _markdown_safe_tg_mention(query.from_user)
+        if mention:
+            realm_name = str(result.get("new_realm", "") or "").strip() or "未知境界"
+            result["congrats_message"] = (
+                f"灵光一闪！恭喜 {mention} 道友，修为精进，成功突破至【{realm_name}】！"
+            )
         await _respond_query(
             query,
             ui.format_breakthrough_result(result),
             reply_markup=ui.main_menu_keyboard(registered=True),
             alert_text="突破成功",
+            parse_mode=ParseMode.MARKDOWN,
         )
         return
 
@@ -690,7 +783,7 @@ async def cb_break_confirm(query: CallbackQuery, state: FSMContext) -> None:
         await _respond_query(
             query,
             ui.format_breakthrough_result(result),
-            reply_markup=ui.breakthrough_keyboard(strategy),
+            reply_markup=ui.breakthrough_keyboard(strategy, call_for_help),
         )
         return
 
@@ -702,7 +795,7 @@ async def cb_break_confirm(query: CallbackQuery, state: FSMContext) -> None:
     await _respond_query(
         query,
         text,
-        reply_markup=ui.breakthrough_keyboard(strategy),
+        reply_markup=ui.breakthrough_keyboard(strategy, call_for_help),
         alert_text="突破失败",
     )
 

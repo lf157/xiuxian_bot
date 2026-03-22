@@ -19,24 +19,27 @@
               </button>
             </div>
           </div>
-          
+
           <div id="user-info" class="user-info-container" style="display: none;">
             <div class="user-info-header">
               <h4 id="user-display-name">玩家名称</h4>
               <span id="user-id" class="user-id-display">用户编号：000000000</span>
             </div>
             <input type="hidden" id="selected-user-id" value="">
-            
+
+            <div class="user-stats-panel">
+              <h5>{{ trans.get('admin_user_overview', '玩家关键数据总览') }}</h5>
+              <div id="user-stats-grid" class="user-stats-grid"></div>
+            </div>
+
             <div class="form-group">
               <label for="field-select">{{ trans.get('admin_field_select', '选择数据类型') }}</label>
               <select id="field-select" class="form-select">
-                <option value="exp">{{ trans.get('admin_field_exp', '经验') }}</option>
-                <option value="copper">{{ trans.get('admin_field_copper', '下品灵石') }}</option>
-                <option value="gold">{{ trans.get('admin_field_gold', '中品灵石') }}</option>
-                <option value="rank">{{ trans.get('admin_field_rank', '修为等级') }}</option>
+                <option value="" selected disabled>{{ trans.get('admin_field_loading', '正在加载可编辑字段...') }}</option>
               </select>
+              <small class="form-hint">{{ trans.get('admin_field_hint', '字段由后端动态下发，只显示当前数据库可编辑字段') }}</small>
             </div>
-            
+
             <div class="form-group">
               <label for="action-select">{{ trans.get('admin_action_select', '操作') }}</label>
               <select id="action-select" class="form-select">
@@ -45,26 +48,30 @@
                 <option value="minus">{{ trans.get('admin_action_minus', '减少') }}</option>
               </select>
             </div>
-            
+
             <div class="form-group">
               <label for="value-input">{{ trans.get('admin_value_input', '数值') }}</label>
-              <input type="number" id="value-input" class="form-control" min="0">
+              <input type="number" id="value-input" class="form-control" min="0" step="1">
             </div>
-            
-            <button type="button" id="apply-changes-btn" class="btn btn-primary">
-              {{ trans.get('admin_apply_changes', '应用更改') }}
-            </button>
+
+            <div class="admin-actions-row">
+              <button type="button" id="apply-changes-btn" class="btn btn-primary">
+                {{ trans.get('admin_apply_changes', '应用更改') }}
+              </button>
+              <button type="button" id="refresh-user-btn" class="btn btn-outline-secondary">
+                {{ trans.get('admin_refresh_user', '刷新玩家数据') }}
+              </button>
+            </div>
           </div>
-          
+
           <div id="search-results" class="search-results" style="display: none;">
             <h4>{{ trans.get('admin_search_results', '搜索结果') }}</h4>
-            <div id="results-container" class="results-container">
-            </div>
+            <div id="results-container" class="results-container"></div>
           </div>
         </form>
       </div>
     </div>
-    
+
     <div class="dropdown-container">
       <div class="dropdown-header" id="inventory-header">
         <h3>{{ trans.get('admin_inventory', '物品查看器') }}</h3>
@@ -81,7 +88,7 @@
               </button>
             </div>
           </div>
-          
+
           <div id="inventory-display" class="inventory-display" style="display: none;">
             <div class="inventory-header">
               <h4 id="inventory-user-name">玩家名称</h4>
@@ -94,7 +101,7 @@
                 </span>
               </div>
             </div>
-            
+
             <div class="inventory-items">
               <table class="table table-striped">
                 <thead>
@@ -107,7 +114,7 @@
                 <tbody id="inventory-items-container">
                 </tbody>
               </table>
-              
+
               <div class="pagination-controls">
                 <button type="button" id="prev-page-btn" class="btn btn-secondary" disabled>
                   <i class="bi bi-chevron-left"></i>
@@ -130,150 +137,170 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const psContent = document.getElementById('player-specifics-content');
-    const dropdownHeaders = document.querySelectorAll('.dropdown-header');
-    dropdownHeaders.forEach(header => {
-      header.addEventListener('click', function() {
-        const content = this.nextElementSibling;
-        const icon = this.querySelector('i');
-
-        if (content.style.maxHeight) {
-          content.style.maxHeight = null;
-          icon.classList.remove('bi-chevron-up');
-          icon.classList.add('bi-chevron-down');
-        } else {
-          content.style.maxHeight = content.scrollHeight + "px";
-          icon.classList.remove('bi-chevron-down');
-          icon.classList.add('bi-chevron-up');
-        }
-      });
-    });
-    
-    const searchUserBtn = document.getElementById('search-user-btn');
     const inventoryContent = document.getElementById('inventory-content');
-    let currentInventoryUserId = null;
-    if (searchUserBtn) {
-      searchUserBtn.addEventListener('click', function() {
-        const userId = document.getElementById('user-search').value.trim();
-        if (!userId) return;
-        
-        fetch(`/admin/search_user?query=${encodeURIComponent(userId)}`)
-          .then(response => response.json())
-          .then(data => {
-            if (data.users && data.users.length > 0) {
-              displaySearchResults(data.users);
-            } else {
-              displayUserInfo(data.user);
-            }
-          })
-          .catch(error => {
-            console.error('搜索用户失败：', error);
-            showPopup('搜索用户失败，请重试。');
-          });
-      });
-    }
-    
-    const applyChangesBtn = document.getElementById('apply-changes-btn');
-    if (applyChangesBtn) {
-      applyChangesBtn.addEventListener('click', function() {
-        const userId = (document.getElementById('selected-user-id') || {}).value || '';
-        const field = document.getElementById('field-select').value;
-        const action = document.getElementById('action-select').value;
-        const rawValue = document.getElementById('value-input').value;
-        
-        if (!userId || !field || !action || rawValue === '') {
-          showPopup('请填写所有字段');
-          return;
-        }
+    const dropdownHeaders = document.querySelectorAll('.dropdown-header');
+    const fieldSelect = document.getElementById('field-select');
+    const valueInput = document.getElementById('value-input');
+    const userStatsGrid = document.getElementById('user-stats-grid');
+    const selectedUserIdInput = document.getElementById('selected-user-id');
 
-        const parsedValue = parseInt(rawValue, 10);
-        if (Number.isNaN(parsedValue)) {
-          showPopup('请输入有效数字');
-          return;
-        }
-        
-        fetch('/admin/modify_user', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            user_id: userId,
-            field: field,
-            action: action,
-            value: parsedValue
-          })
-        })
+    const statCandidates = [
+      'exp', 'rank',
+      'copper', 'gold', 'spirit_high', 'spirit_exquisite', 'spirit_supreme',
+      'immortal_flawed', 'immortal_low', 'immortal_mid', 'immortal_high', 'immortal_supreme',
+      'hp', 'mp', 'max_hp', 'max_mp', 'attack', 'defense', 'crit_rate',
+      'stamina', 'dy_times', 'hunts_today', 'breakthrough_pity',
+      'pvp_rating', 'pvp_wins', 'pvp_losses', 'pvp_draws'
+    ];
+
+    const fieldMetaMap = new Map();
+    let currentInventoryUserId = null;
+
+    function normalizeNumber(value, valueType) {
+      if (value === null || value === undefined || value === '') {
+        return '-';
+      }
+      if (valueType === 'float') {
+        const n = Number(value);
+        if (Number.isNaN(n)) return String(value);
+        return n.toFixed(4).replace(/\.0+$/, '').replace(/(\.\d*?)0+$/, '$1');
+      }
+      const n = Number(value);
+      if (Number.isNaN(n)) return String(value);
+      return n.toLocaleString();
+    }
+
+    function isFloatField(field) {
+      const meta = fieldMetaMap.get(field);
+      return meta && meta.value_type === 'float';
+    }
+
+    function updateContentHeight(content) {
+      if (content && content.style.maxHeight) {
+        content.style.maxHeight = content.scrollHeight + 'px';
+      }
+    }
+
+    function renderFieldOptions(fields) {
+      fieldMetaMap.clear();
+      fieldSelect.innerHTML = '';
+
+      if (!fields || fields.length === 0) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.disabled = true;
+        option.selected = true;
+        option.textContent = '{{ trans.get("admin_field_empty", "当前无可编辑字段") }}';
+        fieldSelect.appendChild(option);
+        return;
+      }
+
+      const grouped = {};
+      fields.forEach(field => {
+        fieldMetaMap.set(field.field, field);
+        const key = String(field.group || 'misc');
+        if (!grouped[key]) grouped[key] = {
+          label: field.group_label || key,
+          fields: []
+        };
+        grouped[key].fields.push(field);
+      });
+
+      Object.keys(grouped).forEach(groupKey => {
+        const group = grouped[groupKey];
+        const optGroup = document.createElement('optgroup');
+        optGroup.label = group.label;
+        group.fields.forEach(field => {
+          const option = document.createElement('option');
+          option.value = field.field;
+          option.textContent = `${field.label} (${field.field})`;
+          option.setAttribute('data-value-type', field.value_type || 'int');
+          optGroup.appendChild(option);
+        });
+        fieldSelect.appendChild(optGroup);
+      });
+
+      const first = fieldSelect.querySelector('option');
+      if (first) {
+        first.selected = true;
+      }
+      updateValueInputStep();
+    }
+
+    function loadFieldOptions() {
+      return fetch('/admin/field_options')
         .then(response => response.json())
         .then(data => {
           if (data.status === 'ok') {
-            showPopup(data.message);
+            renderFieldOptions(data.fields || []);
           } else {
-            showPopup('错误：' + data.message);
+            showPopup('加载字段失败：' + (data.message || '未知错误'));
           }
         })
         .catch(error => {
-          console.error('修改用户失败：', error);
-          showPopup('修改用户失败，请重试。');
+          console.error('加载可编辑字段失败：', error);
+          showPopup('加载字段失败，请稍后重试。');
         });
-      });
     }
-    
-    const inventorySearchBtn = document.getElementById('inventory-search-btn');
-    if (inventorySearchBtn) {
-      inventorySearchBtn.addEventListener('click', function() {
-        const query = document.getElementById('inventory-user-search').value.trim();
-        if (!query) return;
 
-        resolveUserId(query)
-          .then(userId => {
-            if (!userId) return;
-            currentInventoryUserId = userId;
-            return fetch(`/admin/get_inventory/${encodeURIComponent(userId)}`);
-          })
-          .then(response => response ? response.json() : null)
-          .then(data => {
-            if (!data) return;
-            if (data.status === 'ok') {
-              displayInventory(data);
-            } else {
-              showPopup('错误：' + data.message);
-            }
-          })
-          .catch(error => {
-            console.error('获取物品失败：', error);
-            showPopup('获取物品失败，请重试。');
-          });
-      });
+    function updateValueInputStep() {
+      const selectedField = fieldSelect.value;
+      if (isFloatField(selectedField)) {
+        valueInput.step = '0.0001';
+      } else {
+        valueInput.step = '1';
+      }
     }
-    
-    const prevPageBtn = document.getElementById('prev-page-btn');
-    const nextPageBtn = document.getElementById('next-page-btn');
-    const pageIndicator = document.getElementById('page-indicator');
-    const pageTemplate = pageIndicator ? pageIndicator.textContent : '第 {0} 页，共 {1} 页';
-    
-    if (prevPageBtn) {
-      prevPageBtn.addEventListener('click', function() {
-        const currentPage = parseInt(document.getElementById('page-indicator').getAttribute('data-current-page'));
-        if (currentPage > 1) {
-          loadInventoryPage(currentPage - 1);
-        }
+
+    function renderUserStats(user) {
+      if (!userStatsGrid) return;
+      userStatsGrid.innerHTML = '';
+
+      const visibleStats = statCandidates.filter(field => Object.prototype.hasOwnProperty.call(user, field));
+      if (visibleStats.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'stat-empty';
+        empty.textContent = '{{ trans.get("admin_user_stats_empty", "暂无可展示字段") }}';
+        userStatsGrid.appendChild(empty);
+        return;
+      }
+
+      visibleStats.forEach(field => {
+        const meta = fieldMetaMap.get(field) || {};
+        const card = document.createElement('div');
+        card.className = 'stat-card';
+
+        const label = document.createElement('div');
+        label.className = 'stat-label';
+        label.textContent = meta.label || field;
+
+        const value = document.createElement('div');
+        value.className = 'stat-value';
+        value.textContent = normalizeNumber(user[field], meta.value_type || 'int');
+
+        card.appendChild(label);
+        card.appendChild(value);
+        userStatsGrid.appendChild(card);
       });
+
+      updateContentHeight(psContent);
     }
-    
-    if (nextPageBtn) {
-      nextPageBtn.addEventListener('click', function() {
-        const currentPage = parseInt(document.getElementById('page-indicator').getAttribute('data-current-page'));
-        const totalPages = parseInt(document.getElementById('page-indicator').getAttribute('data-total-pages'));
-        if (currentPage < totalPages) {
-          loadInventoryPage(currentPage + 1);
-        }
-      });
+
+    function searchUser(query) {
+      return fetch(`/admin/search_user?query=${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'error') {
+            throw new Error(data.message || '未找到用户');
+          }
+          return data;
+        });
     }
-    
+
     function displaySearchResults(users) {
       const resultsContainer = document.getElementById('results-container');
       resultsContainer.innerHTML = '';
-      
+
       users.forEach(user => {
         const userElement = document.createElement('div');
         userElement.className = 'user-result';
@@ -282,7 +309,7 @@
 
         const nameSpan = document.createElement('span');
         nameSpan.className = 'user-result-name';
-        nameSpan.textContent = String(user.in_game_username || '');
+        nameSpan.textContent = String(user.in_game_username || '未命名玩家');
 
         const idSpan = document.createElement('span');
         idSpan.className = 'user-result-id';
@@ -301,43 +328,86 @@
         selectButton.addEventListener('click', function() {
           displayUserInfo(user);
         });
-        
+
         resultsContainer.appendChild(userElement);
       });
-      
+
       document.getElementById('search-results').style.display = 'block';
       document.getElementById('user-info').style.display = 'none';
-      psContent.style.maxHeight = psContent.scrollHeight + 'px';
+      updateContentHeight(psContent);
     }
-    
+
     function displayUserInfo(user) {
       if (!user) {
         showPopup('未找到用户');
         return;
       }
-      
-      document.getElementById('user-display-name').textContent = user.in_game_username;
+
+      document.getElementById('user-display-name').textContent = user.in_game_username || '未命名玩家';
       document.getElementById('user-id').textContent = '用户编号：' + user.user_id;
-      document.getElementById('selected-user-id').value = String(user.user_id || '');
-      
+      selectedUserIdInput.value = String(user.user_id || '');
+
+      renderUserStats(user);
+
       document.getElementById('search-results').style.display = 'none';
       document.getElementById('user-info').style.display = 'block';
-      psContent.style.maxHeight = psContent.scrollHeight + 'px';
+      updateContentHeight(psContent);
     }
-    
+
+    function refreshCurrentUser() {
+      const userId = selectedUserIdInput.value;
+      if (!userId) {
+        showPopup('请先选择玩家');
+        return;
+      }
+      searchUser(userId)
+        .then(data => {
+          if (data.user) {
+            displayUserInfo(data.user);
+            return;
+          }
+          if (data.users && data.users.length > 0) {
+            displayUserInfo(data.users[0]);
+            return;
+          }
+          showPopup('未找到用户');
+        })
+        .catch(error => {
+          console.error('刷新用户失败：', error);
+          showPopup('刷新用户失败：' + error.message);
+        });
+    }
+
+    function resolveUserId(query) {
+      return searchUser(query)
+        .then(data => {
+          if (data.user && data.user.user_id) {
+            return data.user.user_id;
+          }
+          if (data.users && data.users.length > 0) {
+            if (data.users.length > 1) {
+              showPopup('找到多个用户，已使用第一个结果。');
+            }
+            return data.users[0].user_id;
+          }
+          showPopup('未找到用户');
+          return null;
+        });
+    }
+
     function displayInventory(data) {
       const user = data.user;
       const items = data.items;
       const currentPage = data.page || 1;
       const totalPages = data.total_pages || 1;
-      
-      document.getElementById('inventory-user-name').textContent = user.in_game_username;
-      document.getElementById('copper-amount').textContent = user.copper;
-      document.getElementById('gold-amount').textContent = user.gold;
-      
+
+      document.getElementById('inventory-user-name').textContent = user.in_game_username || '未命名玩家';
+      document.getElementById('copper-amount').textContent = normalizeNumber(user.copper, 'int');
+      document.getElementById('gold-amount').textContent = normalizeNumber(user.gold, 'int');
+
       const itemsContainer = document.getElementById('inventory-items-container');
       itemsContainer.innerHTML = '';
-      
+
       if (items.length === 0) {
         const emptyRow = document.createElement('tr');
         const emptyCell = document.createElement('td');
@@ -364,25 +434,27 @@
           itemsContainer.appendChild(row);
         });
       }
-      
-      if (pageIndicator) {
-        pageIndicator.textContent = pageTemplate.replace('{0}', currentPage).replace('{1}', totalPages);
-        pageIndicator.setAttribute('data-current-page', currentPage);
-        pageIndicator.setAttribute('data-total-pages', totalPages);
-      }
-      
+
+      const pageIndicator = document.getElementById('page-indicator');
+      const pageTemplate = pageIndicator.textContent || '第 {0} 页，共 {1} 页';
+      pageIndicator.textContent = pageTemplate.replace('{0}', currentPage).replace('{1}', totalPages);
+      pageIndicator.setAttribute('data-current-page', currentPage);
+      pageIndicator.setAttribute('data-total-pages', totalPages);
+
       document.getElementById('prev-page-btn').disabled = currentPage <= 1;
       document.getElementById('next-page-btn').disabled = currentPage >= totalPages;
-      
+
       document.getElementById('inventory-display').style.display = 'block';
-      if (inventoryContent && inventoryContent.style.maxHeight) {
-        inventoryContent.style.maxHeight = inventoryContent.scrollHeight + "px";
-      }
+      updateContentHeight(inventoryContent);
     }
-    
+
     function loadInventoryPage(page) {
       const userId = currentInventoryUserId || document.getElementById('inventory-user-search').value.trim();
-      
+      if (!userId) {
+        showPopup('请先输入用户ID');
+        return;
+      }
+
       fetch(`/admin/get_inventory/${encodeURIComponent(userId)}?page=${page}`)
         .then(response => response.json())
         .then(data => {
@@ -398,23 +470,166 @@
         });
     }
 
-    function resolveUserId(query) {
-      return fetch(`/admin/search_user?query=${encodeURIComponent(query)}`)
+    dropdownHeaders.forEach(header => {
+      header.addEventListener('click', function() {
+        const content = this.nextElementSibling;
+        const icon = this.querySelector('i');
+
+        if (content.style.maxHeight) {
+          content.style.maxHeight = null;
+          icon.classList.remove('bi-chevron-up');
+          icon.classList.add('bi-chevron-down');
+        } else {
+          content.style.maxHeight = content.scrollHeight + 'px';
+          icon.classList.remove('bi-chevron-down');
+          icon.classList.add('bi-chevron-up');
+        }
+      });
+    });
+
+    fieldSelect.addEventListener('change', updateValueInputStep);
+
+    const searchUserBtn = document.getElementById('search-user-btn');
+    if (searchUserBtn) {
+      searchUserBtn.addEventListener('click', function() {
+        const query = document.getElementById('user-search').value.trim();
+        if (!query) {
+          showPopup('请输入用户ID或用户名');
+          return;
+        }
+
+        searchUser(query)
+          .then(data => {
+            if (data.users && data.users.length > 0) {
+              displaySearchResults(data.users);
+            } else if (data.user) {
+              displayUserInfo(data.user);
+            } else {
+              showPopup('未找到用户');
+            }
+          })
+          .catch(error => {
+            console.error('搜索用户失败：', error);
+            showPopup('搜索用户失败：' + error.message);
+          });
+      });
+    }
+
+    const refreshUserBtn = document.getElementById('refresh-user-btn');
+    if (refreshUserBtn) {
+      refreshUserBtn.addEventListener('click', refreshCurrentUser);
+    }
+
+    const applyChangesBtn = document.getElementById('apply-changes-btn');
+    if (applyChangesBtn) {
+      applyChangesBtn.addEventListener('click', function() {
+        const userId = selectedUserIdInput.value;
+        const field = fieldSelect.value;
+        const action = document.getElementById('action-select').value;
+        const rawValue = valueInput.value;
+
+        if (!userId || !field || !action || rawValue === '') {
+          showPopup('请填写所有字段');
+          return;
+        }
+
+        const parsedValue = isFloatField(field) ? parseFloat(rawValue) : parseInt(rawValue, 10);
+        if (Number.isNaN(parsedValue)) {
+          showPopup('请输入有效数字');
+          return;
+        }
+
+        if (parsedValue < 0) {
+          showPopup('操作数值不能小于 0');
+          return;
+        }
+
+        fetch('/admin/modify_user', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_id: userId,
+            field: field,
+            action: action,
+            value: parsedValue
+          })
+        })
         .then(response => response.json())
         .then(data => {
-          if (data.user && data.user.user_id) {
-            return data.user.user_id;
-          }
-          if (data.users && data.users.length > 0) {
-            if (data.users.length > 1) {
-              showPopup('找到多个用户，已使用第一个结果。');
+          if (data.status === 'ok') {
+            showPopup(data.message);
+            if (data.user) {
+              displayUserInfo(data.user);
             }
-            return data.users[0].user_id;
+          } else {
+            showPopup('错误：' + data.message);
           }
-          showPopup('未找到用户');
-          return null;
+        })
+        .catch(error => {
+          console.error('修改用户失败：', error);
+          showPopup('修改用户失败，请重试。');
         });
+      });
     }
+
+    const inventorySearchBtn = document.getElementById('inventory-search-btn');
+    if (inventorySearchBtn) {
+      inventorySearchBtn.addEventListener('click', function() {
+        const query = document.getElementById('inventory-user-search').value.trim();
+        if (!query) {
+          showPopup('请输入用户ID或用户名');
+          return;
+        }
+
+        resolveUserId(query)
+          .then(userId => {
+            if (!userId) return null;
+            currentInventoryUserId = userId;
+            return fetch(`/admin/get_inventory/${encodeURIComponent(userId)}`);
+          })
+          .then(response => response ? response.json() : null)
+          .then(data => {
+            if (!data) return;
+            if (data.status === 'ok') {
+              displayInventory(data);
+            } else {
+              showPopup('错误：' + data.message);
+            }
+          })
+          .catch(error => {
+            console.error('获取物品失败：', error);
+            showPopup('获取物品失败，请重试。');
+          });
+      });
+    }
+
+    const prevPageBtn = document.getElementById('prev-page-btn');
+    const nextPageBtn = document.getElementById('next-page-btn');
+
+    if (prevPageBtn) {
+      prevPageBtn.addEventListener('click', function() {
+        const indicator = document.getElementById('page-indicator');
+        const currentPage = parseInt(indicator.getAttribute('data-current-page') || '1', 10);
+        if (currentPage > 1) {
+          loadInventoryPage(currentPage - 1);
+        }
+      });
+    }
+
+    if (nextPageBtn) {
+      nextPageBtn.addEventListener('click', function() {
+        const indicator = document.getElementById('page-indicator');
+        const currentPage = parseInt(indicator.getAttribute('data-current-page') || '1', 10);
+        const totalPages = parseInt(indicator.getAttribute('data-total-pages') || '1', 10);
+        if (currentPage < totalPages) {
+          loadInventoryPage(currentPage + 1);
+        }
+      });
+    }
+
+    loadFieldOptions();
   });
 </script>
 {% endblock %}
