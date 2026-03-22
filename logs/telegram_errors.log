@@ -785,3 +785,12 @@ aiogram.exceptions.TelegramRetryAfter: Telegram server says - Flood control exce
 Original description: Too Many Requests: retry after 24
 (background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
 2026-03-21 19:57:56,924 - telegram - ERROR - start error: Telegram server says - Bad Request: BUTTON_TYPE_INVALID
+2026-03-22 00:10:54,157 - telegram - ERROR - worldboss attack error: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 10 seconds.
+Original description: Too Many Requests: retry after 10
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+2026-03-22 00:11:06,339 - telegram - ERROR - worldboss attack error: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 4 seconds.
+Original description: Too Many Requests: retry after 4
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
+2026-03-22 11:46:07,795 - telegram - ERROR - worldboss attack error: Telegram server says - Flood control exceeded on method 'SendMessage' in chat -1003757376633. Retry in 13 seconds.
+Original description: Too Many Requests: retry after 13
+(background on this error at: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)

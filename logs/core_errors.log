@@ -199,3 +199,31 @@ psycopg2.errors.UndefinedColumn: column "dao_heng" does not exist
 LINE 1: SELECT user_id, current_map, rank, stamina, dao_heng, dao_ni...
                                                     ^
 
+2026-03-22 11:43:23,551 - core - ERROR - Unhandled core exception path=/api/events/claim method=POST
+Traceback (most recent call last):
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/core/routes/events.py", line 51, in events_claim
+    resp, http_status = claim_event_reward(user_id, event_id)
+                        ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/core/services/events_service.py", line 325, in claim_event_reward
+    cur.execute(
+    ~~~~~~~~~~~^
+        "INSERT INTO event_claims (user_id, event_id, last_claim, claims) VALUES (%s, %s, %s, 1)",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        (user_id, event_id, now),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/root/xiuxian_bot/core/database/connection.py", line 82, in execute
+    return self._cursor.execute(_normalize_query_placeholders(query), params)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/xiuxian_bot/.venv/lib/python3.13/site-packages/psycopg2/extras.py", line 146, in execute
+    return super().execute(query, vars)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UniqueViolation: duplicate key value violates unique constraint "event_claims_user_id_event_id_key"
+DETAIL:  Key (user_id, event_id)=(1000008, moon_market) already exists.
+
