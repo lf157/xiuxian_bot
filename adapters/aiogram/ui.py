@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import time
 from typing import Any, Iterable
 
@@ -108,6 +109,8 @@ def _fmt_drops(drops: Iterable[dict[str, Any]] | None) -> list[str]:
 def register_keyboard() -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.button(text="🆕 注册角色", callback_data="menu:register")
+    builder.button(text="⬅️ 返回", callback_data="menu:back")
+    builder.adjust(1, 1)
     return builder.as_markup()
 
 
@@ -189,7 +192,7 @@ def hunt_battle_keyboard(skills: Iterable[dict[str, Any]]) -> InlineKeyboardMark
 
 def hunt_settlement_keyboard() -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
-    builder.button(text="🦴 继续狩猎", callback_data="hunt:list")
+    builder.button(text="🦴 继续狩猎", callback_data="hunt:settle")
     builder.button(text="⬅️ 主菜单", callback_data="menu:home")
     builder.adjust(1, 1)
     return builder.as_markup()
@@ -210,8 +213,9 @@ def breakthrough_keyboard(selected_strategy: str | None, call_for_help: bool = T
     help_text = "🤝 道友助阵：开" if call_for_help else "🤝 道友助阵：关"
     builder.button(text=help_text, callback_data="break:help_toggle")
     builder.button(text="⚡ 执行突破", callback_data="break:confirm")
+    builder.button(text="🧹 取消突破", callback_data="break:cancel")
     builder.button(text="⬅️ 主菜单", callback_data="menu:home")
-    builder.adjust(2, 2, 1, 1, 1)
+    builder.adjust(2, 2, 1, 1, 1, 1)
     return builder.as_markup()
 
 
@@ -273,7 +277,7 @@ def secret_event_choices_keyboard(choices: Iterable[dict[str, Any]]) -> InlineKe
 
 def secret_settlement_keyboard() -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
-    builder.button(text="🗺️ 继续秘境", callback_data="secret:list")
+    builder.button(text="🗺️ 继续秘境", callback_data="secret:settle")
     builder.button(text="⬅️ 主菜单", callback_data="menu:home")
     builder.adjust(1, 1)
     return builder.as_markup()
@@ -760,11 +764,11 @@ def gear_items_keyboard(items: Iterable[dict[str, Any]], page: int, total_pages:
     builder = InlineKeyboardBuilder()
     rows = list(items or [])
     for item in rows[:8]:
-        item_id = str(item.get("item_id", "")).strip()
-        if not item_id:
+        item_db_id = str(item.get("id", "")).strip()
+        if not item_db_id:
             continue
-        name = str(item.get("name", item_id))
-        builder.button(text=name, callback_data=f"gear:detail:{item_id}")
+        name = str(item.get("name", item.get("item_id", item_db_id)))
+        builder.button(text=name, callback_data=f"gear:detail:{item_db_id}")
     if page > 1:
         builder.button(text="⬅️ 上一页", callback_data=f"gear:page:{page - 1}")
     builder.button(text=f"{page}/{max(1, total_pages)}", callback_data="gear:equipped_view")
@@ -790,6 +794,55 @@ def skill_list_keyboard(skills: Iterable[dict[str, Any]]) -> InlineKeyboardMarku
     return builder.as_markup()
 
 
+def bag_detail_keyboard(item_id: str) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.button(text="🧪 使用", callback_data=f"bag:use:{item_id}")
+    builder.button(text="🎒 返回储物袋", callback_data="bag:page:1")
+    builder.button(text="⬅️ 主菜单", callback_data="menu:home")
+    builder.adjust(1, 1, 1)
+    return builder.as_markup()
+
+
+def gear_detail_keyboard(item_db_id: int) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.button(text="🧷 佩戴", callback_data=f"gear:equip:{item_db_id}")
+    builder.button(text="🛠️ 强化", callback_data=f"gear:enhance:{item_db_id}")
+    builder.button(text="♻️ 分解", callback_data=f"gear:decompose:{item_db_id}")
+    builder.button(text="👕 返回灵装", callback_data="gear:page:1")
+    builder.button(text="⬅️ 主菜单", callback_data="menu:home")
+    builder.adjust(2, 1, 1, 1)
+    return builder.as_markup()
+
+
+def gear_equipped_keyboard(equipped_items: Iterable[dict[str, Any]]) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    rows = list(equipped_items or [])
+    action_count = 0
+    for row in rows[:8]:
+        slot = str(row.get("slot", "")).strip()
+        if not slot:
+            continue
+        slot_name = str(row.get("slot_name") or slot)
+        item_name = str(row.get("name", "灵装"))
+        builder.button(text=f"🧹 卸下 {slot_name}·{item_name}", callback_data=f"gear:unequip:{slot}")
+        action_count += 1
+    builder.button(text="👕 返回灵装", callback_data="gear:page:1")
+    builder.button(text="⬅️ 主菜单", callback_data="menu:home")
+    builder.adjust(*([1] * action_count), 1, 1)
+    return builder.as_markup()
+
+
+def skill_detail_keyboard(skill_id: str) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.button(text="📚 学习", callback_data=f"skill:learn:{skill_id}")
+    builder.button(text="🧩 装备", callback_data=f"skill:equip:{skill_id}")
+    builder.button(text="🧹 卸下", callback_data=f"skill:unequip:{skill_id}")
+    builder.button(text="📘 返回技能列表", callback_data="skill:list")
+    builder.button(text="⬅️ 主菜单", callback_data="menu:home")
+    builder.adjust(2, 1, 1, 1)
+    return builder.as_markup()
+
+
 def alchemy_menu_keyboard() -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.button(text="⚗️ 炼制", callback_data="alchemy:craft")
@@ -803,7 +856,7 @@ def alchemy_menu_keyboard() -> InlineKeyboardMarkup:
 def forge_menu_keyboard() -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.button(text="🔨 锻造", callback_data="forge:craft")
-    builder.button(text="🛠️ 强化", callback_data="forge:enhance")
+    builder.button(text="🎯 定向锻造", callback_data="forge:menu")
     builder.button(text="⬅️ 返回商店", callback_data="shop:back")
     builder.button(text="⬅️ 主菜单", callback_data="menu:home")
     builder.adjust(2, 1, 1)
@@ -814,20 +867,219 @@ def social_menu_keyboard() -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.button(text="💬 聊天", callback_data="social:chat")
     builder.button(text="🧭 论道", callback_data="social:dao")
+    builder.button(text="👤 好友", callback_data="social:friend")
+    builder.button(text="↩️ 回复", callback_data="social:reply")
     builder.button(text="⚔️ PVP", callback_data="pvp:menu")
     builder.button(text="🏯 宗门", callback_data="sect:menu")
     builder.button(text="⬅️ 主菜单", callback_data="menu:home")
-    builder.adjust(2, 2, 1)
+    builder.adjust(2, 2, 2, 1)
     return builder.as_markup()
 
 
 def admin_menu_keyboard() -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
+    builder.button(text="🏛️ 管理主页", callback_data="admin:menu")
     builder.button(text="🧪 Test", callback_data="admin:test")
     builder.button(text="🔍 查询", callback_data="admin:lookup")
     builder.button(text="✍️ 修改", callback_data="admin:modify")
     builder.button(text="⬅️ 主菜单", callback_data="menu:home")
-    builder.adjust(2, 1, 1)
+    builder.adjust(2, 2, 1)
+    return builder.as_markup()
+
+
+def admin_modify_keyboard() -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.button(text="🧩 预设修改", callback_data="admin:preset")
+    builder.button(text="✅ 确认执行", callback_data="admin:confirm")
+    builder.button(text="🧹 取消修改", callback_data="admin:cancel")
+    builder.button(text="⬅️ 返回管理面板", callback_data="admin:menu")
+    builder.button(text="⬅️ 主菜单", callback_data="menu:home")
+    builder.adjust(2, 1, 1, 1)
+    return builder.as_markup()
+
+
+def quest_menu_keyboard(payload: dict[str, Any] | None = None) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    quests = list((payload or {}).get("quests") or [])
+    for row in quests[:8]:
+        quest_id = str(row.get("quest_id") or row.get("id") or "").strip()
+        if not quest_id:
+            continue
+        name = str(row.get("name") or quest_id)
+        progress = _to_int(row.get("progress"), 0)
+        goal = max(1, _to_int(row.get("goal"), 1))
+        claimed = bool(row.get("claimed"))
+        if claimed:
+            builder.button(text=f"✅ {name}", callback_data=f"quest:detail:{quest_id}")
+        elif progress >= goal:
+            builder.button(text=f"🎁 领取 {name}", callback_data=f"quest:claim:{quest_id}")
+        else:
+            builder.button(text=f"📌 {name}", callback_data=f"quest:detail:{quest_id}")
+    builder.button(text="🔄 刷新任务", callback_data="quest:list")
+    builder.button(text="⬅️ 主菜单", callback_data="menu:home")
+    builder.adjust(*([1] * min(len(quests), 8)), 1, 1)
+    return builder.as_markup()
+
+
+def event_menu_keyboard(payload: dict[str, Any] | None = None) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    events = list((payload or {}).get("events") or [])
+    for row in events[:8]:
+        event_id = str(row.get("id") or row.get("event_id") or "").strip()
+        if not event_id:
+            continue
+        name = str(row.get("name") or event_id)
+        can_claim = bool(row.get("can_claim"))
+        if can_claim:
+            builder.button(text=f"🎁 领取 {name}", callback_data=f"event:claim:{event_id}")
+        else:
+            builder.button(text=f"📌 {name}", callback_data=f"event:detail:{event_id}")
+    builder.button(text="🔄 刷新活动", callback_data="event:list")
+    builder.button(text="⬅️ 主菜单", callback_data="menu:home")
+    builder.adjust(*([1] * min(len(events), 8)), 1, 1)
+    return builder.as_markup()
+
+
+def boss_menu_keyboard() -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.button(text="⚔️ 攻击世界BOSS", callback_data="boss:attack")
+    builder.button(text="🏆 伤害排行", callback_data="boss:rank")
+    builder.button(text="🔄 刷新状态", callback_data="boss:menu")
+    builder.button(text="⬅️ 主菜单", callback_data="menu:home")
+    builder.adjust(1, 1, 1, 1)
+    return builder.as_markup()
+
+
+def rank_menu_keyboard() -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.button(text="🔮 境界排行", callback_data="rank:realm")
+    builder.button(text="⚔️ 战力排行", callback_data="rank:combat")
+    builder.button(text="💰 财富排行", callback_data="rank:wealth")
+    builder.button(text="🔄 刷新", callback_data="rank:menu")
+    builder.button(text="⬅️ 主菜单", callback_data="menu:home")
+    builder.adjust(2, 1, 1, 1)
+    return builder.as_markup()
+
+
+_BOUNTY_CALLBACK_ARG_RE = re.compile(r"^[0-9]+$")
+_BOUNTY_STATUS_LABELS: dict[str, str] = {
+    "open": "待接取",
+    "claimed": "进行中",
+    "completed": "已完成",
+    "cancelled": "已取消",
+}
+
+
+def _iter_bounty_rows(payload: dict[str, Any] | None) -> list[dict[str, Any]]:
+    data = payload if isinstance(payload, dict) else {}
+    rows = list(data.get("bounties") or data.get("entries") or [])
+    result: list[dict[str, Any]] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        item = dict(row)
+        bounty_id = str(item.get("id") or item.get("bounty_id") or "").strip()
+        if bounty_id:
+            item["id"] = bounty_id
+        status = str(item.get("status") or "").strip().lower()
+        if status:
+            item["status"] = status
+        result.append(item)
+    return result
+
+
+def _bounty_callback_id(row: dict[str, Any]) -> str:
+    bounty_id = str(row.get("id") or row.get("bounty_id") or "").strip()
+    if not bounty_id:
+        return ""
+    if _BOUNTY_CALLBACK_ARG_RE.fullmatch(bounty_id) is None:
+        return ""
+    try:
+        if int(bounty_id) <= 0:
+            return ""
+    except (TypeError, ValueError):
+        return ""
+    callback_data = f"bounty:claim:{bounty_id}"
+    if len(callback_data.encode("utf-8")) > 64:
+        return ""
+    return bounty_id
+
+
+def _bounty_actor_label(row: dict[str, Any], *, uid_key: str, name_key: str, actor_uid: str | None) -> str:
+    user_id = str(row.get(uid_key) or "").strip()
+    if actor_uid and user_id and actor_uid == user_id:
+        return "你"
+    username = str(row.get(name_key) or "").strip()
+    if username:
+        return username
+    if user_id:
+        return user_id
+    return "-"
+
+
+def _bounty_status_label(raw_status: Any) -> str:
+    status = str(raw_status or "").strip().lower()
+    if not status:
+        return "未知"
+    return _BOUNTY_STATUS_LABELS.get(status, status)
+
+
+def _bounty_requirement(row: dict[str, Any]) -> str:
+    wanted_name = str(row.get("wanted_item_name") or row.get("wanted_item_id") or "").strip()
+    wanted_qty = _to_int(row.get("wanted_quantity"), 0)
+    if wanted_name and wanted_qty > 0:
+        return f"{wanted_name} x{wanted_qty}"
+    if wanted_name:
+        return wanted_name
+    title = str(row.get("title") or row.get("name") or "").strip()
+    return title or "未提供"
+
+
+def _bounty_reward(row: dict[str, Any]) -> str:
+    reward_low = _to_int(row.get("reward_spirit_low"), 0)
+    reward_copper = _to_int(row.get("reward_copper"), 0)
+    reward_gold = _to_int(row.get("reward_gold"), 0)
+    parts: list[str] = []
+    if reward_low > 0:
+        parts.append(f"{_fmt_num(reward_low)} 下品灵石")
+    if reward_gold > 0:
+        parts.append(f"{_fmt_num(reward_gold)} 中品灵石")
+    if reward_copper > 0 and reward_copper != reward_low:
+        parts.append(f"{_fmt_num(reward_copper)} 灵石")
+    if not parts and row.get("reward") is not None:
+        reward_text = str(row.get("reward")).strip()
+        if reward_text:
+            parts.append(reward_text)
+    return " + ".join(parts) if parts else "未提供"
+
+
+def bounty_menu_keyboard(payload: dict[str, Any] | None = None, *, actor_uid: str | None = None) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    rows = _iter_bounty_rows(payload)
+    action_count = 0
+    for row in rows[:8]:
+        bounty_id = _bounty_callback_id(row)
+        if not bounty_id:
+            continue
+        status = str(row.get("status") or "").strip().lower()
+        claimer_uid = str(row.get("claimer_user_id") or "").strip()
+        can_submit = bool(row.get("can_submit"))
+        can_accept = bool(row.get("can_accept") or row.get("can_claim"))
+        if status == "claimed" and actor_uid and claimer_uid and claimer_uid == actor_uid:
+            can_submit = True
+        if status == "open" and not can_submit:
+            can_accept = True
+        if can_submit:
+            builder.button(text=f"📦 提交 #{bounty_id}", callback_data=f"bounty:claim:{bounty_id}")
+            action_count += 1
+            continue
+        if can_accept:
+            builder.button(text=f"🤝 接取 #{bounty_id}", callback_data=f"bounty:claim:{bounty_id}")
+            action_count += 1
+    builder.button(text="🔄 刷新悬赏", callback_data="bounty:refresh")
+    builder.button(text="⬅️ 主菜单", callback_data="menu:home")
+    layout = ([1] * action_count) + [1, 1]
+    builder.adjust(*layout)
     return builder.as_markup()
 
 
@@ -875,7 +1127,13 @@ def format_forge_panel(payload: dict[str, Any] | None = None) -> str:
 
 
 def format_social_panel(payload: dict[str, Any] | None = None) -> str:
-    return "💬 社交面板"
+    data = payload or {}
+    action = str(data.get("action", "")).strip()
+    if action == "chat":
+        return "💬 论道\n请选择目标修士发起论道。"
+    if action == "dao":
+        return "🧭 论道交流\n请选择目标修士。"
+    return "💬 社交面板\n可发起论道、查看 PVP、管理宗门。"
 
 
 def format_pvp_panel(payload: dict[str, Any] | None = None) -> str:
@@ -883,7 +1141,23 @@ def format_pvp_panel(payload: dict[str, Any] | None = None) -> str:
 
 
 def format_sect_panel(payload: dict[str, Any] | None = None) -> str:
-    return "🏯 宗门面板"
+    data = payload or {}
+    member = data.get("member") or data.get("sect_member") or {}
+    sect = (member.get("sect") if isinstance(member, dict) else None) or data.get("sect") or {}
+    lines = ["🏯 宗门面板", ""]
+    if sect:
+        lines.append(f"宗门: {sect.get('name', sect.get('sect_name', '未知宗门'))}")
+        if sect.get("level") is not None:
+            lines.append(f"等级: {sect.get('level')}")
+        if sect.get("members_count") is not None:
+            lines.append(f"成员: {sect.get('members_count')}")
+    else:
+        lines.append("当前未加入宗门。")
+    if member and member.get("role"):
+        lines.append(f"身份: {member.get('role')}")
+    if data.get("message"):
+        lines.append(str(data.get("message")))
+    return "\n".join(lines)
 
 
 def format_admin_panel(payload: dict[str, Any] | None = None) -> str:
@@ -891,24 +1165,102 @@ def format_admin_panel(payload: dict[str, Any] | None = None) -> str:
 
 
 def format_quest_panel(payload: dict[str, Any] | None = None) -> str:
-    return "📜 任务面板"
+    data = payload or {}
+    quests = list(data.get("quests") or [])
+    lines = ["📜 任务面板", ""]
+    if not quests:
+        lines.append("当前暂无任务。")
+    for row in quests[:8]:
+        quest_id = row.get("quest_id", row.get("id", ""))
+        name = row.get("name", quest_id or "任务")
+        progress = _to_int(row.get("progress"), 0)
+        goal = max(1, _to_int(row.get("goal"), 1))
+        claimed = bool(row.get("claimed"))
+        if claimed:
+            lines.append(f"✅ {name}")
+        elif progress >= goal:
+            lines.append(f"🎁 {name}（可领取）")
+        else:
+            lines.append(f"⬜ {name} ({progress}/{goal})")
+    return "\n".join(lines)
 
 
 def format_event_panel(payload: dict[str, Any] | None = None) -> str:
-    return "🎉 活动面板"
+    data = payload or {}
+    events = list(data.get("events") or [])
+    lines = ["🎉 活动面板", ""]
+    if not events:
+        lines.append("当前暂无活动。")
+    for row in events[:8]:
+        name = row.get("name", row.get("id", "活动"))
+        can_claim = bool(row.get("can_claim"))
+        lines.append(f"{'🎁' if can_claim else '📌'} {name}")
+    return "\n".join(lines)
 
 
 def format_story_panel(payload: dict[str, Any] | None = None) -> str:
-    return "📖 剧情面板"
+    data = payload or {}
+    action = str(data.get("action", "menu"))
+    if action == "chapter":
+        chapter = data.get("args", [""])[0] if isinstance(data.get("args"), list) else ""
+        return f"📖 剧情章节：{chapter or '未指定'}"
+    if action == "node":
+        node = data.get("args", [""])[0] if isinstance(data.get("args"), list) else ""
+        return f"📖 剧情节点：{node or '未指定'}"
+    if action == "claim":
+        return "📖 剧情奖励已处理。"
+    return "📖 剧情面板（开发中）"
 
 
 def format_boss_panel(payload: dict[str, Any] | None = None) -> str:
-    return "🐲 世界 BOSS 面板"
+    data = payload or {}
+    lines = ["🐲 世界 BOSS", ""]
+    boss = data.get("boss") or {}
+    if boss:
+        lines.append(f"名称: {boss.get('name', '未知')}")
+        lines.append(f"血量: {_fmt_num(boss.get('hp', 0))}/{_fmt_num(boss.get('max_hp', 0))}")
+    if data.get("message"):
+        lines.append(str(data.get("message")))
+    if len(lines) == 2:
+        lines.append("暂无世界BOSS数据。")
+    return "\n".join(lines)
 
 
-def format_bounty_panel(payload: dict[str, Any] | None = None) -> str:
-    return "🧾 悬赏面板"
+def format_bounty_panel(payload: dict[str, Any] | None = None, *, actor_uid: str | None = None) -> str:
+    data = payload if isinstance(payload, dict) else {}
+    rows = _iter_bounty_rows(data)
+    current_uid = str(actor_uid or data.get("_actor_uid") or "").strip() or None
+    lines = ["🧾 悬赏面板", ""]
+    if not rows:
+        lines.append("当前暂无悬赏。")
+    for row in rows[:8]:
+        bounty_id = str(row.get("id") or row.get("bounty_id") or "-")
+        lines.append(f"#{bounty_id}｜{_bounty_status_label(row.get('status'))}")
+        lines.append(f"需求: {_bounty_requirement(row)}")
+        lines.append(f"奖励: {_bounty_reward(row)}")
+        lines.append(
+            "发布: {poster}  接取: {claimer}".format(
+                poster=_bounty_actor_label(row, uid_key="poster_user_id", name_key="poster_name", actor_uid=current_uid),
+                claimer=_bounty_actor_label(row, uid_key="claimer_user_id", name_key="claimer_name", actor_uid=current_uid),
+            )
+        )
+        description = str(row.get("description") or row.get("desc") or "").strip()
+        if description:
+            lines.append(f"备注: {description}")
+        lines.append("")
+    if lines and lines[-1] == "":
+        lines.pop()
+    return "\n".join(lines)
 
 
 def format_rank_panel(payload: dict[str, Any] | None = None) -> str:
-    return "🏆 排行面板"
+    data = payload or {}
+    rows = list(data.get("entries") or data.get("data", {}).get("entries") or [])
+    lines = ["🏆 排行面板", ""]
+    if not rows:
+        lines.append("暂无排行数据。")
+    for idx, row in enumerate(rows[:10], start=1):
+        name = row.get("username") or row.get("name") or row.get("user_id") or "匿名修士"
+        score = row.get("score", row.get("value", row.get("rating", "-")))
+        lines.append(f"{idx}. {name} - {score}")
+    return "\n".join(lines)

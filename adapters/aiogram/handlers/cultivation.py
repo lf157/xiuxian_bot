@@ -34,6 +34,21 @@ def _error_text(payload: dict[str, Any] | None, default: str = "操作失败") -
     return message
 
 
+def _is_cultivating_state(state_raw: Any) -> bool:
+    if isinstance(state_raw, bool):
+        return state_raw
+    if isinstance(state_raw, (int, float)):
+        return bool(state_raw)
+    text = str(state_raw or "").strip().lower()
+    if not text:
+        return False
+    if text in {"1", "true", "yes", "on", "active", "running", "cultivating", "in_progress", "busy"}:
+        return True
+    if text in {"0", "false", "no", "off", "idle", "stopped", "stop", "ended", "done", "finished", "completed"}:
+        return False
+    return True
+
+
 async def _uid_from_message(message: Message, state: FSMContext) -> str | None:
     if message.from_user is None:
         return None
@@ -64,16 +79,29 @@ async def _panel_status(uid: str) -> tuple[str, bool]:
     status = await api_get(f"/api/cultivate/status/{uid}", actor_uid=uid)
     if not status.get("success"):
         return f"🧘 修炼\n\n❌ {_error_text(status, '无法读取修炼状态')}", False
-    is_active = bool(status.get("is_cultivating"))
-    elapsed = int(status.get("elapsed_seconds", 0) or 0)
-    gained = int(status.get("exp_gained", 0) or 0)
+    is_active = _is_cultivating_state(status.get("state"))
+    gained = int(status.get("current_gain", status.get("exp_gained", 0)) or 0)
+    hours_raw = status.get("hours")
+    if hours_raw is None:
+        elapsed_seconds = int(status.get("elapsed_seconds", 0) or 0)
+        hours_raw = float(elapsed_seconds) / 3600 if elapsed_seconds > 0 else 0
+    try:
+        hours = float(hours_raw or 0)
+    except (TypeError, ValueError):
+        hours = 0.0
+    hours_text = f"{int(hours)}h" if hours.is_integer() else f"{hours:.2f}h"
+    is_capped = bool(status.get("is_capped"))
     state_label = "进行中" if is_active else "未开始"
-    text = (
-        "🧘 修炼\n\n"
-        f"状态：{state_label}\n"
-        f"时长：{elapsed}s\n"
-        f"累计修为：{gained}"
-    )
+    lines = [
+        "🧘 修炼",
+        "",
+        f"状态：{state_label}",
+        f"修炼时长：{hours_text}",
+        f"当前修为：{gained}",
+    ]
+    if is_capped:
+        lines.append("⚠️ 修炼收益已达上限，请及时结算。")
+    text = "\n".join(lines)
     return text, is_active
 
 
@@ -141,4 +169,4 @@ async def cb_cultivation(query: CallbackQuery, state: FSMContext) -> None:
         await _show_panel_query(query, state, uid)
         await state.set_state(CultivationFSM.idle)
         return
-    await handle_expired_callback(query)
+    await _show_panel_query(query, state, uid)

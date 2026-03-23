@@ -11,15 +11,14 @@ from aiogram.types import CallbackQuery, Message
 
 from adapters.aiogram import ui
 from adapters.aiogram.services import (
-    api_post,
     handle_expired_callback,
-    new_request_id,
     parse_callback,
     resolve_uid,
     respond_query,
     safe_answer,
 )
 from adapters.aiogram.states.social_admin import AdminFSM
+from core.database.connection import get_user_by_id, update_user
 
 router = Router(name="admin")
 
@@ -39,6 +38,19 @@ def _super_admin_tg_ids() -> set[str]:
 
 def _is_super_admin(user_id: int | str | None) -> bool:
     return str(user_id or "").strip() in _super_admin_tg_ids()
+
+
+def _modify_user_add(target_uid: str, field: str, delta: int) -> tuple[bool, str]:
+    user = get_user_by_id(target_uid)
+    if not user:
+        return False, "目标用户不存在"
+    try:
+        current = int(user.get(field, 0) or 0)
+    except (TypeError, ValueError):
+        current = 0
+    new_value = max(0, current + int(delta))
+    update_user(target_uid, {field: new_value})
+    return True, f"{field}: {current} -> {new_value}"
 
 
 async def _uid_from_message(message: Message) -> str | None:
@@ -125,12 +137,11 @@ async def _handle_give(message: Message, tier: str, state: FSMContext) -> None:
             amount = max(1, int(parts[-1]))
         except ValueError:
             amount = 1
-    payload = {"user_id": target_uid, "field": field, "action": "add", "value": amount}
-    result = await api_post("/api/admin/modify", payload, actor_uid=uid, request_id=new_request_id())
+    ok, detail = _modify_user_add(str(target_uid), field, amount)
     await state.set_state(AdminFSM.admin_menu)
     await state.update_data(uid=uid, admin_target_uid=target_uid)
     await message.answer(
-        f"{'✅' if result.get('success') else '❌'} 发放 {tier} 灵石 x{amount} -> {target_uid}",
+        f"{'✅' if ok else '❌'} 发放 {tier} 灵石 x{amount} -> {target_uid}\n{detail}",
         reply_markup=ui.admin_menu_keyboard(),
     )
 
@@ -195,28 +206,21 @@ async def cb_admin(query: CallbackQuery, state: FSMContext) -> None:
 
     if action == "modify":
         await state.set_state(AdminFSM.modify_preview)
-        await _respond_and_ack(query, "请选择预设或确认修改。", reply_markup=ui.admin_menu_keyboard())
+        await _respond_and_ack(query, "请选择预设或确认修改。", reply_markup=ui.admin_modify_keyboard())
         return
 
     if action == "preset":
-        preset_id = args[0] if args else ""
-        result = await api_post(
-            "/api/admin/preset",
-            {"user_id": uid, "preset_id": preset_id},
-            actor_uid=uid,
-            request_id=new_request_id(),
-        )
         await _respond_and_ack(
             query,
-            ui.format_admin_panel(result),
-            reply_markup=ui.admin_menu_keyboard(),
-            toast="已应用" if result.get("success") else "应用失败",
+            "预设修改暂未接入此版本。\n可先用「查用户」确认目标，再进入「修改预览 / 确认执行」。",
+            reply_markup=ui.admin_modify_keyboard(),
+            toast="暂未接入",
         )
         return
 
     if action == "confirm":
         await state.set_state(AdminFSM.confirm_apply)
-        await _respond_and_ack(query, "已确认执行。", reply_markup=ui.admin_menu_keyboard())
+        await _respond_and_ack(query, "已确认执行。", reply_markup=ui.admin_modify_keyboard())
         return
 
     if action == "cancel":
@@ -224,4 +228,10 @@ async def cb_admin(query: CallbackQuery, state: FSMContext) -> None:
         await _respond_and_ack(query, "已取消。", reply_markup=ui.admin_menu_keyboard())
         return
 
-    await handle_expired_callback(query)
+    await state.set_state(AdminFSM.admin_menu)
+    await _respond_and_ack(
+        query,
+        "该管理按钮已失效，已返回管理面板。",
+        reply_markup=ui.admin_menu_keyboard(),
+        toast="已返回管理面板",
+    )
