@@ -120,12 +120,15 @@ def main_menu_keyboard(*, registered: bool = True) -> InlineKeyboardMarkup:
         return builder.as_markup()
 
     builder.button(text="📊 状态", callback_data="menu:stat")
-    builder.button(text="🦴 狩猎", callback_data="menu:hunt")
-    builder.button(text="⚡ 突破", callback_data="menu:break")
-    builder.button(text="🗺️ 秘境", callback_data="menu:secret")
-    builder.button(text="🏪 万宝阁", callback_data="menu:shop")
+    builder.button(text="🦴 狩猎", callback_data="hunt:list")
+    builder.button(text="⚡ 突破", callback_data="break:preview:normal")
+    builder.button(text="🗺️ 秘境", callback_data="secret:list")
+    builder.button(text="🎒 储物袋", callback_data="bag:page:0")
+    builder.button(text="👕 灵装", callback_data="gear:page:0")
+    builder.button(text="📘 技能", callback_data="skill:list")
+    builder.button(text="🏪 万宝阁", callback_data="shop:currency:copper")
     builder.button(text="🔄 刷新菜单", callback_data="menu:home")
-    builder.adjust(2, 2, 1, 1)
+    builder.adjust(2, 2, 2, 2, 1)
     return builder.as_markup()
 
 
@@ -147,13 +150,13 @@ def hunt_monsters_keyboard(monsters: Iterable[dict[str, Any]]) -> InlineKeyboard
 
 def hunt_battle_keyboard(skills: Iterable[dict[str, Any]]) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
-    builder.button(text="🗡️ 普通攻击", callback_data="hunt:act:normal")
+    builder.button(text="🗡️ 普通攻击", callback_data="hunt:act_normal")
     for skill in list(skills or [])[:3]:
         sid = str(skill.get("id", "")).strip()
         if not sid:
             continue
         name = str(skill.get("name", sid))
-        builder.button(text=f"✨ {name}", callback_data=f"hunt:act:skill:{sid}")
+        builder.button(text=f"✨ {name}", callback_data=f"hunt:act_skill:{sid}")
     builder.button(text="🧹 结束战斗", callback_data="hunt:exit")
     builder.adjust(1, 2, 1, 1)
     return builder.as_markup()
@@ -180,7 +183,7 @@ def breakthrough_keyboard(selected_strategy: str | None, call_for_help: bool = T
         text = f"✅ {label}" if key == current else label
         builder.button(text=text, callback_data=f"break:preview:{key}")
     help_text = "🤝 道友助阵：开" if call_for_help else "🤝 道友助阵：关"
-    builder.button(text=help_text, callback_data="break:help:toggle")
+    builder.button(text=help_text, callback_data="break:help_toggle")
     builder.button(text="⚡ 执行突破", callback_data="break:confirm")
     builder.button(text="⬅️ 主菜单", callback_data="menu:home")
     builder.adjust(2, 2, 1, 1, 1)
@@ -217,13 +220,13 @@ def secret_paths_keyboard() -> InlineKeyboardMarkup:
 
 def secret_battle_keyboard(skills: Iterable[dict[str, Any]]) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
-    builder.button(text="🗡️ 普通攻击", callback_data="secret:act:normal")
+    builder.button(text="🗡️ 普通攻击", callback_data="secret:act_normal")
     for skill in list(skills or [])[:3]:
         sid = str(skill.get("id", "")).strip()
         if not sid:
             continue
         name = str(skill.get("name", sid))
-        builder.button(text=f"✨ {name}", callback_data=f"secret:act:skill:{sid}")
+        builder.button(text=f"✨ {name}", callback_data=f"secret:act_skill:{sid}")
     builder.button(text="🧹 结束探索", callback_data="secret:exit")
     builder.adjust(1, 2, 1, 1)
     return builder.as_markup()
@@ -707,3 +710,180 @@ def format_shop_panel(
     lines.append("")
     lines.append("点击商品按钮即可购买")
     return "\n".join(lines)
+
+
+def bag_items_keyboard(items: Iterable[dict[str, Any]], page: int, total_pages: int) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    rows = list(items or [])
+    for item in rows[:8]:
+        item_id = str(item.get("item_id", "")).strip()
+        if not item_id:
+            continue
+        name = str(item.get("name", item_id))
+        builder.button(text=name, callback_data=f"bag:detail:{item_id}")
+    if page > 1:
+        builder.button(text="⬅️ 上一页", callback_data=f"bag:page:{page - 1}")
+    builder.button(text=f"{page}/{max(1, total_pages)}", callback_data="menu:home")
+    if page < total_pages:
+        builder.button(text="➡️ 下一页", callback_data=f"bag:page:{page + 1}")
+    builder.button(text="⬅️ 主菜单", callback_data="menu:home")
+    builder.adjust(*([1] * min(8, len(rows))), 3, 1)
+    return builder.as_markup()
+
+
+def gear_items_keyboard(items: Iterable[dict[str, Any]], page: int, total_pages: int) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    rows = list(items or [])
+    for item in rows[:8]:
+        item_id = str(item.get("item_id", "")).strip()
+        if not item_id:
+            continue
+        name = str(item.get("name", item_id))
+        builder.button(text=name, callback_data=f"gear:detail:{item_id}")
+    if page > 1:
+        builder.button(text="⬅️ 上一页", callback_data=f"gear:page:{page - 1}")
+    builder.button(text=f"{page}/{max(1, total_pages)}", callback_data="gear:equipped_view")
+    if page < total_pages:
+        builder.button(text="➡️ 下一页", callback_data=f"gear:page:{page + 1}")
+    builder.button(text="📌 已佩戴", callback_data="gear:equipped_view")
+    builder.button(text="⬅️ 主菜单", callback_data="menu:home")
+    builder.adjust(*([1] * min(8, len(rows))), 3, 1, 1)
+    return builder.as_markup()
+
+
+def skill_list_keyboard(skills: Iterable[dict[str, Any]]) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    rows = list(skills or [])
+    for skill in rows[:10]:
+        sid = str(skill.get("id", "")).strip()
+        if not sid:
+            continue
+        name = str(skill.get("name", sid))
+        builder.button(text=name, callback_data=f"skill:detail:{sid}")
+    builder.button(text="⬅️ 主菜单", callback_data="menu:home")
+    builder.adjust(*([1] * min(10, len(rows))), 1)
+    return builder.as_markup()
+
+
+def alchemy_menu_keyboard() -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.button(text="⚗️ 炼制", callback_data="alchemy:craft")
+    builder.button(text="⚗️ 批量炼制", callback_data="alchemy:batch")
+    builder.button(text="⬅️ 返回商店", callback_data="shop:back")
+    builder.button(text="⬅️ 主菜单", callback_data="menu:home")
+    builder.adjust(2, 1, 1)
+    return builder.as_markup()
+
+
+def forge_menu_keyboard() -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.button(text="🔨 锻造", callback_data="forge:craft")
+    builder.button(text="🛠️ 强化", callback_data="forge:enhance")
+    builder.button(text="⬅️ 返回商店", callback_data="shop:back")
+    builder.button(text="⬅️ 主菜单", callback_data="menu:home")
+    builder.adjust(2, 1, 1)
+    return builder.as_markup()
+
+
+def social_menu_keyboard() -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.button(text="💬 聊天", callback_data="social:chat")
+    builder.button(text="🧭 论道", callback_data="social:dao")
+    builder.button(text="⚔️ PVP", callback_data="pvp:menu")
+    builder.button(text="🏯 宗门", callback_data="sect:menu")
+    builder.button(text="⬅️ 主菜单", callback_data="menu:home")
+    builder.adjust(2, 2, 1)
+    return builder.as_markup()
+
+
+def admin_menu_keyboard() -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.button(text="🧪 Test", callback_data="admin:test")
+    builder.button(text="🔍 查询", callback_data="admin:lookup")
+    builder.button(text="✍️ 修改", callback_data="admin:modify")
+    builder.button(text="⬅️ 主菜单", callback_data="menu:home")
+    builder.adjust(2, 1, 1)
+    return builder.as_markup()
+
+
+def format_bag_panel(items: Iterable[dict[str, Any]], page: int, total_pages: int) -> str:
+    rows = list(items or [])
+    lines = [f"🎒 储物袋  第 {page}/{max(1, total_pages)} 页", ""]
+    if not rows:
+        lines.append("空空如也。")
+    for item in rows[:8]:
+        name = str(item.get("name", item.get("item_id", "未知物品")))
+        qty = _to_int(item.get("quantity"), 1)
+        lines.append(f"• {name} x{qty}")
+    return "\n".join(lines)
+
+
+def format_gear_panel(items: Iterable[dict[str, Any]], page: int, total_pages: int) -> str:
+    rows = list(items or [])
+    lines = [f"👕 灵装  第 {page}/{max(1, total_pages)} 页", ""]
+    if not rows:
+        lines.append("暂无可穿戴灵装。")
+    for item in rows[:8]:
+        name = str(item.get("name", item.get("item_id", "未知灵装")))
+        level = _to_int(item.get("enhance_level"), 0)
+        lines.append(f"• {name}  +{level}")
+    return "\n".join(lines)
+
+
+def format_skill_panel(skills: Iterable[dict[str, Any]]) -> str:
+    lines = ["📘 技能面板", ""]
+    rows = list(skills or [])
+    if not rows:
+        lines.append("尚未习得技能。")
+    for skill in rows[:10]:
+        name = str(skill.get("name", skill.get("id", "技能")))
+        lines.append(f"• {name}")
+    return "\n".join(lines)
+
+
+def format_alchemy_panel(payload: dict[str, Any] | None = None) -> str:
+    return "⚗️ 炼丹面板"
+
+
+def format_forge_panel(payload: dict[str, Any] | None = None) -> str:
+    return "🔨 锻造面板"
+
+
+def format_social_panel(payload: dict[str, Any] | None = None) -> str:
+    return "💬 社交面板"
+
+
+def format_pvp_panel(payload: dict[str, Any] | None = None) -> str:
+    return "⚔️ PVP 面板"
+
+
+def format_sect_panel(payload: dict[str, Any] | None = None) -> str:
+    return "🏯 宗门面板"
+
+
+def format_admin_panel(payload: dict[str, Any] | None = None) -> str:
+    return "🛠️ 管理面板"
+
+
+def format_quest_panel(payload: dict[str, Any] | None = None) -> str:
+    return "📜 任务面板"
+
+
+def format_event_panel(payload: dict[str, Any] | None = None) -> str:
+    return "🎉 活动面板"
+
+
+def format_story_panel(payload: dict[str, Any] | None = None) -> str:
+    return "📖 剧情面板"
+
+
+def format_boss_panel(payload: dict[str, Any] | None = None) -> str:
+    return "🐲 世界 BOSS 面板"
+
+
+def format_bounty_panel(payload: dict[str, Any] | None = None) -> str:
+    return "🧾 悬赏面板"
+
+
+def format_rank_panel(payload: dict[str, Any] | None = None) -> str:
+    return "🏆 排行面板"

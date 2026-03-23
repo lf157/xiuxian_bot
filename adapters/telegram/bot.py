@@ -1396,7 +1396,8 @@ def get_main_menu_keyboard(*, include_miniapp: bool = True):
             InlineKeyboardButton("🏪 万宝楼", callback_data="shop_all"),
         ],
         [
-            InlineKeyboardButton("🎒 背包", callback_data="bag"),
+            InlineKeyboardButton("🎒 储物袋", callback_data="bag"),
+            InlineKeyboardButton("👕 灵装", callback_data="equipment"),
             InlineKeyboardButton("✨ 技能", callback_data="skills"),
         ],
         [
@@ -2953,7 +2954,7 @@ def _split_inventory_items(items: list[dict]) -> tuple[list[dict], list[dict]]:
 
 
 def _build_bag_panel(items: list[dict], *, page: int = 0) -> tuple[str, list[list[InlineKeyboardButton]]]:
-    equipment_items, stackable_items = _split_inventory_items(items)
+    _, stackable_items = _split_inventory_items(items)
     keyboard: list[list[InlineKeyboardButton]] = []
 
     total_pages = max(1, (len(stackable_items) + _BAG_ITEMS_PER_PAGE - 1) // _BAG_ITEMS_PER_PAGE)
@@ -2961,12 +2962,12 @@ def _build_bag_panel(items: list[dict], *, page: int = 0) -> tuple[str, list[lis
     page_items = stackable_items[page * _BAG_ITEMS_PER_PAGE : (page + 1) * _BAG_ITEMS_PER_PAGE]
 
     text = (
-        f"🎒 *我的背包* (第{page + 1}/{total_pages}页)\n"
-        f"物品种类: {len(stackable_items)} | 装备数量: {len(equipment_items)}\n\n"
+        f"🎒 *我的储物袋* (第{page + 1}/{total_pages}页)\n"
+        f"物品种类: {len(stackable_items)}\n\n"
     )
 
     if not stackable_items:
-        text += "当前没有可堆叠物品。\n请点击“装备背包”查看并操作装备。"
+        text += "当前储物袋为空。"
     else:
         for item in page_items:
             item_name = str(item.get("item_name") or "未知物品")
@@ -2986,8 +2987,6 @@ def _build_bag_panel(items: list[dict], *, page: int = 0) -> tuple[str, list[lis
     if nav:
         keyboard.append(nav)
 
-    keyboard.append([InlineKeyboardButton(f"👕 装备背包 ({len(equipment_items)})", callback_data="equipbag_0")])
-    keyboard.append([InlineKeyboardButton("👕 已装备", callback_data="equipped_view")])
     keyboard.append([InlineKeyboardButton("🔙 返回", callback_data="main_menu")])
     return text, keyboard
 
@@ -3000,12 +2999,12 @@ def _build_equipment_bag_panel(items: list[dict], *, page: int = 0) -> tuple[str
     page = max(0, min(page, total_pages - 1))
     page_items = equipment_items[page * _EQUIP_ITEMS_PER_PAGE : (page + 1) * _EQUIP_ITEMS_PER_PAGE]
 
-    text = f"👕 *装备背包* (第{page + 1}/{total_pages}页)\n装备数量: {len(equipment_items)}\n\n"
+    text = f"👕 *灵装* (第{page + 1}/{total_pages}页)\n灵装数量: {len(equipment_items)}\n\n"
     if not equipment_items:
-        text += "当前没有装备。\n可通过狩猎、锻造等玩法获取装备。"
+        text += "当前没有灵装。\n可通过狩猎、锻造等玩法获取灵装。"
     else:
         for item in page_items:
-            item_name = str(item.get("item_name") or "未知装备")
+            item_name = str(item.get("item_name") or "未知灵装")
             enhance_level = _parse_positive_int(item.get("enhance_level", 0), default=0)
             quality = item.get("quality_name") or item.get("quality")
             quality_text = f" [{quality}]" if quality else ""
@@ -3041,7 +3040,7 @@ def _build_equipment_bag_panel(items: list[dict], *, page: int = 0) -> tuple[str
     if nav:
         keyboard.append(nav)
 
-    keyboard.append([InlineKeyboardButton("🎒 物品背包", callback_data="bag")])
+    keyboard.append([InlineKeyboardButton("🎒 储物袋", callback_data="bag")])
     keyboard.append([InlineKeyboardButton("👕 已装备", callback_data="equipped_view")])
     keyboard.append([InlineKeyboardButton("🔙 返回", callback_data="main_menu")])
     return text, keyboard
@@ -3336,7 +3335,7 @@ async def _build_recovery_menu(uid: str, *, return_callback: str = "main_menu"):
     else:
         text += "当前没有可用的回血/回蓝丹药。\n"
     keyboard.append([InlineKeyboardButton("🛌 自动恢复说明", callback_data=f"recover_auto_{return_callback}")])
-    keyboard.append([InlineKeyboardButton("🎒 背包", callback_data="bag")])
+    keyboard.append([InlineKeyboardButton("🎒 储物袋", callback_data="bag")])
     keyboard.append([InlineKeyboardButton("🔙 返回", callback_data=return_callback)])
     return text, keyboard
 
@@ -3715,6 +3714,8 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return True
     
     data = query.data
+    if data == "equipment":
+        data = "equipbag_0"
 
     if data.startswith("admin_test_"):
         if not _is_super_admin_tg(user_id):
@@ -5742,7 +5743,7 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await _safe_edit("❌ 无法发起购买输入，请稍后重试", reply_markup=get_main_menu_keyboard())
         return
     
-    # 背包（带分页）
+    # 储物袋（带分页）
     if data.startswith("bag"):
         page = 0
         if data.startswith("bag_"):
@@ -5765,10 +5766,10 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await _safe_edit(text, parse_mode=ParseMode.MARKDOWN, reply_markup=InlineKeyboardMarkup(keyboard))
         except Exception as e:
             logger.error(f"bag callback error: {e}")
-            await _safe_edit("❌ 背包面板出错，请重试", reply_markup=get_main_menu_keyboard())
+            await _safe_edit("❌ 储物袋面板出错，请重试", reply_markup=get_main_menu_keyboard())
         return
 
-    # 装备背包（单独分页）
+    # 灵装（单独分页）
     if data.startswith("equipbag"):
         page = 0
         if data.startswith("equipbag_"):
@@ -5791,10 +5792,10 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await _safe_edit(text, parse_mode=ParseMode.MARKDOWN, reply_markup=InlineKeyboardMarkup(keyboard))
         except Exception as e:
             logger.error(f"equipbag callback error: {e}")
-            await _safe_edit("❌ 装备背包加载失败，请稍后重试", reply_markup=get_main_menu_keyboard())
+            await _safe_edit("❌ 灵装面板加载失败，请稍后重试", reply_markup=get_main_menu_keyboard())
         return
 
-    # 装备物品（从背包）
+    # 装备物品（从灵装）
     if data.startswith("equip_"):
         item_db_id = data[6:]
         try:
@@ -5805,8 +5806,8 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 msg = result.get("message", "已处理")
                 icon = "✅" if result.get("success") else "❌"
                 keyboard = [
-                    [InlineKeyboardButton("👕 装备背包", callback_data="equipbag_0")],
-                    [InlineKeyboardButton("🎒 物品背包", callback_data="bag")],
+                    [InlineKeyboardButton("👕 灵装", callback_data="equipbag_0")],
+                    [InlineKeyboardButton("🎒 储物袋", callback_data="bag")],
                     [InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")],
                 ]
                 await _safe_edit(f"{icon} {msg}", reply_markup=InlineKeyboardMarkup(keyboard))
@@ -5815,8 +5816,8 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await _safe_edit(
                 "❌ 装备失败，请稍后重试",
                 reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("👕 装备背包", callback_data="equipbag_0")],
-                    [InlineKeyboardButton("🎒 物品背包", callback_data="bag")],
+                    [InlineKeyboardButton("👕 灵装", callback_data="equipbag_0")],
+                    [InlineKeyboardButton("🎒 储物袋", callback_data="bag")],
                     [InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")],
                 ]),
             )
@@ -5832,8 +5833,8 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 msg = result.get("message", "已处理")
                 icon = "♻️" if result.get("success") else "❌"
                 keyboard = [
-                    [InlineKeyboardButton("👕 装备背包", callback_data="equipbag_0")],
-                    [InlineKeyboardButton("🎒 物品背包", callback_data="bag")],
+                    [InlineKeyboardButton("👕 灵装", callback_data="equipbag_0")],
+                    [InlineKeyboardButton("🎒 储物袋", callback_data="bag")],
                     [InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")],
                 ]
                 await _safe_edit(f"{icon} {msg}", reply_markup=InlineKeyboardMarkup(keyboard))
@@ -5842,14 +5843,14 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await _safe_edit(
                 "❌ 分解失败，请稍后重试",
                 reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("👕 装备背包", callback_data="equipbag_0")],
-                    [InlineKeyboardButton("🎒 物品背包", callback_data="bag")],
+                    [InlineKeyboardButton("👕 灵装", callback_data="equipbag_0")],
+                    [InlineKeyboardButton("🎒 储物袋", callback_data="bag")],
                     [InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")],
                 ]),
             )
         return
 
-    # 使用丹药（从背包）
+    # 使用丹药（从储物袋）
     if data.startswith("use_"):
         item_id = data[4:]
         try:
@@ -5860,7 +5861,7 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 msg = result.get("message", "已处理")
                 icon = "✅" if result.get("success") else "❌"
                 keyboard = [
-                    [InlineKeyboardButton("🎒 背包", callback_data="bag")],
+                    [InlineKeyboardButton("🎒 储物袋", callback_data="bag")],
                     [InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")],
                 ]
                 await _safe_edit(f"{icon} {msg}", reply_markup=InlineKeyboardMarkup(keyboard))
@@ -5869,7 +5870,7 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await _safe_edit(
                 "❌ 使用物品失败，请稍后重试",
                 reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("🎒 背包", callback_data="bag")],
+                    [InlineKeyboardButton("🎒 储物袋", callback_data="bag")],
                     [InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")],
                 ]),
             )
@@ -5885,7 +5886,7 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 items_r = await http_get(f"{SERVER_URL}/api/items/{uid}", timeout=15)
                 all_items = {i["id"]: i for i in items_r.get("items", [])} if items_r.get("success") else {}
 
-                text = "👕 *已装备*\n\n"
+                text = "👕 *已佩戴灵装*\n\n"
                 keyboard = []
                 slot_names = {
                     "equipped_weapon": "⚔️ 武器",
@@ -5921,8 +5922,8 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     else:
                         text += f"{label}: _空_\n"
 
-                keyboard.append([InlineKeyboardButton("👕 装备背包", callback_data="equipbag_0")])
-                keyboard.append([InlineKeyboardButton("🎒 物品背包", callback_data="bag")])
+                keyboard.append([InlineKeyboardButton("👕 灵装", callback_data="equipbag_0")])
+                keyboard.append([InlineKeyboardButton("🎒 储物袋", callback_data="bag")])
                 keyboard.append([InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")])
                 await _safe_edit(text, parse_mode=ParseMode.MARKDOWN, reply_markup=InlineKeyboardMarkup(keyboard))
         except Exception as e:
@@ -5930,8 +5931,8 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await _safe_edit(
                 "❌ 已装备面板加载失败，请稍后重试",
                 reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("👕 装备背包", callback_data="equipbag_0")],
-                    [InlineKeyboardButton("🎒 物品背包", callback_data="bag")],
+                    [InlineKeyboardButton("👕 灵装", callback_data="equipbag_0")],
+                    [InlineKeyboardButton("🎒 储物袋", callback_data="bag")],
                     [InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")],
                 ]),
             )
@@ -6109,7 +6110,7 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await _safe_edit(
                 "❌ 强化参数错误",
                 reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("👕 装备背包", callback_data="equipbag_0")],
+                    [InlineKeyboardButton("👕 灵装", callback_data="equipbag_0")],
                     [InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")],
                 ]),
             )
@@ -6158,8 +6159,8 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 else:
                     text = f"❌ {result.get('message', '强化失败')}"
                 keyboard = [
-                    [InlineKeyboardButton("👕 装备背包", callback_data="equipbag_0")],
-                    [InlineKeyboardButton("🎒 物品背包", callback_data="bag")],
+                    [InlineKeyboardButton("👕 灵装", callback_data="equipbag_0")],
+                    [InlineKeyboardButton("🎒 储物袋", callback_data="bag")],
                     [InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")],
                 ]
                 await _safe_edit(text, reply_markup=InlineKeyboardMarkup(keyboard))
@@ -6168,8 +6169,8 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await _safe_edit(
                 "❌ 强化失败，请稍后重试",
                 reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("👕 装备背包", callback_data="equipbag_0")],
-                    [InlineKeyboardButton("🎒 物品背包", callback_data="bag")],
+                    [InlineKeyboardButton("👕 灵装", callback_data="equipbag_0")],
+                    [InlineKeyboardButton("🎒 储物袋", callback_data="bag")],
                     [InlineKeyboardButton("🔙 主菜单", callback_data="main_menu")],
                 ]),
             )
@@ -6206,7 +6207,7 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("🛡️ 保守强化", callback_data=f"enhance_do_{item_db_id}_steady")],
             [InlineKeyboardButton("⚡ 冲击强化", callback_data=f"enhance_do_{item_db_id}_risky")],
             [InlineKeyboardButton("🪨 材料专精强化", callback_data=f"enhance_do_{item_db_id}_focused")],
-            [InlineKeyboardButton("👕 返回装备背包", callback_data="equipbag_0")],
+            [InlineKeyboardButton("👕 返回灵装", callback_data="equipbag_0")],
         ]
         await _safe_edit(text, parse_mode=ParseMode.MARKDOWN, reply_markup=InlineKeyboardMarkup(keyboard))
         return
@@ -6900,7 +6901,7 @@ async def shop_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 @require_account
 async def bag_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """/bag 背包命令"""
+    """/bag 储物袋命令"""
     uid = context.user_data["uid"]
 
     try:
@@ -6918,7 +6919,7 @@ async def bag_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 reply_markup=InlineKeyboardMarkup(keyboard)
             )
         else:
-            await update.message.reply_text("❌ 获取背包失败")
+            await update.message.reply_text("❌ 获取储物袋失败")
 
     except Exception as exc:
         logger.error(f"bag error: {exc}")
@@ -8538,7 +8539,7 @@ def main():
         BotCommand("xian_hunt", "狩猎"),
         BotCommand("xian_break", "突破境界"),
         BotCommand("xian_shop", "商店"),
-        BotCommand("xian_bag", "背包"),
+        BotCommand("xian_bag", "储物袋"),
         BotCommand("xian_quest", "每日任务"),
         BotCommand("xian_skills", "技能面板"),
         BotCommand("xian_secret", "秘境探索"),

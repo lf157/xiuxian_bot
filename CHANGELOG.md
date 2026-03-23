@@ -1,8 +1,30 @@
 # 项目变更日志（Changelog）
 
-- 最后更新：2026-03-22 20:32 (UTC+8)
-- 本轮修复完成时间：2026-03-22 20:32 (UTC+8)
+- 最后更新：2026-03-23 11:48 (UTC+8)
+- 本轮修复完成时间：2026-03-23 11:48 (UTC+8)
 - 维护规则：新记录写在最前；每条记录必须包含“记录时间、影响范围、修改摘要”。
+
+## 2026-03-23
+
+### [54] aiogram + FSM 全量迁移（移除 legacy_bridge，接入 RedisStorage）
+- 记录时间：2026-03-23 11:48 (UTC+8)
+- 影响范围：`adapters/aiogram/bot.py`、`adapters/aiogram/handlers/*`、`adapters/aiogram/states/*`、`adapters/aiogram/services/*`、`adapters/aiogram/ui.py`、`core/config.py`、`config.json`、`requirements.txt`、`pyproject.toml`。
+- 修改摘要：
+  - aiogram 入口改为原生 `root_router`，运行链路彻底移除 `legacy_bridge` 与 `p1` 兼容层。
+  - 全量按域拆分 handlers/states：菜单、修炼、狩猎、突破、储物袋/灵装、技能、商店/炼丹/锻造、秘境、社交/PVP/宗门、剧情/活动/任务、管理。
+  - callback 协议统一为显式白名单：`<domain>:<action>[:args...]`，并新增 64-byte/regex 语法校验与过期按钮统一兜底。
+  - FSM 存储强制切换为 `RedisStorage`，默认前缀 `xxbot:fsm:v2:`，并提供受控历史 key 清理开关 `redis.purge_legacy_fsm_prefixes`。
+  - 主界面命名与入口统一为“储物袋/灵装”；命令矩阵在 aiogram 侧全量接管，保留 `xian_` 系列入口。
+
+### [53] 主界面新增“灵装”入口 + 背包改名“储物袋”并完成装备拆分
+- 记录时间：2026-03-23 09:47 (UTC+8)
+- 影响范围：`adapters/telegram/bot.py`、`core/game/realms.py`。
+- 修改摘要：
+  - 主菜单从“🎒 背包”调整为“🎒 储物袋”，并新增一级入口“👕 灵装”。
+  - 新增 `equipment` 回调别名并复用 `equipbag_0` 逻辑，历史按钮链路保持兼容。
+  - 储物袋面板去装备化：仅显示可堆叠物品，不再展示装备数量与装备入口。
+  - 装备相关文案统一为“灵装”，包括灵装面板、强化/分解返回链路与已装备页跳转文案。
+  - 修复 `core/game/realms.py` 中全角引号导致的语法错误，恢复可解析状态。
 
 ## 2026-03-22
 

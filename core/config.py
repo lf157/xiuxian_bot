@@ -17,6 +17,19 @@ _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _CONFIG_PATH = os.path.join(_PROJECT_ROOT, "config.json")
 
 
+def _as_bool(value: Any, default: bool = False) -> bool:
+    if isinstance(value, bool):
+        return value
+    if value is None:
+        return default
+    text = str(value).strip().lower()
+    if text in {"1", "true", "yes", "on"}:
+        return True
+    if text in {"0", "false", "no", "off"}:
+        return False
+    return default
+
+
 # ---------- .env 支持 ----------
 
 def _load_dotenv() -> None:
@@ -196,6 +209,84 @@ class _AppConfig:
     @property
     def db_pool_size(self) -> int:
         return int(os.environ.get("DB_POOL_SIZE", "10"))
+
+    # ---- Redis / FSM ----
+
+    @property
+    def redis_enabled(self) -> bool:
+        env_value = os.environ.get("XXBOT_REDIS_ENABLED")
+        if env_value is not None:
+            return _as_bool(env_value, default=True)
+        return _as_bool(self.get_nested("redis", "enabled", default=True), default=True)
+
+    @property
+    def redis_host(self) -> str:
+        env_value = os.environ.get("XXBOT_REDIS_HOST")
+        if env_value:
+            return str(env_value).strip()
+        return str(self.get_nested("redis", "host", default="127.0.0.1") or "127.0.0.1").strip()
+
+    @property
+    def redis_port(self) -> int:
+        env_value = os.environ.get("XXBOT_REDIS_PORT")
+        if env_value:
+            try:
+                return int(env_value)
+            except ValueError:
+                pass
+        try:
+            return int(self.get_nested("redis", "port", default=6379))
+        except (TypeError, ValueError):
+            return 6379
+
+    @property
+    def redis_db(self) -> int:
+        env_value = os.environ.get("XXBOT_REDIS_DB")
+        if env_value:
+            try:
+                return int(env_value)
+            except ValueError:
+                pass
+        try:
+            return int(self.get_nested("redis", "db", default=0))
+        except (TypeError, ValueError):
+            return 0
+
+    @property
+    def redis_password(self) -> str:
+        return str(
+            os.environ.get("XXBOT_REDIS_PASSWORD")
+            or self.get_nested("redis", "password", default="")
+            or ""
+        ).strip()
+
+    @property
+    def redis_url(self) -> str:
+        raw = (
+            os.environ.get("XXBOT_REDIS_URL")
+            or os.environ.get("REDIS_URL")
+            or self.get_nested("redis", "url", default="")
+            or ""
+        )
+        raw = str(raw).strip()
+        if raw:
+            return raw
+        password = self.redis_password
+        auth = f":{password}@" if password else ""
+        return f"redis://{auth}{self.redis_host}:{self.redis_port}/{self.redis_db}"
+
+    @property
+    def redis_fsm_key_prefix(self) -> str:
+        env_value = os.environ.get("XXBOT_REDIS_FSM_KEY_PREFIX")
+        raw = str(env_value or self.get_nested("redis", "fsm_key_prefix", default="xxbot:fsm:v2:") or "").strip()
+        return raw or "xxbot:fsm:v2:"
+
+    @property
+    def redis_purge_legacy_fsm_prefixes(self) -> bool:
+        env_value = os.environ.get("XXBOT_REDIS_PURGE_LEGACY_FSM_PREFIXES")
+        if env_value is not None:
+            return _as_bool(env_value, default=False)
+        return _as_bool(self.get_nested("redis", "purge_legacy_fsm_prefixes", default=False), default=False)
 
     # ---- 冷却时间 ----
 

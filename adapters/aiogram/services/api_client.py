@@ -68,14 +68,21 @@ async def request_json(
     *,
     payload: dict[str, Any] | None = None,
     params: dict[str, Any] | None = None,
+    actor_uid: str | None = None,
+    request_id: str | None = None,
 ) -> dict[str, Any]:
     url = path if path.startswith("http://") or path.startswith("https://") else f"{SERVER_URL}{path}"
     headers: dict[str, str] = {}
     if INTERNAL_API_TOKEN:
         headers["X-Internal-Token"] = INTERNAL_API_TOKEN
-    actor_uid = _extract_actor_user_id(url, payload=payload, params=params)
-    if actor_uid:
-        headers["X-Actor-User-Id"] = actor_uid
+    explicit_actor_uid = str(actor_uid or "").strip()
+    inferred_actor_uid = _extract_actor_user_id(url, payload=payload, params=params)
+    final_actor_uid = explicit_actor_uid or inferred_actor_uid
+    if final_actor_uid:
+        headers["X-Actor-User-Id"] = final_actor_uid
+    rid = str(request_id or "").strip()
+    if rid:
+        headers["X-Request-Id"] = rid
 
     session = await _get_http_session()
     async with session.request(method, url, json=payload, params=params, headers=headers) as response:
@@ -101,12 +108,22 @@ async def request_json(
             }
 
 
-async def api_get(path: str, *, params: dict[str, Any] | None = None) -> dict[str, Any]:
-    return await request_json("GET", path, params=params)
+async def api_get(
+    path: str,
+    params: dict[str, Any] | None = None,
+    actor_uid: str | None = None,
+) -> dict[str, Any]:
+    return await request_json("GET", path, params=params, actor_uid=actor_uid)
 
 
-async def api_post(path: str, *, payload: dict[str, Any]) -> dict[str, Any]:
-    return await request_json("POST", path, payload=payload)
+async def api_post(
+    path: str,
+    payload: dict[str, Any],
+    actor_uid: str | None = None,
+    request_id: str | None = None,
+) -> dict[str, Any]:
+    rid = request_id or new_request_id()
+    return await request_json("POST", path, payload=payload, actor_uid=actor_uid, request_id=rid)
 
 
 async def resolve_uid(tg_user_id: int) -> str | None:

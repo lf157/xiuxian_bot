@@ -225,43 +225,43 @@ def attempt_breakthrough(
     金丹期及以上需要特定突破材料（全局限量物品）。
     材料检查由调用方在调用前完成，本函数通过 user_data["has_break_material"] 判断。
     """
-    realm_id = user_data.get(“rank”, 1)
+    realm_id = user_data.get("rank", 1)
     realm = get_realm_by_id(realm_id)
     next_realm = get_next_realm(realm_id)
 
     if next_realm is None:
-        return False, “你已达到最高境界！”
+        return False, "你已达到最高境界！"
 
-    # 允许调用方直接传入最终成功率，确保”展示成功率”与”实际判定”完全一致。
+    # 允许调用方直接传入最终成功率，确保"展示成功率"与"实际判定"完全一致。
     # 此时所有前置校验（修为、材料、灵石等）由调用方负责，此处只做概率判定。
     if forced_success_rate is not None:
         success_rate = max(0.0, min(1.0, float(forced_success_rate)))
         if success_rate >= 1.0:
-            return True, f”恭喜！突破成功，进入【{next_realm['name']}】境界！”
+            return True, f"恭喜！突破成功，进入【{next_realm['name']}】境界！"
         success = random.random() < success_rate
         if success:
-            return True, f”恭喜！突破成功，进入【{next_realm['name']}】境界！”
-        return False, “突破失败。”
+            return True, f"恭喜！突破成功，进入【{next_realm['name']}】境界！"
+        return False, "突破失败。"
 
-    if user_data[“exp”] < next_realm[“exp_required”]:
-        return False, f”修为不足，需要 {next_realm['exp_required']:,} 点修为才能突破”
+    if user_data["exp"] < next_realm["exp_required"]:
+        return False, f"修为不足，需要 {next_realm['exp_required']:,} 点修为才能突破"
 
     # 金丹期及以上：检查突破材料
-    next_stage = next_realm.get(“stage”, “”)
+    next_stage = next_realm.get("stage", "")
     mat_req = BREAKTHROUGH_MATERIALS.get(next_stage)
     if mat_req:
-        if not user_data.get(“has_break_material”):
-            hint = mat_req[“hint_text”]
+        if not user_data.get("has_break_material"):
+            hint = mat_req["hint_text"]
             return False, (
-                f”突破至【{next_realm['name']}】需要特殊材料：{mat_req['item_name']} x{mat_req['count']}\n\n”
-                f”💡 线索：{hint}”
+                f"突破至【{next_realm['name']}】需要特殊材料：{mat_req['item_name']} x{mat_req['count']}\n\n"
+                f"💡 线索：{hint}"
             )
 
     # 计算成功率（一次性汇总后再截断，避免中间截断导致显示与实际不一致）
-    success_rate = float(next_realm[“break_rate”] or 0.0)
+    success_rate = float(next_realm["break_rate"] or 0.0)
     total_bonus = 0.0
 
-    steady_bonus = float(config.get_nested(“balance”, “breakthrough”, “steady_bonus”, default=0.10) or 0.10)
+    steady_bonus = float(config.get_nested("balance", "breakthrough", "steady_bonus", default=0.10) or 0.10)
     if use_pill:
         total_bonus += steady_bonus
 
@@ -269,10 +269,10 @@ def attempt_breakthrough(
         total_bonus += float(extra_bonus)
 
     # 五行影响
-    element = user_data.get(“element”)
+    element = user_data.get("element")
     if element and element in ELEMENT_BONUSES:
-        fire_bonus = float(config.get_nested(“balance”, “breakthrough”, “fire_bonus”, default=0.03) or 0.03)
-        if element == “火”:
+        fire_bonus = float(config.get_nested("balance", "breakthrough", "fire_bonus", default=0.03) or 0.03)
+        if element == "火":
             total_bonus += fire_bonus
 
     success_rate = max(0.0, min(1.0, success_rate + total_bonus))

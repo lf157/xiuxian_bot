@@ -6,6 +6,16 @@
     "telegram": false,
     "aiogram": true
   },
+  "redis": {
+    "enabled": true,
+    "url": "",
+    "host": "127.0.0.1",
+    "port": 6379,
+    "db": 0,
+    "password": "",
+    "fsm_key_prefix": "xxbot:fsm:v2:",
+    "purge_legacy_fsm_prefixes": false
+  },
   "admin_panel": {
     "api_password": "change_me",
     "api_switch": false,
