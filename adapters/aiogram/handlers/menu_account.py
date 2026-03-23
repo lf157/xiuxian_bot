@@ -236,4 +236,4 @@ async def cb_menu(query: CallbackQuery, state: FSMContext) -> None:
     if action == "stat":
         await _show_stat_query(query, state)
         return
-    await handle_expired_callback(query)
+    await _show_home_query(query, state)
