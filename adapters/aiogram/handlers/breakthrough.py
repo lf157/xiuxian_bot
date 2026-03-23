@@ -24,6 +24,8 @@ from adapters.aiogram.states.inventory import BreakthroughFSM
 
 router = Router(name="breakthrough")
 
+_VALID_STRATEGIES = {"normal", "steady", "protect", "desperate"}
+
 
 def _error_text(payload: dict[str, Any] | None, default: str = "操作失败") -> str:
     if not isinstance(payload, dict):
@@ -33,6 +35,26 @@ def _error_text(payload: dict[str, Any] | None, default: str = "操作失败") -
     if code and code not in message:
         return f"{message}（{code}）"
     return message
+
+
+def _normalize_strategy(raw: Any, default: str = "normal") -> str:
+    value = str(raw or default).strip().lower()
+    if value in _VALID_STRATEGIES:
+        return value
+    return default
+
+
+def _as_bool(raw: Any, default: bool = True) -> bool:
+    if isinstance(raw, bool):
+        return raw
+    if raw is None:
+        return default
+    text = str(raw).strip().lower()
+    if text in {"1", "true", "yes", "on"}:
+        return True
+    if text in {"0", "false", "no", "off"}:
+        return False
+    return default
 
 
 async def _uid_from_message(message: Message, state: FSMContext) -> str | None:
@@ -73,8 +95,16 @@ async def _preview(uid: str, strategy: str, call_for_help: bool) -> dict[str, An
     )
 
 
-async def _show_preview_query(query: CallbackQuery, state: FSMContext, uid: str, strategy: str, call_for_help: bool) -> None:
-    preview_resp = await _preview(uid, strategy, call_for_help)
+async def _show_preview_query(
+    query: CallbackQuery,
+    state: FSMContext,
+    uid: str,
+    strategy: str,
+    call_for_help: bool,
+    notice: str | None = None,
+) -> None:
+    normalized_strategy = _normalize_strategy(strategy)
+    preview_resp = await _preview(uid, normalized_strategy, call_for_help)
     if not preview_resp.get("success"):
         await respond_query(query, f"❌ {_error_text(preview_resp, '突破预览失败')}", reply_markup=ui.main_menu_keyboard(registered=True))
         return
@@ -82,18 +112,22 @@ async def _show_preview_query(query: CallbackQuery, state: FSMContext, uid: str,
     await state.set_state(BreakthroughFSM.selecting_strategy)
     await state.update_data(
         uid=uid,
-        breakthrough_strategy=strategy,
+        breakthrough_strategy=normalized_strategy,
         breakthrough_call_for_help=call_for_help,
     )
+    text = ui.format_breakthrough_preview(preview)
+    if notice:
+        text = f"{notice}\n\n{text}"
     await respond_query(
         query,
-        ui.format_breakthrough_preview(preview),
-        reply_markup=ui.breakthrough_keyboard(strategy, call_for_help=call_for_help),
+        text,
+        reply_markup=ui.breakthrough_keyboard(normalized_strategy, call_for_help=call_for_help),
     )
 
 
 async def _show_preview_message(message: Message, state: FSMContext, uid: str, strategy: str, call_for_help: bool) -> None:
-    preview_resp = await _preview(uid, strategy, call_for_help)
+    normalized_strategy = _normalize_strategy(strategy)
+    preview_resp = await _preview(uid, normalized_strategy, call_for_help)
     if not preview_resp.get("success"):
         await message.answer(f"❌ {_error_text(preview_resp, '突破预览失败')}", reply_markup=ui.main_menu_keyboard(registered=True))
         return
@@ -101,12 +135,12 @@ async def _show_preview_message(message: Message, state: FSMContext, uid: str, s
     await state.set_state(BreakthroughFSM.selecting_strategy)
     await state.update_data(
         uid=uid,
-        breakthrough_strategy=strategy,
+        breakthrough_strategy=normalized_strategy,
         breakthrough_call_for_help=call_for_help,
     )
     await message.answer(
         ui.format_breakthrough_preview(preview),
-        reply_markup=ui.breakthrough_keyboard(strategy, call_for_help=call_for_help),
+        reply_markup=ui.breakthrough_keyboard(normalized_strategy, call_for_help=call_for_help),
     )
 
 
@@ -136,12 +170,16 @@ async def cb_breakthrough(query: CallbackQuery, state: FSMContext) -> None:
         return
 
     data = await state.get_data()
-    strategy = str(data.get("breakthrough_strategy") or "normal")
-    call_for_help = bool(data.get("breakthrough_call_for_help", True))
+    strategy = _normalize_strategy(data.get("breakthrough_strategy"), default="normal")
+    call_for_help = _as_bool(data.get("breakthrough_call_for_help"), default=True)
 
     if action == "preview":
-        picked = str(args[0] if args else strategy or "normal").lower()
-        await _show_preview_query(query, state, uid, picked, call_for_help)
+        picked_raw = str(args[0] if args else strategy or "normal").strip().lower()
+        picked = _normalize_strategy(picked_raw, default=strategy)
+        notice = None
+        if picked_raw != picked:
+            notice = "策略参数异常，已恢复为当前策略。"
+        await _show_preview_query(query, state, uid, picked, call_for_help, notice=notice)
         return
     if action == "help_toggle":
         await _show_preview_query(query, state, uid, strategy, not call_for_help)
@@ -164,6 +202,6 @@ async def cb_breakthrough(query: CallbackQuery, state: FSMContext) -> None:
         return
     if action == "cancel":
         await state.set_state(BreakthroughFSM.selecting_strategy)
-        await respond_query(query, "已取消本次突破。", reply_markup=ui.main_menu_keyboard(registered=True))
+        await respond_query(query, "已取消本次突破。你可以重新选择策略后再次尝试。", reply_markup=ui.main_menu_keyboard(registered=True))
         return
-    await handle_expired_callback(query)
+    await _show_preview_query(query, state, uid, strategy, call_for_help, notice="该突破按钮已失效，已返回突破预览。")

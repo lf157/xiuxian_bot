@@ -83,7 +83,12 @@ async def _show_secret_panel_message(message: Message, state: FSMContext, uid: s
     )
 
 
-async def _show_secret_panel_query(query: CallbackQuery, state: FSMContext, uid: str) -> None:
+async def _show_secret_panel_query(
+    query: CallbackQuery,
+    state: FSMContext,
+    uid: str,
+    notice: str | None = None,
+) -> None:
     data = await api_get(f"/api/secret-realms/{uid}", actor_uid=uid)
     if not data.get("success"):
         await respond_query(
@@ -95,17 +100,71 @@ async def _show_secret_panel_query(query: CallbackQuery, state: FSMContext, uid:
     realms = data.get("realms") or []
     await state.set_state(SecretRealmsFSM.selecting_realm)
     await state.update_data(uid=uid, secret_realms=realms)
+    panel_text = ui.format_secret_panel(realms, attempts_left=int(data.get("attempts_left", 0) or 0))
+    if notice:
+        panel_text = f"{notice}\n\n{panel_text}"
     await respond_query(
         query,
-        ui.format_secret_panel(realms, attempts_left=int(data.get("attempts_left", 0) or 0)),
+        panel_text,
         reply_markup=ui.secret_realms_keyboard(realms),
     )
 
 
-async def _reset_session_to_realm(query: CallbackQuery, state: FSMContext, uid: str) -> None:
-    await state.update_data(secret_session_id="")
+async def _show_path_panel_query(
+    query: CallbackQuery,
+    state: FSMContext,
+    realm_id: str,
+    *,
+    notice: str | None = None,
+) -> None:
+    await state.set_state(SecretRealmsFSM.selecting_path)
+    await state.update_data(secret_realm_id=realm_id)
+    text = f"已选择秘境：{realm_id}\n请选择路线。"
+    if notice:
+        text = f"{notice}\n\n{text}"
+    await respond_query(query, text, reply_markup=ui.secret_paths_keyboard())
+
+
+async def _show_event_panel_query(
+    query: CallbackQuery,
+    state: FSMContext,
+    choices: list[dict[str, Any]],
+    *,
+    notice: str | None = None,
+) -> None:
+    await state.set_state(SecretRealmsFSM.in_event_choice)
+    await state.update_data(secret_last_choices=choices, secret_last_skills=[])
+    text = "请选择一个事件选项继续。"
+    if notice:
+        text = notice
+    await respond_query(query, text, reply_markup=ui.secret_event_choices_keyboard(choices))
+
+
+async def _show_battle_panel_query(
+    query: CallbackQuery,
+    state: FSMContext,
+    skills: list[dict[str, Any]],
+    *,
+    notice: str | None = None,
+) -> None:
+    await state.set_state(SecretRealmsFSM.in_battle)
+    await state.update_data(secret_last_choices=[], secret_last_skills=skills)
+    text = "请选择普通攻击或技能继续战斗。"
+    if notice:
+        text = notice
+    await respond_query(query, text, reply_markup=ui.secret_battle_keyboard(skills))
+
+
+async def _reset_session_to_realm(
+    query: CallbackQuery,
+    state: FSMContext,
+    uid: str,
+    *,
+    notice: str | None = None,
+) -> None:
+    await state.update_data(secret_session_id="", secret_last_choices=[], secret_last_skills=[])
     await state.set_state(SecretRealmsFSM.selecting_realm)
-    await _show_secret_panel_query(query, state, uid)
+    await _show_secret_panel_query(query, state, uid, notice=notice)
 
 
 @router.message(Command("xian_secret", "xian_mystic", "secret", "mystic"))
@@ -138,25 +197,26 @@ async def cb_secret(query: CallbackQuery, state: FSMContext) -> None:
         return
     if action == "realm":
         if not args:
-            await handle_expired_callback(query)
+            await _show_secret_panel_query(query, state, uid, notice="缺少秘境参数，已返回秘境列表，请重新选择。")
             return
         realm_id = args[0]
-        await state.set_state(SecretRealmsFSM.selecting_path)
-        await state.update_data(secret_realm_id=realm_id)
-        await respond_query(query, f"已选择秘境：{realm_id}\n请选择路线。", reply_markup=ui.secret_paths_keyboard())
+        await _show_path_panel_query(query, state, realm_id)
         return
     if action == "path":
-        if not args:
-            await handle_expired_callback(query)
-            return
         data = await state.get_data()
         realm_id = str(data.get("secret_realm_id") or "")
+        if not args:
+            if realm_id:
+                await _show_path_panel_query(query, state, realm_id, notice="缺少路线参数，请重新选择路线。")
+            else:
+                await _show_secret_panel_query(query, state, uid, notice="尚未选择秘境，已返回秘境列表。")
+            return
         if not realm_id:
-            await _show_secret_panel_query(query, state, uid)
+            await _show_secret_panel_query(query, state, uid, notice="尚未选择秘境，已返回秘境列表。")
             return
         result = await api_post(
             "/api/secret-realms/turn/start",
-            payload={"user_id": uid, "realm_id": realm_id, "path": args[0]},
+            payload={"user_id": uid, "realm_id": realm_id, "path": args[0], "interactive": True},
             actor_uid=uid,
             request_id=new_request_id(),
         )
@@ -165,26 +225,30 @@ async def cb_secret(query: CallbackQuery, state: FSMContext) -> None:
             return
         session_id = str(result.get("session_id") or "").strip()
         await state.update_data(secret_session_id=session_id)
-        if result.get("phase") == "event":
+        if result.get("needs_choice") or result.get("phase") == "event":
+            choices = list(result.get("choices") or [])
             await state.set_state(SecretRealmsFSM.in_event_choice)
+            await state.update_data(secret_last_choices=choices, secret_last_skills=[])
             await respond_query(
                 query,
                 ui.format_secret_event(result),
-                reply_markup=ui.secret_event_choices_keyboard(result.get("choices") or []),
+                reply_markup=ui.secret_event_choices_keyboard(choices),
             )
             return
+        active_skills = list(result.get("active_skills") or [])
         await state.set_state(SecretRealmsFSM.in_battle)
+        await state.update_data(secret_last_choices=[], secret_last_skills=active_skills)
         await respond_query(
             query,
             ui.format_secret_battle_open(result),
-            reply_markup=ui.secret_battle_keyboard(result.get("active_skills") or []),
+            reply_markup=ui.secret_battle_keyboard(active_skills),
         )
         return
     if action in {"choice", "act_normal", "act_skill"}:
         data = await state.get_data()
         session_id = str(data.get("secret_session_id") or "").strip()
         if not session_id:
-            await _reset_session_to_realm(query, state, uid)
+            await _reset_session_to_realm(query, state, uid, notice="秘境会话已失效，已返回秘境列表。")
             return
         payload: dict[str, Any] = {
             "user_id": uid,
@@ -193,15 +257,20 @@ async def cb_secret(query: CallbackQuery, state: FSMContext) -> None:
         }
         if action == "choice":
             if not args:
-                await handle_expired_callback(query)
+                choices = list(data.get("secret_last_choices") or [])
+                if choices:
+                    await _show_event_panel_query(query, state, choices, notice="缺少事件选项参数，请重新选择。")
+                    return
+                await _reset_session_to_realm(query, state, uid, notice="事件选项已失效，已返回秘境列表。")
                 return
             payload["action"] = "choice"
-            payload["choice_id"] = args[0]
+            payload["choice"] = args[0]
         elif action == "act_normal":
             payload["action"] = "normal"
         else:
             if not args:
-                await handle_expired_callback(query)
+                skills = list(data.get("secret_last_skills") or [])
+                await _show_battle_panel_query(query, state, skills, notice="缺少技能参数，请重新选择技能或使用普通攻击。")
                 return
             payload["action"] = "skill"
             payload["skill_id"] = args[0]
@@ -209,25 +278,53 @@ async def cb_secret(query: CallbackQuery, state: FSMContext) -> None:
         if not result.get("success"):
             err = _error_text(result, "秘境行动失败")
             if _is_session_lost(err):
-                await _reset_session_to_realm(query, state, uid)
+                await _reset_session_to_realm(query, state, uid, notice="秘境会话已失效，已返回秘境列表。")
                 return
-            await respond_query(query, f"❌ {err}", reply_markup=ui.main_menu_keyboard(registered=True))
+            if action == "choice":
+                choices = list(data.get("secret_last_choices") or [])
+                await _show_event_panel_query(query, state, choices, notice=f"❌ {err}\n请重新选择事件选项。")
+            else:
+                skills = list(data.get("secret_last_skills") or [])
+                await _show_battle_panel_query(query, state, skills, notice=f"❌ {err}\n请继续选择行动。")
+            return
+        if result.get("needs_battle"):
+            active_skills = list(result.get("active_skills") or [])
+            await state.set_state(SecretRealmsFSM.in_battle)
+            await state.update_data(secret_last_choices=[], secret_last_skills=active_skills)
+            await respond_query(
+                query,
+                ui.format_secret_battle_open(result),
+                reply_markup=ui.secret_battle_keyboard(active_skills),
+            )
+            return
+        if result.get("needs_choice"):
+            choices = list(result.get("choices") or [])
+            await state.set_state(SecretRealmsFSM.in_event_choice)
+            await state.update_data(secret_last_choices=choices, secret_last_skills=[])
+            await respond_query(
+                query,
+                ui.format_secret_event(result),
+                reply_markup=ui.secret_event_choices_keyboard(choices),
+            )
             return
         if result.get("finished"):
             await state.set_state(SecretRealmsFSM.settlement)
-            await state.update_data(secret_session_id="")
+            await state.update_data(secret_session_id="", secret_last_choices=[], secret_last_skills=[])
             await respond_query(query, ui.format_secret_settlement(result), reply_markup=ui.secret_settlement_keyboard())
             return
         phase = str(result.get("phase") or "")
         if phase == "event":
+            choices = list(result.get("choices") or [])
             await state.set_state(SecretRealmsFSM.in_event_choice)
-            await respond_query(query, ui.format_secret_event(result), reply_markup=ui.secret_event_choices_keyboard(result.get("choices") or []))
+            await state.update_data(secret_last_choices=choices, secret_last_skills=[])
+            await respond_query(query, ui.format_secret_event(result), reply_markup=ui.secret_event_choices_keyboard(choices))
             return
+        active_skills = list(result.get("active_skills") or [])
         await state.set_state(SecretRealmsFSM.in_battle)
-        await respond_query(query, ui.format_battle_round(result, title="🗺️ 秘境战斗"), reply_markup=ui.secret_battle_keyboard(result.get("active_skills") or []))
+        await state.update_data(secret_last_choices=[], secret_last_skills=active_skills)
+        await respond_query(query, ui.format_battle_round(result, title="🗺️ 秘境战斗"), reply_markup=ui.secret_battle_keyboard(active_skills))
         return
     if action == "exit":
-        await state.update_data(secret_session_id="")
-        await _reset_session_to_realm(query, state, uid)
+        await _reset_session_to_realm(query, state, uid, notice="已结束探索，返回秘境列表。")
         return
-    await handle_expired_callback(query)
+    await _show_secret_panel_query(query, state, uid, notice="该秘境按钮已失效，已返回秘境列表。")

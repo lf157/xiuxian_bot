@@ -1,10 +1,73 @@
 # 项目变更日志（Changelog）
 
-- 最后更新：2026-03-23 11:48 (UTC+8)
-- 本轮修复完成时间：2026-03-23 11:48 (UTC+8)
+- 最后更新：2026-03-23 16:10 (UTC+8)
+- 本轮修复完成时间：2026-03-23 16:10 (UTC+8)
 - 维护规则：新记录写在最前；每条记录必须包含“记录时间、影响范围、修改摘要”。
 
 ## 2026-03-23
+
+### [62] aiogram 全量审查问题修复（按钮闭环 + 参数契约 + 失败可见性）
+- 记录时间：2026-03-23 16:10 (UTC+8)
+- 影响范围：`adapters/aiogram/ui.py`、`adapters/aiogram/handlers/{inventory_equipment,skills,shop_alchemy_forge,story_events_quests,social_pvp_sect,admin}.py`。
+- 修改摘要：
+  - 修复“失败静默为空面板”问题：储物袋、灵装、技能、商店、炼丹在后端失败时改为明确错误提示，不再伪装成空列表。
+  - 修复储物袋/灵装缺参交互：参数缺失或异常时回当前面板并提示原因，不再统一落入“按钮过期”。
+  - 修复商店与炼丹失败兜底：商店拉取失败回货币选择页并提示错误；丹方拉取失败回炼丹菜单并提示错误。
+  - 修复管理面板流程断链：新增管理主页与“预设/确认/取消”操作键盘，`admin:modify -> preset/confirm/cancel` 按钮链路闭环。
+  - 修复悬赏回调 ID 契约不一致：悬赏按钮仅生成正整数 `bounty_id` 回调，避免 UI 可点但后端必失败。
+  - 修复剧情章节字段兼容：章节按钮统一兼容 `chapter_id/id`，并新增 `story:node` 可视入口。
+  - 补齐此前“有处理无入口”的低优先动作：`menu:back`、`break:cancel`、`hunt:settle`、`secret:settle`、`social:friend/reply`、`pvp:duel`、`sect:create/train`。
+  - 优化锻造菜单体验：静态菜单“强化”改为直达“定向锻造菜单”，避免首次点击无目标参数的空转。
+
+### [61] aiogram 交互稳定性修复（悬赏可操作 + 回调断链恢复）
+- 记录时间：2026-03-23 15:13 (UTC+8)
+- 影响范围：`adapters/aiogram/handlers/{story_events_quests,menu_account,cultivation,hunt,breakthrough,skills,secret_realms,social_pvp_sect,shop_alchemy_forge,admin}.py`、`adapters/aiogram/ui.py`。
+- 修改摘要：
+  - 悬赏面板从“仅刷新”改为可操作：支持基于状态/身份显示“接取/提交”按钮，`bounty:claim:<id>` 接入真实处理链路（先 submit，按失败类型回退 accept），并在操作后回刷面板。
+  - 悬赏面板文本增强：展示 `id/状态/需求/奖励/发布者/接取者/备注`，便于判断下一步操作。
+  - 修复多域“按钮点了像失效”的问题：`menu/social/pvp/sect/skill/secret/hunt/break/shop/alchemy/admin` 在参数缺失或旧按钮触发时尽量回当前功能面板并给出明确提示，不再直接掉到失效回调。
+  - 修炼状态兼容增强：支持 `state` 字段字符串语义（如 `cultivating/running/idle` 等），确保“开始修炼/结束修炼”按钮切换正确。
+  - 排行与悬赏分支改为显式 action 处理（`rank:realm/combat/wealth`、`bounty:refresh`），避免隐式兜底造成的“无反馈”感。
+  - 静态校验通过：`python -m compileall adapters/aiogram`、API 路由调用匹配扫描 `unmatched=0`、回调协议扫描仅保留模板回调占位 `alchemy:x:x`。
+
+### [60] aiogram 剧情与商店链路修复（剧情可读/可领 + 商店货币入口可达）
+- 记录时间：2026-03-23 14:33 (UTC+8)
+- 影响范围：`adapters/aiogram/handlers/{story_events_quests,shop_alchemy_forge}.py`。
+- 修改摘要：
+  - 修复商店货币按钮死循环：`shop:currency:<币种>` 现在直接进入对应货币商品页，不再反复停留“选择货币”界面。
+  - 剧情面板由占位改为真实链路：`story:menu` 读取 `/api/story/<uid>`，展示章节进度、待领奖励、剧情计数。
+  - 新增剧情章节阅读流：`story:chapter` / `story:node` 调用 `/api/story/read`，支持连续阅读与完成提示。
+  - 新增剧情奖励领取流：`story:claim` 调用 `/api/story/claim` 并回刷剧情主页，显示章节与奖励摘要。
+
+### [59] aiogram 稳定性补强（分页容错 + 技能详情交互优化）
+- 记录时间：2026-03-23 14:28 (UTC+8)
+- 影响范围：`adapters/aiogram/handlers/{inventory_equipment,shop_alchemy_forge,skills,social_pvp_sect}.py`。
+- 修改摘要：
+  - 背包/灵装分页参数增加安全解析，异常参数不再触发回调处理报错。
+  - 商店分页参数增加容错转换，避免异常 callback 参数导致中断。
+  - 技能详情改为动态交互：未学技能仅展示“学习”，已学技能保留“学习/装备/卸下”全操作。
+  - 宗门未加入状态下的按钮布局细节修正，避免键盘布局与按钮数量不一致。
+
+### [58] aiogram 面板深度修复（修炼/技能/秘境/宗门社交/任务活动）
+- 记录时间：2026-03-23 14:20 (UTC+8)
+- 影响范围：`adapters/aiogram/handlers/{cultivation,skills,secret_realms,social_pvp_sect,story_events_quests,inventory_equipment}.py`、`adapters/aiogram/ui.py`。
+- 修改摘要：
+  - 修复“修炼面板无开始/结束按钮”根因：改为读取 `/api/cultivate/status` 的真实字段（`state/current_gain/hours/is_capped`），按钮随状态正确切换。
+  - 修复技能列表空白问题：兼容 `/api/skills/<uid>` 的 `learned/unlockable` 返回，统一归一为可展示/可回调的技能条目。
+  - 修复秘境事件链路：`turn/start` 增加 `interactive=true`；事件选择参数由 `choice_id` 改为后端实际字段 `choice`；补齐 `needs_choice/needs_battle` 分支。
+  - 补齐宗门社交可操作链路：新增宗门动态面板与按钮，接入真实接口（可加入列表、加入、捐献、每日领取、离开）；PVP 面板补全对战记录与刷新流程。
+  - 修复任务/活动/BOSS/排行/悬赏多个“有按钮但反馈弱”问题：活动数据归一化、详情面板可读化、领取失败提示改为后端消息优先、BOSS 攻击结果反馈增强。
+  - 修复灵装识别与已佩戴页面：装备判定兼容 `item_type`；已佩戴面板基于 `/api/stat` 装备槽展示并提供卸下按钮。
+
+### [57] aiogram 功能链路修复（API 对齐 + 面板操作补全）
+- 记录时间：2026-03-23 13:12 (UTC+8)
+- 影响范围：`adapters/aiogram/ui.py`、`adapters/aiogram/handlers/{shop_alchemy_forge,social_pvp_sect,inventory_equipment,skills,story_events_quests,admin}.py`。
+- 修改摘要：
+  - 修复多处 aiogram 调用后端路径/参数不匹配导致的功能不可用问题（炼丹、锻造、PVP 等）。
+  - 修复灵装回调使用模板 `item_id` 的问题，改为使用装备实例 `id`，恢复佩戴/强化/分解链路。
+  - 新增储物袋详情、灵装详情、技能详情操作键盘，补齐“使用/佩戴/强化/分解/学习/装备/卸下”操作入口。
+  - 补齐任务/活动/世界BOSS/排行/悬赏面板的基础按钮与数据显示，避免进入面板后只有占位文本。
+  - 管理员发放灵石改为直连本地用户字段更新，移除不存在的 `/api/admin/modify`、`/api/admin/preset` 依赖。
 
 ### [56] 修炼面板补齐“开始/结束修炼”按钮
 - 记录时间：2026-03-23 12:39 (UTC+8)

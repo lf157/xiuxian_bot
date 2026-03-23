@@ -86,7 +86,12 @@ async def _show_hunt_panel_message(message: Message, state: FSMContext, uid: str
     )
 
 
-async def _show_hunt_panel_query(query: CallbackQuery, state: FSMContext, uid: str) -> None:
+async def _show_hunt_panel_query(
+    query: CallbackQuery,
+    state: FSMContext,
+    uid: str,
+    notice: str | None = None,
+) -> None:
     monsters_data = await api_get("/api/monsters", params={"user_id": uid}, actor_uid=uid)
     status_data = await api_get(f"/api/hunt/status/{uid}", actor_uid=uid)
     if not monsters_data.get("success"):
@@ -100,10 +105,13 @@ async def _show_hunt_panel_query(query: CallbackQuery, state: FSMContext, uid: s
     can_hunt = bool((status_data or {}).get("can_hunt", True))
     cooldown_remaining = int((status_data or {}).get("cooldown_remaining", 0) or 0)
     await state.set_state(HuntFSM.selecting_monster)
-    await state.update_data(uid=uid)
+    await state.update_data(uid=uid, hunt_last_active_skills=[])
+    panel_text = ui.format_hunt_panel(monsters, cooldown_remaining=cooldown_remaining, can_hunt=can_hunt)
+    if notice:
+        panel_text = f"{notice}\n\n{panel_text}"
     await respond_query(
         query,
-        ui.format_hunt_panel(monsters, cooldown_remaining=cooldown_remaining, can_hunt=can_hunt),
+        panel_text,
         reply_markup=ui.hunt_monsters_keyboard(monsters),
     )
 
@@ -133,21 +141,24 @@ async def _do_hunt_action(
     if not result.get("success"):
         err = _error_text(result, "战斗处理失败")
         if _is_session_lost(err):
-            await state.update_data(hunt_session_id="")
+            await state.update_data(hunt_session_id="", hunt_last_active_skills=[])
             await state.set_state(HuntFSM.selecting_monster)
-            await _show_hunt_panel_query(query, state, uid)
+            await _show_hunt_panel_query(query, state, uid, notice="战斗会话已失效，已返回狩猎面板。")
             return
-        await respond_query(query, f"❌ {err}", reply_markup=ui.hunt_battle_keyboard([]))
+        skills = list(data.get("hunt_last_active_skills") or [])
+        await respond_query(query, f"❌ {err}", reply_markup=ui.hunt_battle_keyboard(skills))
         return
     if result.get("finished") is False:
+        active_skills = list(result.get("active_skills") or [])
         await state.set_state(HuntFSM.in_battle)
+        await state.update_data(hunt_last_active_skills=active_skills)
         await respond_query(
             query,
             ui.format_battle_round(result, title="🦴 狩猎战斗"),
-            reply_markup=ui.hunt_battle_keyboard(result.get("active_skills") or []),
+            reply_markup=ui.hunt_battle_keyboard(active_skills),
         )
         return
-    await state.update_data(hunt_session_id="")
+    await state.update_data(hunt_session_id="", hunt_last_active_skills=[])
     await state.set_state(HuntFSM.settlement)
     await respond_query(
         query,
@@ -186,7 +197,7 @@ async def cb_hunt(query: CallbackQuery, state: FSMContext) -> None:
         return
     if action == "start":
         if not args:
-            await handle_expired_callback(query)
+            await _show_hunt_panel_query(query, state, uid, notice="缺少怪物参数，已返回狩猎面板，请重新选择目标。")
             return
         monster_id = args[0]
         result = await api_post(
@@ -196,18 +207,19 @@ async def cb_hunt(query: CallbackQuery, state: FSMContext) -> None:
             request_id=new_request_id(),
         )
         if not result.get("success"):
-            await respond_query(query, f"❌ {_error_text(result, '发起狩猎失败')}", reply_markup=ui.hunt_settlement_keyboard())
+            await _show_hunt_panel_query(query, state, uid, notice=f"❌ {_error_text(result, '发起狩猎失败')}")
             return
         session_id = str(result.get("session_id") or "").strip()
         if not session_id:
-            await respond_query(query, "❌ 未获取到战斗会话，请重试。", reply_markup=ui.hunt_settlement_keyboard())
+            await _show_hunt_panel_query(query, state, uid, notice="❌ 未获取到战斗会话，请重新选择怪物。")
             return
+        active_skills = list(result.get("active_skills") or [])
         await state.set_state(HuntFSM.in_battle)
-        await state.update_data(uid=uid, hunt_session_id=session_id)
+        await state.update_data(uid=uid, hunt_session_id=session_id, hunt_last_active_skills=active_skills)
         await respond_query(
             query,
             ui.format_hunt_battle_open(result),
-            reply_markup=ui.hunt_battle_keyboard(result.get("active_skills") or []),
+            reply_markup=ui.hunt_battle_keyboard(active_skills),
         )
         return
     if action == "act_normal":
@@ -215,13 +227,18 @@ async def cb_hunt(query: CallbackQuery, state: FSMContext) -> None:
         return
     if action == "act_skill":
         if not args:
-            await handle_expired_callback(query)
+            data = await state.get_data()
+            skills = list(data.get("hunt_last_active_skills") or [])
+            await respond_query(
+                query,
+                "缺少技能参数，请重新选择技能，或改用普通攻击。",
+                reply_markup=ui.hunt_battle_keyboard(skills),
+            )
             return
         await _do_hunt_action(query, state, uid, action=action, skill_id=args[0])
         return
     if action == "exit":
-        await state.update_data(hunt_session_id="")
-        await state.set_state(HuntFSM.selecting_monster)
-        await respond_query(query, "已结束狩猎。", reply_markup=ui.main_menu_keyboard(registered=True))
+        await state.update_data(hunt_session_id="", hunt_last_active_skills=[])
+        await _show_hunt_panel_query(query, state, uid, notice="已结束当前狩猎，可重新选择怪物继续。")
         return
-    await handle_expired_callback(query)
+    await _show_hunt_panel_query(query, state, uid, notice="该狩猎按钮已失效，已返回狩猎面板。")
