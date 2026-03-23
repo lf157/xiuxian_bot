@@ -809,3 +809,6 @@ Traceback (most recent call last):
     conn = _pool.getconn()
            ^^^^^^^^^^^^^
 AttributeError: 'NoneType' object has no attribute 'getconn'
+2026-03-23 09:11:09,869 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramServerError: Telegram server says - Bad Gateway
+2026-03-23 09:11:10,891 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramServerError: Telegram server says - Bad Gateway
+2026-03-23 09:11:12,252 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramServerError: Telegram server says - Bad Gateway

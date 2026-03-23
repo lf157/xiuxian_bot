@@ -249,3 +249,5 @@ psycopg2.errors.UndefinedColumn: column "daily_claimed" does not exist
 LINE 1: SELECT sect_id, role, daily_claimed FROM sect_members WHERE ...
                               ^
 
+2026-03-22 21:22:41,256 - core - ERROR - Core server error: invalid character '“' (U+201C) (realms.py, line 228)
+2026-03-22 21:22:41,256 - core - ERROR - Core server failed to bind: invalid character '“' (U+201C) (realms.py, line 228)
