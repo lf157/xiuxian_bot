@@ -12,3 +12,10 @@ build/
 *.bak
 backups/
 .pytest_cache/
+
+log/
+logs/
+
+claude/
+claude.md
+node_modules/
