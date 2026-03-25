@@ -16,6 +16,8 @@ from adapters.aiogram.services import (
     handle_expired_callback,
     new_request_id,
     parse_callback,
+    reject_non_owner,
+    reply_or_answer,
     resolve_uid,
     respond_query,
     safe_answer,
@@ -112,7 +114,7 @@ async def _show_bag_message(
         text = f"❌ {err}"
         if notice:
             text = f"{notice}\n\n{text}"
-        await message.answer(text, reply_markup=ui.main_menu_keyboard(registered=True))
+        await reply_or_answer(message, text, reply_markup=ui.main_menu_keyboard(registered=True))
         return
     bag_items, _, _ = _split_items(items)
     page_rows, cur, total = _paginate(bag_items, page)
@@ -121,7 +123,7 @@ async def _show_bag_message(
     text = ui.format_bag_panel(page_rows, cur, total)
     if notice:
         text = f"{notice}\n\n{text}"
-    await message.answer(text, reply_markup=ui.bag_items_keyboard(page_rows, cur, total))
+    await reply_or_answer(message, text, reply_markup=ui.bag_items_keyboard(page_rows, cur, total))
 
 
 async def _show_bag_query(
@@ -268,17 +270,19 @@ async def _parse_page_arg(args: list[str]) -> int:
     return max(1, value)
 
 
-@router.message(Command("xian_bag", "xian_inventory", "bag", "inventory"))
+@router.message(Command("xian_bag"))
 async def cmd_bag(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message, state)
     if not uid:
-        await message.answer("未找到角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到角色，请先注册。", reply_markup=ui.register_keyboard())
         return
     await _show_bag_message(message, state, uid, page=1)
 
 
 @router.callback_query(F.data.startswith("bag:") | F.data.startswith("gear:"))
 async def cb_inventory(query: CallbackQuery, state: FSMContext) -> None:
+    if await reject_non_owner(query):
+        return
     await safe_answer(query)
     parsed = parse_callback(str(query.data or ""))
     if parsed is None:

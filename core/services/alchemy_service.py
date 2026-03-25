@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional, Tuple
 from core.database.connection import (
     fetch_one,
     db_transaction,
-    get_sqlite,
+    get_db,
     get_user_by_id,
     refresh_user_stamina,
     spend_user_stamina_tx,
@@ -29,7 +29,7 @@ _ALCHEMY_SCHEMA_LOCK = threading.Lock()
 
 
 def _ensure_alchemy_schema() -> None:
-    conn = get_sqlite()
+    conn = get_db()
     cur = conn.cursor()
     cur.execute(
         """

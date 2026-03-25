@@ -16,6 +16,8 @@ from adapters.aiogram.services import (
     api_post,
     handle_expired_callback,
     parse_callback,
+    reject_non_owner,
+    reply_or_answer,
     resolve_uid,
     respond_query,
     safe_answer,
@@ -137,7 +139,7 @@ async def _show_forge_menu_query(query: CallbackQuery, state: FSMContext, uid: s
 async def _show_shop_currency_message(message: Message, state: FSMContext, uid: str) -> None:
     await state.update_data(uid=uid, shop_currency="copper", shop_page=1)
     await state.set_state(ShopFSM.selecting_currency)
-    await message.answer("🏪 请选择商店货币", reply_markup=ui.shop_currency_keyboard())
+    await reply_or_answer(message, "🏪 请选择商店货币", reply_markup=ui.shop_currency_keyboard())
 
 
 async def _show_shop_currency_query(query: CallbackQuery, state: FSMContext, uid: str, notice: str | None = None) -> None:
@@ -183,38 +185,40 @@ async def _show_shop_items(
     await safe_answer(query)
 
 
-@router.message(Command("xian_shop", "shop", "xian_currency", "currency"))
+@router.message(Command("xian_shop"))
 async def cmd_shop(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message)
     if not uid:
-        await message.answer("未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
         return
     await _show_shop_currency_message(message, state, uid)
 
 
-@router.message(Command("xian_convert", "convert"))
+@router.message(Command("xian_convert"))
 async def cmd_convert(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message)
     if not uid:
-        await message.answer("未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
         return
     await state.update_data(uid=uid)
-    await message.answer("🔁 资源转化面板开发中。", reply_markup=ui.main_menu_keyboard(registered=True))
+    await reply_or_answer(message, "🔁 资源转化面板开发中。", reply_markup=ui.main_menu_keyboard(registered=True))
 
 
-@router.message(Command("xian_alchemy", "alchemy"))
+@router.message(Command("xian_alchemy"))
 async def cmd_alchemy(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message)
     if not uid:
-        await message.answer("未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
         return
     await state.update_data(uid=uid)
     await state.set_state(ShopFSM.alchemy_panel)
-    await message.answer("⚗️ 炼丹菜单\n请选择操作。", reply_markup=ui.alchemy_menu_keyboard())
+    await reply_or_answer(message, "⚗️ 炼丹菜单\n请选择操作。", reply_markup=ui.alchemy_menu_keyboard())
 
 
 @router.callback_query(F.data.startswith("shop:"))
 async def cb_shop(query: CallbackQuery, state: FSMContext) -> None:
+    if await reject_non_owner(query):
+        return
     parsed = parse_callback(str(query.data or ""))
     if parsed is None:
         await handle_expired_callback(query)
@@ -269,8 +273,11 @@ async def cb_shop(query: CallbackQuery, state: FSMContext) -> None:
                 currency = "copper"
         result = await api_post("/api/shop/buy", {"user_id": uid, "item_id": item_id, "currency": currency}, actor_uid=uid)
         page = int(data.get("shop_page", 1) or 1)
-        await _show_shop_items(query, state, uid, currency, page)
-        await safe_answer(query, text="购买成功" if result.get("success") else "购买失败")
+        if result.get("success"):
+            notice = f"✅ {result.get('message', '购买成功')}"
+        else:
+            notice = f"❌ {_error_text(result, '购买失败')}"
+        await _show_shop_items(query, state, uid, currency, page, notice=notice)
         return
 
     if action == "back":

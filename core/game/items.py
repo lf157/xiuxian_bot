@@ -2,6 +2,7 @@
 物品和装备系统 - Items and Equipment System
 """
 
+import re
 import random
 from typing import Dict, Any, Optional, List, Tuple
 from enum import Enum
@@ -95,6 +96,24 @@ QUALITY_AFFIX_SCALE = {
 }
 
 
+_LEADING_EMOJI_RE = re.compile(
+    r"^([\U0001f300-\U0001faff\u2600-\u27bf\ufe0f\u200d]+)",
+)
+
+
+def _quality_item_name(quality: Quality, base_name: str) -> str:
+    """生成带品质前缀的物品名，将 emoji 提到最前面。
+
+    例: Quality.COMMON + "🗡️仙剑" → "🗡️凡品仙剑"
+    """
+    m = _LEADING_EMOJI_RE.match(base_name)
+    if m:
+        emoji = m.group(1)
+        text = base_name[m.end():]
+        return f"{emoji}{QUALITY_NAMES[quality]}{text}"
+    return f"{QUALITY_NAMES[quality]}{base_name}"
+
+
 def _affix_count_for_quality(quality: Quality) -> int:
     if quality == Quality.COMMON:
         return 1 if random.random() < 0.25 else 0
@@ -125,35 +144,35 @@ def roll_equipment_affixes(quality: Quality) -> Dict[str, float]:
 # ==================== 装备定义 ====================
 
 WEAPONS = [
-    {"id": "wooden_sword", "name": "木剑", "type": ItemType.WEAPON, "base_attack": 5, "min_rank": 1},
-    {"id": "iron_sword", "name": "铁剑", "type": ItemType.WEAPON, "base_attack": 15, "min_rank": 2},
-    {"id": "steel_sword", "name": "钢剑", "type": ItemType.WEAPON, "base_attack": 30, "min_rank": 4},
-    {"id": "spirit_sword", "name": "灵剑", "type": ItemType.WEAPON, "base_attack": 60, "min_rank": 6},
-    {"id": "immortal_sword", "name": "仙剑", "type": ItemType.WEAPON, "base_attack": 120, "min_rank": 10},
-    {"id": "divine_sword", "name": "神剑", "type": ItemType.WEAPON, "base_attack": 250, "min_rank": 15},
-    {"id": "heavenly_sword", "name": "天剑", "type": ItemType.WEAPON, "base_attack": 500, "min_rank": 20},
-    
-    {"id": "wooden_staff", "name": "木杖", "type": ItemType.WEAPON, "base_attack": 3, "base_mp": 20, "min_rank": 1},
-    {"id": "spirit_staff", "name": "灵杖", "type": ItemType.WEAPON, "base_attack": 10, "base_mp": 50, "min_rank": 5},
-    {"id": "immortal_staff", "name": "仙杖", "type": ItemType.WEAPON, "base_attack": 30, "base_mp": 120, "min_rank": 10},
+    {"id": "wooden_sword", "name": "🗡️木剑", "type": ItemType.WEAPON, "base_attack": 5, "min_rank": 1},
+    {"id": "iron_sword", "name": "🗡️铁剑", "type": ItemType.WEAPON, "base_attack": 15, "min_rank": 2},
+    {"id": "steel_sword", "name": "🗡️钢剑", "type": ItemType.WEAPON, "base_attack": 30, "min_rank": 4},
+    {"id": "spirit_sword", "name": "🗡️灵剑", "type": ItemType.WEAPON, "base_attack": 60, "min_rank": 6},
+    {"id": "immortal_sword", "name": "🗡️仙剑", "type": ItemType.WEAPON, "base_attack": 120, "min_rank": 10},
+    {"id": "divine_sword", "name": "🗡️神剑", "type": ItemType.WEAPON, "base_attack": 250, "min_rank": 15},
+    {"id": "heavenly_sword", "name": "🗡️天剑", "type": ItemType.WEAPON, "base_attack": 500, "min_rank": 20},
+
+    {"id": "wooden_staff", "name": "🪄木杖", "type": ItemType.WEAPON, "base_attack": 3, "base_mp": 20, "min_rank": 1},
+    {"id": "spirit_staff", "name": "🪄灵杖", "type": ItemType.WEAPON, "base_attack": 10, "base_mp": 50, "min_rank": 5},
+    {"id": "immortal_staff", "name": "🪄仙杖", "type": ItemType.WEAPON, "base_attack": 30, "base_mp": 120, "min_rank": 10},
 ]
 
 ARMORS = [
-    {"id": "cloth_armor", "name": "布衣", "type": ItemType.ARMOR, "base_defense": 3, "base_hp": 20, "min_rank": 1},
-    {"id": "leather_armor", "name": "皮甲", "type": ItemType.ARMOR, "base_defense": 8, "base_hp": 50, "min_rank": 2},
-    {"id": "iron_armor", "name": "铁甲", "type": ItemType.ARMOR, "base_defense": 20, "base_hp": 100, "min_rank": 5},
-    {"id": "spirit_armor", "name": "灵甲", "type": ItemType.ARMOR, "base_defense": 50, "base_hp": 250, "min_rank": 8},
-    {"id": "immortal_armor", "name": "仙甲", "type": ItemType.ARMOR, "base_defense": 100, "base_hp": 500, "min_rank": 12},
-    {"id": "divine_armor", "name": "神甲", "type": ItemType.ARMOR, "base_defense": 200, "base_hp": 1000, "min_rank": 18},
+    {"id": "cloth_armor", "name": "🧥布衣", "type": ItemType.ARMOR, "base_defense": 3, "base_hp": 20, "min_rank": 1},
+    {"id": "leather_armor", "name": "🧥皮甲", "type": ItemType.ARMOR, "base_defense": 8, "base_hp": 50, "min_rank": 2},
+    {"id": "iron_armor", "name": "🛡️铁甲", "type": ItemType.ARMOR, "base_defense": 20, "base_hp": 100, "min_rank": 5},
+    {"id": "spirit_armor", "name": "🛡️灵甲", "type": ItemType.ARMOR, "base_defense": 50, "base_hp": 250, "min_rank": 8},
+    {"id": "immortal_armor", "name": "🛡️仙甲", "type": ItemType.ARMOR, "base_defense": 100, "base_hp": 500, "min_rank": 12},
+    {"id": "divine_armor", "name": "🛡️神甲", "type": ItemType.ARMOR, "base_defense": 200, "base_hp": 1000, "min_rank": 18},
 ]
 
 ACCESSORIES = [
-    {"id": "wooden_ring", "name": "木戒", "type": ItemType.ACCESSORY, "base_attack": 2, "base_defense": 2, "min_rank": 1},
-    {"id": "jade_pendant", "name": "玉佩", "type": ItemType.ACCESSORY, "base_hp": 30, "base_mp": 30, "min_rank": 3},
-    {"id": "spirit_necklace", "name": "灵珠", "type": ItemType.ACCESSORY, "base_attack": 10, "base_hp": 50, "min_rank": 6},
-    {"id": "spirit_ring", "name": "灵戒", "type": ItemType.ACCESSORY, "base_attack": 12, "base_defense": 12, "min_rank": 6},
-    {"id": "immortal_ring", "name": "仙戒", "type": ItemType.ACCESSORY, "base_attack": 25, "base_defense": 25, "min_rank": 10},
-    {"id": "divine_amulet", "name": "神符", "type": ItemType.ACCESSORY, "base_hp": 200, "base_mp": 200, "base_attack": 30, "min_rank": 15},
+    {"id": "wooden_ring", "name": "💍木戒", "type": ItemType.ACCESSORY, "base_attack": 2, "base_defense": 2, "min_rank": 1},
+    {"id": "jade_pendant", "name": "📿玉佩", "type": ItemType.ACCESSORY, "base_hp": 30, "base_mp": 30, "min_rank": 3},
+    {"id": "spirit_necklace", "name": "📿灵珠", "type": ItemType.ACCESSORY, "base_attack": 10, "base_hp": 50, "min_rank": 6},
+    {"id": "spirit_ring", "name": "💍灵戒", "type": ItemType.ACCESSORY, "base_attack": 12, "base_defense": 12, "min_rank": 6},
+    {"id": "immortal_ring", "name": "💍仙戒", "type": ItemType.ACCESSORY, "base_attack": 25, "base_defense": 25, "min_rank": 10},
+    {"id": "divine_amulet", "name": "🔮神符", "type": ItemType.ACCESSORY, "base_hp": 200, "base_mp": 200, "base_attack": 30, "min_rank": 15},
 ]
 
 
@@ -161,31 +180,31 @@ ACCESSORIES = [
 
 PILLS = [
     # 修为丹
-    {"id": "small_exp_pill", "name": "小修为丹", "type": ItemType.PILL, "effect": "exp", "value": 50, "price": 100},
-    {"id": "medium_exp_pill", "name": "中修为丹", "type": ItemType.PILL, "effect": "exp", "value": 200, "price": 350},
-    {"id": "large_exp_pill", "name": "大修为丹", "type": ItemType.PILL, "effect": "exp", "value": 500, "price": 800},
-    {"id": "super_exp_pill", "name": "超级修为丹", "type": ItemType.PILL, "effect": "exp", "value": 2000, "price": 2500},
-    
+    {"id": "small_exp_pill", "name": "💊小修为丹", "type": ItemType.PILL, "effect": "exp", "value": 50, "price": 100},
+    {"id": "medium_exp_pill", "name": "💊中修为丹", "type": ItemType.PILL, "effect": "exp", "value": 200, "price": 350},
+    {"id": "large_exp_pill", "name": "💊大修为丹", "type": ItemType.PILL, "effect": "exp", "value": 500, "price": 800},
+    {"id": "super_exp_pill", "name": "💊超级修为丹", "type": ItemType.PILL, "effect": "exp", "value": 2000, "price": 2500},
+
     # 突破丹
-    {"id": "breakthrough_pill", "name": "突破丹", "type": ItemType.PILL, "effect": "breakthrough", "value": 10, "duration": 3600, "price": 500},
-    {"id": "advanced_breakthrough_pill", "name": "高级突破丹", "type": ItemType.PILL, "effect": "breakthrough", "value": 20, "duration": 3600, "price": 1500},
-    {"id": "super_breakthrough_pill", "name": "超级突破丹", "type": ItemType.PILL, "effect": "breakthrough", "value": 50, "duration": 3600, "price": 100},
-    {"id": "spirit_array_low", "name": "下品聚灵阵", "type": ItemType.PILL, "effect": "spirit_array", "value": 8, "value_pct": 0.20, "duration": 3600, "price": 650},
-    {"id": "spirit_array_mid", "name": "中品聚灵阵", "type": ItemType.PILL, "effect": "spirit_array", "value": 15, "value_pct": 0.35, "duration": 7200, "price": 1800},
-    {"id": "spirit_array_high", "name": "上品聚灵阵", "type": ItemType.PILL, "effect": "spirit_array", "value": 25, "value_pct": 0.50, "duration": 10800, "price": 3600},
-    
+    {"id": "breakthrough_pill", "name": "💊突破丹", "type": ItemType.PILL, "effect": "breakthrough", "value": 10, "duration": 3600, "price": 500},
+    {"id": "advanced_breakthrough_pill", "name": "💊高级突破丹", "type": ItemType.PILL, "effect": "breakthrough", "value": 20, "duration": 3600, "price": 1500},
+    {"id": "super_breakthrough_pill", "name": "💊超级突破丹", "type": ItemType.PILL, "effect": "breakthrough", "value": 50, "duration": 3600, "price": 100},
+    {"id": "spirit_array_low", "name": "🔯下品聚灵阵", "type": ItemType.PILL, "effect": "spirit_array", "value": 8, "value_pct": 0.20, "duration": 3600, "price": 650},
+    {"id": "spirit_array_mid", "name": "🔯中品聚灵阵", "type": ItemType.PILL, "effect": "spirit_array", "value": 15, "value_pct": 0.35, "duration": 7200, "price": 1800},
+    {"id": "spirit_array_high", "name": "🔯上品聚灵阵", "type": ItemType.PILL, "effect": "spirit_array", "value": 25, "value_pct": 0.50, "duration": 10800, "price": 3600},
+
     # 恢复丹
-    {"id": "hp_pill", "name": "回血丹", "type": ItemType.PILL, "effect": "hp", "value_pct": 0.30, "price": 50},
-    {"id": "mp_pill", "name": "回蓝丹", "type": ItemType.PILL, "effect": "mp", "value_pct": 0.30, "price": 50},
-    {"id": "full_restore_pill", "name": "大还丹", "type": ItemType.PILL, "effect": "full_restore", "value": 0, "price": 300},
-    
+    {"id": "hp_pill", "name": "❤️回血丹", "type": ItemType.PILL, "effect": "hp", "value_pct": 0.30, "price": 50},
+    {"id": "mp_pill", "name": "💙回蓝丹", "type": ItemType.PILL, "effect": "mp", "value_pct": 0.30, "price": 50},
+    {"id": "full_restore_pill", "name": "💊大还丹", "type": ItemType.PILL, "effect": "full_restore", "value": 0, "price": 300},
+
     # 增益丹
-    {"id": "attack_buff_pill", "name": "大力丹", "type": ItemType.PILL, "effect": "attack_buff", "value": 20, "duration": 3600, "price": 200},
-    {"id": "defense_buff_pill", "name": "铁甲丹", "type": ItemType.PILL, "effect": "defense_buff", "value": 20, "duration": 3600, "price": 200},
-    {"id": "cultivation_buff_pill", "name": "悟道丹", "type": ItemType.PILL, "effect": "cultivation_buff", "value": 50, "duration": 7200, "price": 500},
-    {"id": "cultivation_sprint_pill", "name": "修炼冲刺丹", "type": ItemType.PILL, "effect": "cultivation_sprint", "value": 35, "duration": 7200, "price": 600},
-    {"id": "realm_drop_pill", "name": "秘境掉落丹", "type": ItemType.PILL, "effect": "realm_drop_boost", "value": 35, "duration": 3600, "price": 650},
-    {"id": "breakthrough_guard_pill", "name": "突破保护丹", "type": ItemType.PILL, "effect": "breakthrough_protect", "value": 50, "duration": 3600, "price": 800},
+    {"id": "attack_buff_pill", "name": "💊大力丹", "type": ItemType.PILL, "effect": "attack_buff", "value": 20, "duration": 3600, "price": 200},
+    {"id": "defense_buff_pill", "name": "💊铁甲丹", "type": ItemType.PILL, "effect": "defense_buff", "value": 20, "duration": 3600, "price": 200},
+    {"id": "cultivation_buff_pill", "name": "💊悟道丹", "type": ItemType.PILL, "effect": "cultivation_buff", "value": 50, "duration": 7200, "price": 500},
+    {"id": "cultivation_sprint_pill", "name": "💊修炼冲刺丹", "type": ItemType.PILL, "effect": "cultivation_sprint", "value": 35, "duration": 7200, "price": 600},
+    {"id": "realm_drop_pill", "name": "💊秘境掉落丹", "type": ItemType.PILL, "effect": "realm_drop_boost", "value": 35, "duration": 3600, "price": 650},
+    {"id": "breakthrough_guard_pill", "name": "💊突破保护丹", "type": ItemType.PILL, "effect": "breakthrough_protect", "value": 50, "duration": 3600, "price": 800},
 ]
 
 
@@ -194,7 +213,7 @@ PILLS = [
 MATERIALS = [
     {
         "id": "iron_ore",
-        "name": "铁矿石",
+        "name": "⛏️铁矿石",
         "type": ItemType.MATERIAL,
         "price": 10,
         "drop_rate": 0.3,
@@ -204,7 +223,7 @@ MATERIALS = [
     },
     {
         "id": "spirit_stone",
-        "name": "灵石",
+        "name": "🪨聚元石",
         "type": ItemType.MATERIAL,
         "price": 50,
         "drop_rate": 0.15,
@@ -214,7 +233,7 @@ MATERIALS = [
     },
     {
         "id": "immortal_stone",
-        "name": "仙石",
+        "name": "💎仙石",
         "type": ItemType.MATERIAL,
         "price": 200,
         "drop_rate": 0.05,
@@ -224,7 +243,7 @@ MATERIALS = [
     },
     {
         "id": "herb",
-        "name": "灵草",
+        "name": "🌿灵草",
         "type": ItemType.MATERIAL,
         "price": 20,
         "drop_rate": 0.25,
@@ -234,7 +253,7 @@ MATERIALS = [
     },
     {
         "id": "beast_hide",
-        "name": "兽皮",
+        "name": "🐾兽皮",
         "type": ItemType.MATERIAL,
         "price": 15,
         "drop_rate": 0.22,
@@ -244,7 +263,7 @@ MATERIALS = [
     },
     {
         "id": "spirit_herb",
-        "name": "仙草",
+        "name": "🌸仙草",
         "type": ItemType.MATERIAL,
         "price": 100,
         "drop_rate": 0.08,
@@ -254,7 +273,7 @@ MATERIALS = [
     },
     {
         "id": "dragon_scale",
-        "name": "龙鳞",
+        "name": "🐲龙鳞",
         "type": ItemType.MATERIAL,
         "price": 500,
         "drop_rate": 0.02,
@@ -264,7 +283,7 @@ MATERIALS = [
     },
     {
         "id": "phoenix_feather",
-        "name": "凤羽",
+        "name": "🪶凤羽",
         "type": ItemType.MATERIAL,
         "price": 500,
         "drop_rate": 0.02,
@@ -274,7 +293,7 @@ MATERIALS = [
     },
     {
         "id": "demon_core",
-        "name": "妖丹",
+        "name": "👹妖丹",
         "type": ItemType.MATERIAL,
         "price": 300,
         "drop_rate": 0.03,
@@ -284,7 +303,7 @@ MATERIALS = [
     },
     {
         "id": "recipe_fragment",
-        "name": "丹方残页",
+        "name": "📜丹方残页",
         "type": ItemType.MATERIAL,
         "price": 180,
         "drop_rate": 0.04,
@@ -299,7 +318,7 @@ MATERIALS = [
 SKILL_BOOKS = [
     {
         "id": "skill_book_basic",
-        "name": "基础技能书",
+        "name": "📕基础技能书",
         "type": ItemType.SKILL_BOOK,
         "price": 120,
         "focus": "技能成长",
@@ -308,7 +327,7 @@ SKILL_BOOKS = [
     },
     {
         "id": "skill_book_advanced",
-        "name": "高阶技能书",
+        "name": "📗高阶技能书",
         "type": ItemType.SKILL_BOOK,
         "price": 360,
         "focus": "技能成长",
@@ -452,7 +471,7 @@ def generate_equipment(base_item: Dict, quality: Quality, level: int = 1) -> Dic
     
     equipment = {
         "item_id": base_item["id"],
-        "item_name": f"{QUALITY_NAMES[quality]}{base_item['name']}",
+        "item_name": _quality_item_name(quality, base_item["name"]),
         "item_type": base_item["type"].value,
         "quality": quality.value,
         "level": level,
@@ -709,33 +728,33 @@ def roll_targeted_equipment_drop(
 SHOP_ITEMS = {
     "copper": [
         # 丹药
-        {"item_id": "small_exp_pill", "name": "小修为丹", "price": 100, "stock": -1, "category": "pill"},
-        {"item_id": "medium_exp_pill", "name": "中修为丹", "price": 350, "stock": -1, "category": "pill"},
-        {"item_id": "hp_pill", "name": "回血丹", "price": 50, "stock": -1, "category": "pill"},
-        {"item_id": "mp_pill", "name": "回蓝丹", "price": 50, "stock": -1, "category": "pill"},
-        {"item_id": "breakthrough_pill", "name": "突破丹", "price": 500, "stock": -1, "category": "pill"},
+        {"item_id": "small_exp_pill", "name": "💊小修为丹", "price": 100, "stock": -1, "category": "pill"},
+        {"item_id": "medium_exp_pill", "name": "💊中修为丹", "price": 350, "stock": -1, "category": "pill"},
+        {"item_id": "hp_pill", "name": "❤️回血丹", "price": 50, "stock": -1, "category": "pill"},
+        {"item_id": "mp_pill", "name": "💙回蓝丹", "price": 50, "stock": -1, "category": "pill"},
+        {"item_id": "breakthrough_pill", "name": "💊突破丹", "price": 500, "stock": -1, "category": "pill"},
         # 法阵（低级在铜币）
-        {"item_id": "spirit_array_low", "name": "下品聚灵阵", "price": 650, "stock": -1, "category": "array"},
+        {"item_id": "spirit_array_low", "name": "🔯下品聚灵阵", "price": 650, "stock": -1, "category": "array"},
         # 材料
-        {"item_id": "iron_ore", "name": "铁矿石", "price": 10, "stock": -1, "category": "material"},
-        {"item_id": "herb", "name": "灵草", "price": 20, "stock": -1, "category": "material"},
-        {"item_id": "spirit_stone", "name": "灵石", "price": 50, "stock": -1, "category": "material"},
+        {"item_id": "iron_ore", "name": "⛏️铁矿石", "price": 10, "stock": -1, "category": "material"},
+        {"item_id": "herb", "name": "🌿灵草", "price": 20, "stock": -1, "category": "material"},
+        {"item_id": "spirit_stone", "name": "🪨聚元石", "price": 50, "stock": -1, "category": "material"},
     ],
     "gold": [
         # 丹药
-        {"item_id": "large_exp_pill", "name": "大修为丹", "price": 10, "stock": -1, "category": "pill"},
-        {"item_id": "super_exp_pill", "name": "超级修为丹", "price": 25, "stock": -1, "category": "pill"},
-        {"item_id": "advanced_breakthrough_pill", "name": "高级突破丹", "price": 15, "stock": -1, "category": "pill"},
-        {"item_id": "cultivation_buff_pill", "name": "悟道丹", "price": 5, "stock": -1, "category": "pill"},
-        {"item_id": "cultivation_sprint_pill", "name": "修炼冲刺丹", "price": 8, "stock": -1, "category": "pill"},
-        {"item_id": "realm_drop_pill", "name": "秘境掉落丹", "price": 8, "stock": -1, "category": "pill"},
-        {"item_id": "breakthrough_guard_pill", "name": "突破保护丹", "price": 12, "stock": -1, "category": "pill"},
+        {"item_id": "large_exp_pill", "name": "💊大修为丹", "price": 10, "stock": -1, "category": "pill"},
+        {"item_id": "super_exp_pill", "name": "💊超级修为丹", "price": 25, "stock": -1, "category": "pill"},
+        {"item_id": "advanced_breakthrough_pill", "name": "💊高级突破丹", "price": 15, "stock": -1, "category": "pill"},
+        {"item_id": "cultivation_buff_pill", "name": "💊悟道丹", "price": 5, "stock": -1, "category": "pill"},
+        {"item_id": "cultivation_sprint_pill", "name": "💊修炼冲刺丹", "price": 8, "stock": -1, "category": "pill"},
+        {"item_id": "realm_drop_pill", "name": "💊秘境掉落丹", "price": 8, "stock": -1, "category": "pill"},
+        {"item_id": "breakthrough_guard_pill", "name": "💊突破保护丹", "price": 12, "stock": -1, "category": "pill"},
         # 法阵（中高级在金币）
-        {"item_id": "spirit_array_mid", "name": "中品聚灵阵", "price": 12, "stock": -1, "category": "array"},
-        {"item_id": "spirit_array_high", "name": "上品聚灵阵", "price": 24, "stock": -1, "category": "array"},
+        {"item_id": "spirit_array_mid", "name": "🔯中品聚灵阵", "price": 12, "stock": -1, "category": "array"},
+        {"item_id": "spirit_array_high", "name": "🔯上品聚灵阵", "price": 24, "stock": -1, "category": "array"},
     ],
     "spirit_high": [
-        {"item_id": "super_breakthrough_pill", "name": "超级突破丹", "price": 100, "stock": 10, "category": "pill"},
+        {"item_id": "super_breakthrough_pill", "name": "💊超级突破丹", "price": 100, "stock": 10, "category": "pill"},
     ]
 }
 
@@ -751,7 +770,7 @@ SHOP_ROTATIONS = {
             {"item_id": "herb", "price": 15, "stock": 10, "tag": "限时折扣", "category": "material", "limit": 10, "limit_period": "day"},
         ],
         "weekly_rare": [
-            # spirit_stone 已在铜币常驻，此处为限时折扣版
+            # spirit_stone (聚元石) 已在铜币常驻，此处为限时折扣版
             {"item_id": "spirit_stone", "price": 35, "stock": 12, "tag": "限时折扣", "category": "material", "limit": 12, "limit_period": "week"},
             {"item_id": "spirit_herb", "price": 70, "stock": 8, "tag": "周稀有材料", "category": "material", "limit": 8, "limit_period": "week"},
             {"item_id": "demon_core", "price": 220, "stock": 3, "tag": "周稀有材料", "category": "material", "limit": 3, "limit_period": "week"},
@@ -805,7 +824,7 @@ PROGRESSION_STAGE_THEMES = [
         "max_rank": 19,
         "label": "金丹-元婴",
         "theme": "突破准备与装备强化",
-        "focus": "开始围绕妖丹、灵石和强化材料做冲关准备。",
+        "focus": "开始围绕妖丹、聚元石和强化材料做冲关准备。",
     },
     {
         "min_rank": 20,

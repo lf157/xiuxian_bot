@@ -251,3 +251,171 @@ LINE 1: SELECT sect_id, role, daily_claimed FROM sect_members WHERE ...
 
 2026-03-22 21:22:41,256 - core - ERROR - Core server error: invalid character '“' (U+201C) (realms.py, line 228)
 2026-03-22 21:22:41,256 - core - ERROR - Core server failed to bind: invalid character '“' (U+201C) (realms.py, line 228)
+2026-03-23 23:21:23,315 - core - ERROR - Failed to initialise core components: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+Traceback (most recent call last):
+  File "E:\myPrograms\xiuxian\xiuxian_bot\core\server.py", line 118, in initialize_core_components
+    connect_db()
+    ~~~~~~~~~~^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\core\database\connection.py", line 103, in connect_db
+    _pool = psycopg2.pool.ThreadedConnectionPool(min_conn, max_conn, dsn)
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 161, in __init__
+    AbstractConnectionPool.__init__(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, minconn, maxconn, *args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 59, in __init__
+    self._connect()
+    ~~~~~~~~~~~~~^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 63, in _connect
+    conn = psycopg2.connect(*self._args, **self._kwargs)
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\__init__.py", line 135, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+2026-03-23 23:21:23,340 - core - CRITICAL - Aborting: cannot start on a broken schema or missing components.
+2026-03-23 23:30:10,823 - core - ERROR - Failed to initialise core components: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+Traceback (most recent call last):
+  File "E:\myPrograms\xiuxian\xiuxian_bot\core\server.py", line 118, in initialize_core_components
+    connect_db()
+    ~~~~~~~~~~^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\core\database\connection.py", line 103, in connect_db
+    _pool = psycopg2.pool.ThreadedConnectionPool(min_conn, max_conn, dsn)
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 161, in __init__
+    AbstractConnectionPool.__init__(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, minconn, maxconn, *args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 59, in __init__
+    self._connect()
+    ~~~~~~~~~~~~~^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 63, in _connect
+    conn = psycopg2.connect(*self._args, **self._kwargs)
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\__init__.py", line 135, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+2026-03-23 23:30:10,825 - core - CRITICAL - Aborting: cannot start on a broken schema or missing components.
+2026-03-23 23:56:10,361 - core - ERROR - Failed to initialise core components: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+Traceback (most recent call last):
+  File "E:\myPrograms\xiuxian\xiuxian_bot\core\server.py", line 118, in initialize_core_components
+    connect_db()
+    ~~~~~~~~~~^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\core\database\connection.py", line 103, in connect_db
+    _pool = psycopg2.pool.ThreadedConnectionPool(min_conn, max_conn, dsn)
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 161, in __init__
+    AbstractConnectionPool.__init__(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, minconn, maxconn, *args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 59, in __init__
+    self._connect()
+    ~~~~~~~~~~~~~^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 63, in _connect
+    conn = psycopg2.connect(*self._args, **self._kwargs)
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\__init__.py", line 135, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+2026-03-23 23:56:10,362 - core - CRITICAL - Aborting: cannot start on a broken schema or missing components.
+2026-03-23 23:56:17,092 - core - ERROR - Failed to initialise core components: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+Traceback (most recent call last):
+  File "E:\myPrograms\xiuxian\xiuxian_bot\core\server.py", line 118, in initialize_core_components
+    connect_db()
+    ~~~~~~~~~~^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\core\database\connection.py", line 103, in connect_db
+    _pool = psycopg2.pool.ThreadedConnectionPool(min_conn, max_conn, dsn)
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 161, in __init__
+    AbstractConnectionPool.__init__(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, minconn, maxconn, *args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 59, in __init__
+    self._connect()
+    ~~~~~~~~~~~~~^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 63, in _connect
+    conn = psycopg2.connect(*self._args, **self._kwargs)
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\__init__.py", line 135, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+2026-03-23 23:56:17,094 - core - CRITICAL - Aborting: cannot start on a broken schema or missing components.
+2026-03-23 23:58:48,520 - core - ERROR - Failed to initialise core components: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+Traceback (most recent call last):
+  File "E:\myPrograms\xiuxian\xiuxian_bot\core\server.py", line 118, in initialize_core_components
+    connect_db()
+    ~~~~~~~~~~^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\core\database\connection.py", line 103, in connect_db
+    _pool = psycopg2.pool.ThreadedConnectionPool(min_conn, max_conn, dsn)
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 161, in __init__
+    AbstractConnectionPool.__init__(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, minconn, maxconn, *args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 59, in __init__
+    self._connect()
+    ~~~~~~~~~~~~~^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 63, in _connect
+    conn = psycopg2.connect(*self._args, **self._kwargs)
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\__init__.py", line 135, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+2026-03-23 23:58:48,521 - core - CRITICAL - Aborting: cannot start on a broken schema or missing components.
+2026-03-23 23:59:29,387 - core - ERROR - Failed to initialise core components: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+Traceback (most recent call last):
+  File "E:\myPrograms\xiuxian\xiuxian_bot\core\server.py", line 118, in initialize_core_components
+    connect_db()
+    ~~~~~~~~~~^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\core\database\connection.py", line 103, in connect_db
+    _pool = psycopg2.pool.ThreadedConnectionPool(min_conn, max_conn, dsn)
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 161, in __init__
+    AbstractConnectionPool.__init__(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, minconn, maxconn, *args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 59, in __init__
+    self._connect()
+    ~~~~~~~~~~~~~^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 63, in _connect
+    conn = psycopg2.connect(*self._args, **self._kwargs)
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\__init__.py", line 135, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+2026-03-23 23:59:29,417 - core - CRITICAL - Aborting: cannot start on a broken schema or missing components.
+2026-03-24 20:09:12,050 - core - ERROR - Failed to initialise core components: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+Traceback (most recent call last):
+  File "E:\myPrograms\xiuxian\xiuxian_bot\core\server.py", line 118, in initialize_core_components
+    connect_db()
+    ~~~~~~~~~~^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\core\database\connection.py", line 103, in connect_db
+    _pool = psycopg2.pool.ThreadedConnectionPool(min_conn, max_conn, dsn)
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 161, in __init__
+    AbstractConnectionPool.__init__(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, minconn, maxconn, *args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 59, in __init__
+    self._connect()
+    ~~~~~~~~~~~~~^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 63, in _connect
+    conn = psycopg2.connect(*self._args, **self._kwargs)
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\__init__.py", line 135, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+2026-03-24 20:09:12,072 - core - CRITICAL - Aborting: cannot start on a broken schema or missing components.
+2026-03-24 20:17:34,205 - core - ERROR - Failed to initialise core components: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+Traceback (most recent call last):
+  File "E:\myPrograms\xiuxian\xiuxian_bot\core\server.py", line 118, in initialize_core_components
+    connect_db()
+    ~~~~~~~~~~^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\core\database\connection.py", line 103, in connect_db
+    _pool = psycopg2.pool.ThreadedConnectionPool(min_conn, max_conn, dsn)
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 161, in __init__
+    AbstractConnectionPool.__init__(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, minconn, maxconn, *args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 59, in __init__
+    self._connect()
+    ~~~~~~~~~~~~~^^
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\pool.py", line 63, in _connect
+    conn = psycopg2.connect(*self._args, **self._kwargs)
+  File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\psycopg2\__init__.py", line 135, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+2026-03-24 20:17:34,207 - core - CRITICAL - Aborting: cannot start on a broken schema or missing components.

@@ -13,6 +13,7 @@ from adapters.aiogram import ui
 from adapters.aiogram.services import (
     handle_expired_callback,
     parse_callback,
+    reply_or_answer,
     resolve_uid,
     respond_query,
     safe_answer,
@@ -80,7 +81,7 @@ async def _respond_and_ack(
 async def _deny_if_not_admin_message(message: Message, state: FSMContext) -> bool:
     if not _is_super_admin(message.from_user.id if message.from_user else None):
         await state.set_state(AdminFSM.admin_menu)
-        await message.answer("无权限使用该管理命令。", reply_markup=ui.admin_menu_keyboard())
+        await reply_or_answer(message, "无权限使用该管理命令。", reply_markup=ui.admin_menu_keyboard())
         return True
     return False
 
@@ -99,14 +100,14 @@ async def _deny_if_not_admin_query(query: CallbackQuery, state: FSMContext) -> b
     return False
 
 
-@router.message(Command("test", "xian_test"))
+@router.message(Command("xian_test"))
 async def cmd_admin_test(message: Message, state: FSMContext) -> None:
     if await _deny_if_not_admin_message(message, state):
         return
     uid = await _uid_from_message(message)
     await state.set_state(AdminFSM.admin_menu)
     await state.update_data(uid=uid or "")
-    await message.answer(ui.format_admin_panel({"mode": "test"}), reply_markup=ui.admin_menu_keyboard())
+    await reply_or_answer(message, ui.format_admin_panel({"mode": "test"}), reply_markup=ui.admin_menu_keyboard())
 
 
 async def _handle_give(message: Message, tier: str, state: FSMContext) -> None:
@@ -115,7 +116,7 @@ async def _handle_give(message: Message, tier: str, state: FSMContext) -> None:
     uid = await _uid_from_message(message)
     if not uid:
         await state.set_state(AdminFSM.admin_menu)
-        await message.answer("未找到你的角色，无法执行。", reply_markup=ui.admin_menu_keyboard())
+        await reply_or_answer(message, "未找到你的角色，无法执行。", reply_markup=ui.admin_menu_keyboard())
         return
     field = _ADMIN_GIVE_FIELD[tier]
     parts = (message.text or "").split()
@@ -140,7 +141,7 @@ async def _handle_give(message: Message, tier: str, state: FSMContext) -> None:
     ok, detail = _modify_user_add(str(target_uid), field, amount)
     await state.set_state(AdminFSM.admin_menu)
     await state.update_data(uid=uid, admin_target_uid=target_uid)
-    await message.answer(
+    await reply_or_answer(message,
         f"{'✅' if ok else '❌'} 发放 {tier} 灵石 x{amount} -> {target_uid}\n{detail}",
         reply_markup=ui.admin_menu_keyboard(),
     )

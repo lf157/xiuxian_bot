@@ -125,7 +125,7 @@ def test_consummation_preview_uses_tribulation_mode(monkeypatch):
         lambda: {
             "fire_bonus": 0.03,
             "steady_bonus": 0.10,
-            "ally_help_bonus": 0.0,
+
             "spirit_density_bonus_scale": 0.20,
             "post_breakthrough_restore_ratio": 0.30,
             "stamina_cost": 1,
@@ -162,7 +162,7 @@ def test_consummation_preview_uses_tribulation_mode(monkeypatch):
     monkeypatch.setattr("core.game.realms.get_next_realm", lambda _rank: {"id": 6, "name": "筑基初期", "break_rate": 0.70})
     monkeypatch.setattr("core.game.realms.calculate_breakthrough_cost", lambda _rank: 100)
 
-    resp, status = settlement_extra.get_breakthrough_preview(user_id="u1", strategy="normal", call_for_help=False)
+    resp, status = settlement_extra.get_breakthrough_preview(user_id="u1", strategy="steady")
 
     assert status == 200
     preview = (resp.get("preview") or {})
@@ -194,7 +194,7 @@ def test_consummation_preview_high_tier_pill_ignores_tribulation_rate_penalty(mo
         lambda: {
             "fire_bonus": 0.03,
             "steady_bonus": 0.10,
-            "ally_help_bonus": 0.0,
+
             "spirit_density_bonus_scale": 0.20,
             "post_breakthrough_restore_ratio": 0.30,
             "stamina_cost": 1,
@@ -239,7 +239,7 @@ def test_consummation_preview_high_tier_pill_ignores_tribulation_rate_penalty(mo
     monkeypatch.setattr("core.game.realms.get_next_realm", lambda _rank: {"id": 6, "name": "筑基初期", "break_rate": 0.70})
     monkeypatch.setattr("core.game.realms.calculate_breakthrough_cost", lambda _rank: 100)
 
-    resp, status = settlement_extra.get_breakthrough_preview(user_id="u1", strategy="steady", call_for_help=False)
+    resp, status = settlement_extra.get_breakthrough_preview(user_id="u1", strategy="steady")
 
     assert status == 200
     preview = (resp.get("preview") or {})

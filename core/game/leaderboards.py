@@ -41,7 +41,6 @@ def leaderboard_entry(user: Dict[str, Any]) -> Dict[str, Any]:
         "defense": user.get("defense", 0),
         "affix_score": user.get("affix_score", 0),
         "growth_7d": user.get("growth_7d", 0),
-        # Enriched display fields for miniapp ranking views.
         "realm_name": user.get("realm_name"),
         "current_map": user.get("current_map"),
         "current_map_name": user.get("current_map_name"),

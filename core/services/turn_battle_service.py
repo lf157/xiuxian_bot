@@ -639,7 +639,7 @@ def _run_round(session: Dict[str, Any], action: str, skill_id: Optional[str] = N
                     "victory": False,
                     "invalid_action": True,
                     "round": int(session.get("round", 0) or 0),
-                    "round_log": [f"💙 灵力不足，{candidate.get('name', '技能')}需要 {mp_cost} MP，改用普通攻击或先恢复。"],
+                    "round_log": [f"💙 灵力不足，{candidate.get('name', '技能')}需要 {mp_cost} 灵力，改用普通攻击或先恢复。"],
                     "player_hp": player["hp"],
                     "enemy_hp": enemy["hp"],
                 }
@@ -658,7 +658,7 @@ def _run_round(session: Dict[str, Any], action: str, skill_id: Optional[str] = N
         if elite_names:
             round_logs.append(f"👹 精英词缀: {'、'.join(elite_names)}")
     if selected_skill and selected_skill_mp_cost > 0:
-        round_logs.append(f"💙 消耗 {selected_skill_mp_cost} MP")
+        round_logs.append(f"💙 消耗 {selected_skill_mp_cost} 灵力")
     if selected_skill:
         _apply_skill_utilities(player, selected_skill, round_logs)
 
@@ -696,7 +696,7 @@ def _run_round(session: Dict[str, Any], action: str, skill_id: Optional[str] = N
         enemy["_counter_bonus"] = max(float(enemy.get("_counter_bonus", 0.0) or 0.0), float(enemy.get("counter_bonus_pct", 0.0) or 0.0))
     _maybe_apply_enrage(enemy, round_logs)
     session["player_damage_dealt"] = int(session.get("player_damage_dealt", 0) or 0) + damage
-    round_logs.append(f"🗡️ {player.get('name')}造成 {damage} 伤害，{enemy.get('name')}剩余 {enemy['hp']}/{enemy.get('max_hp', enemy['hp'])} HP")
+    round_logs.append(f"🗡️ {player.get('name')}造成 {damage} 伤害，{enemy.get('name')}剩余 {enemy['hp']}/{enemy.get('max_hp', enemy['hp'])} 气血")
     if heal > 0:
         player["hp"] = min(int(player.get("max_hp") or player.get("hp") or 1), int(player.get("hp", 0) or 0) + heal)
     if selected_skill:
@@ -769,7 +769,7 @@ def _run_round(session: Dict[str, Any], action: str, skill_id: Optional[str] = N
         player["_counter_bonus"] = max(float(player.get("_counter_bonus", 0.0) or 0.0), float(player.get("counter_bonus_pct", 0.0) or 0.0))
     _maybe_apply_enrage(player, round_logs)
     session["enemy_damage_dealt"] = int(session.get("enemy_damage_dealt", 0) or 0) + enemy_damage
-    round_logs.append(f"👹 {enemy.get('name')}反击造成 {enemy_damage} 伤害，{player.get('name')}剩余 {player['hp']}/{player.get('max_hp', player['hp'])} HP")
+    round_logs.append(f"👹 {enemy.get('name')}反击造成 {enemy_damage} 伤害，{player.get('name')}剩余 {player['hp']}/{player.get('max_hp', player['hp'])} 气血")
     combat_modifiers = session.setdefault("combat_modifiers", {})
     kernel_shadow_meta = combat_modifiers.setdefault("kernel_shadow", {"enabled": _kernel_shadow_enabled(), "alerts": 0})
     kernel_shadow_meta["alerts"] = len(session.get("kernel_shadow_alerts", []))
