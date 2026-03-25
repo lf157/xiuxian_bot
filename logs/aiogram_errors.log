@@ -812,6 +812,7 @@ AttributeError: 'NoneType' object has no attribute 'getconn'
 2026-03-23 09:11:09,869 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramServerError: Telegram server says - Bad Gateway
 2026-03-23 09:11:10,891 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramServerError: Telegram server says - Bad Gateway
 2026-03-23 09:11:12,252 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramServerError: Telegram server says - Bad Gateway
+<<<<<<< HEAD
 2026-03-23 23:21:36,931 - aiogram - CRITICAL - Uncaught exception
 Traceback (most recent call last):
   File "E:\myPrograms\xiuxian\xiuxian_bot\.venv\Lib\site-packages\redis\asyncio\connection.py", line 370, in connect_check_health
@@ -3242,3 +3243,7 @@ Traceback (most recent call last):
     raise TelegramNetworkError(method=method, message=f"{type(e).__name__}: {e}") from e
 aiogram.exceptions.TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
 2026-03-24 23:06:50,451 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+=======
+2026-03-23 19:49:04,727 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ClientOSError: [Errno 104] Connection reset by peer
+2026-03-23 20:15:52,793 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ClientOSError: [Errno 104] Connection reset by peer
+>>>>>>> c9a81b6 (fix bug)

@@ -179,6 +179,7 @@ wheels = [
 ]
 
 [[package]]
+<<<<<<< HEAD
 name = "asn1crypto"
 version = "1.5.1"
 source = { registry = "https://pypi.org/simple" }
@@ -188,6 +189,8 @@ wheels = [
 ]
 
 [[package]]
+=======
+>>>>>>> c9a81b6 (fix bug)
 name = "async-timeout"
 version = "5.0.1"
 source = { registry = "https://pypi.org/simple" }
@@ -197,6 +200,7 @@ wheels = [
 ]
 
 [[package]]
+<<<<<<< HEAD
 name = "asyncpg"
 version = "0.31.0"
 source = { registry = "https://pypi.org/simple" }
@@ -245,6 +249,8 @@ wheels = [
 ]
 
 [[package]]
+=======
+>>>>>>> c9a81b6 (fix bug)
 name = "attrs"
 version = "25.4.0"
 source = { registry = "https://pypi.org/simple" }
