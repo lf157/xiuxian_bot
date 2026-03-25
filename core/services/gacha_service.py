@@ -15,7 +15,7 @@ from core.database.connection import (
     fetch_all,
     db_transaction,
     get_user_by_id,
-    get_sqlite,
+    get_db,
     refresh_user_stamina,
     spend_user_stamina_tx,
 )
@@ -45,7 +45,7 @@ _GACHA_TABLES_LOCK = threading.Lock()
 
 
 def _ensure_gacha_tables() -> None:
-    conn = get_sqlite()
+    conn = get_db()
     cur = conn.cursor()
     cur.execute(
         """

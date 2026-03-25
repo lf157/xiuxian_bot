@@ -1,7 +1,4 @@
 {
-  "miniapp": {
-    "url": ""
-  },
   "adapters": {
     "telegram": false,
     "aiogram": true
@@ -470,7 +467,7 @@
     "secret_realm": 0
   },
   "core_server": {
-    "api_token": "change_me_internal_token",
+    "api_token": "local_test_secret_123",
     "port": 11450
   },
   "db": {
@@ -478,7 +475,7 @@
     "universal_uid_start": 1000000
   },
   "tokens": {
-    "telegram_token": ""
+    "telegram_token": "8629733450:AAGve45V40WK0YqzXRyoMfn-0UUfAbvWpec"
   },
   "battle": {
     "mp": {

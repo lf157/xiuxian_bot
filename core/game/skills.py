@@ -309,11 +309,10 @@ def compute_skill_mp_cost(skill: Dict[str, Any], max_mp: int) -> int:
 
 def format_skill_mp_cost(skill: Dict[str, Any], *, max_mp: Optional[int] = None) -> str:
     base_cost = max(0, int(skill.get("mp_cost", 0) or 0))
-    ratio_pct = max(0.0, get_skill_mp_cost_ratio(skill) * 100.0)
     if max_mp is not None:
         actual = compute_skill_mp_cost(skill, int(max_mp or 0))
-        return f"{actual}蓝（基础{base_cost}，按最大MP {ratio_pct:.0f}%）"
-    return f"基础{base_cost}蓝（按最大MP {ratio_pct:.0f}% 动态提高）"
+        return f"消耗{actual}灵力"
+    return f"消耗{base_cost}灵力"
 
 
 def scale_skill_effect(skill: Dict[str, Any], level: int) -> Dict[str, Any]:

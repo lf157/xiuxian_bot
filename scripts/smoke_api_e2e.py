@@ -40,13 +40,13 @@ def main() -> None:
     if str(root) not in sys.path:
         sys.path.insert(0, str(root))
 
-    from core.database.connection import connect_sqlite, create_tables, execute, fetch_one, close_sqlite, add_item
+    from core.database.connection import connect_db, create_tables, execute, fetch_one, close_db, add_item
     from core.database.migrations import run_migrations
     from core.server import create_app
     from core.config import config
     from core.game.items import generate_material, generate_pill, get_item_by_id, generate_equipment, Quality
 
-    connect_sqlite()
+    connect_db()
     create_tables()
     run_migrations()
 
@@ -515,7 +515,7 @@ def main() -> None:
     )
     _checkpoint("smoke_complete")
 
-    close_sqlite()
+    close_db()
 
 
 if __name__ == "__main__":

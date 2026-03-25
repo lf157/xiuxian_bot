@@ -16,6 +16,8 @@ from adapters.aiogram.services import (
     handle_expired_callback,
     new_request_id,
     parse_callback,
+    reject_non_owner,
+    reply_or_answer,
     resolve_uid,
     respond_query,
     safe_answer,
@@ -69,7 +71,7 @@ async def _uid_from_query(query: CallbackQuery, state: FSMContext) -> str | None
 async def _show_secret_panel_message(message: Message, state: FSMContext, uid: str) -> None:
     data = await api_get(f"/api/secret-realms/{uid}", actor_uid=uid)
     if not data.get("success"):
-        await message.answer(
+        await reply_or_answer(message,
             f"❌ {_error_text(data, '获取秘境列表失败')}",
             reply_markup=ui.main_menu_keyboard(registered=True),
         )
@@ -77,7 +79,7 @@ async def _show_secret_panel_message(message: Message, state: FSMContext, uid: s
     realms = data.get("realms") or []
     await state.set_state(SecretRealmsFSM.selecting_realm)
     await state.update_data(uid=uid, secret_realms=realms)
-    await message.answer(
+    await reply_or_answer(message,
         ui.format_secret_panel(realms, attempts_left=int(data.get("attempts_left", 0) or 0)),
         reply_markup=ui.secret_realms_keyboard(realms),
     )
@@ -167,17 +169,19 @@ async def _reset_session_to_realm(
     await _show_secret_panel_query(query, state, uid, notice=notice)
 
 
-@router.message(Command("xian_secret", "xian_mystic", "secret", "mystic"))
+@router.message(Command("xian_secret"))
 async def cmd_secret(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message, state)
     if not uid:
-        await message.answer("未找到角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到角色，请先注册。", reply_markup=ui.register_keyboard())
         return
     await _show_secret_panel_message(message, state, uid)
 
 
 @router.callback_query(F.data.startswith("secret:"))
 async def cb_secret(query: CallbackQuery, state: FSMContext) -> None:
+    if await reject_non_owner(query):
+        return
     await safe_answer(query)
     parsed = parse_callback(str(query.data or ""))
     if parsed is None:

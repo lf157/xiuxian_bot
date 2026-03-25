@@ -8099,3 +8099,1110 @@
 2026-03-23 12:38:31,117 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=51840 total_records=880 total_exceptions=0 levels={'INFO': 880}
 2026-03-23 12:38:32,907 - web_local.runtime - INFO - runtime_stats uptime_s=51840 total_records=875 total_exceptions=0 levels={'INFO': 875}
 2026-03-23 12:38:32,968 - web_public.runtime - INFO - runtime_stats uptime_s=51840 total_records=870 total_exceptions=0 levels={'INFO': 870}
+2026-03-23 23:21:23,274 - web_local - INFO - runtime_logging_enabled pid=39568 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-23 23:21:23,354 - xiuxianbot - ERROR - Failed to start local admin dashboard: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+2026-03-23 23:21:23,354 - xiuxianbot - ERROR - Failed to start local admin dashboard. Exiting.
+2026-03-23 23:30:12,691 - web_local - INFO - runtime_logging_enabled pid=36008 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-23 23:30:12,731 - xiuxianbot - ERROR - Failed to start local admin dashboard: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+2026-03-23 23:30:12,731 - xiuxianbot - ERROR - Failed to start local admin dashboard. Exiting.
+2026-03-23 23:56:12,259 - web_local - INFO - runtime_logging_enabled pid=41116 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-23 23:56:12,404 - xiuxianbot - ERROR - Failed to start local admin dashboard: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+2026-03-23 23:56:12,405 - xiuxianbot - ERROR - Failed to start local admin dashboard. Exiting.
+2026-03-23 23:56:18,980 - web_local - INFO - runtime_logging_enabled pid=48496 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-23 23:56:19,122 - xiuxianbot - ERROR - Failed to start local admin dashboard: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+2026-03-23 23:56:19,122 - xiuxianbot - ERROR - Failed to start local admin dashboard. Exiting.
+2026-03-23 23:58:50,408 - web_local - INFO - runtime_logging_enabled pid=40748 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-23 23:58:50,445 - xiuxianbot - ERROR - Failed to start local admin dashboard: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+2026-03-23 23:58:50,445 - xiuxianbot - ERROR - Failed to start local admin dashboard. Exiting.
+2026-03-23 23:59:31,269 - web_local - INFO - runtime_logging_enabled pid=45472 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-23 23:59:31,308 - xiuxianbot - ERROR - Failed to start local admin dashboard: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+2026-03-23 23:59:31,308 - xiuxianbot - ERROR - Failed to start local admin dashboard. Exiting.
+2026-03-24 00:17:57,202 - web_local - INFO - runtime_logging_enabled pid=44272 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:17:57,264 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 00:17:57,382 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 00:17:57,386 - Database - INFO - Database tables created/verified
+2026-03-24 00:17:57,392 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 00:17:57,392 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 00:17:57,408 - web_public - INFO - runtime_logging_enabled pid=44272 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:17:57,410 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 00:17:57,410 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 00:17:57,468 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 00:17:57,468 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 00:17:57,468 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:17:57,468 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:20:55,015 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 00:20:57,206 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 00:20:57,421 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 00:21:01,165 - xiuxianbot - INFO - Received SIGINT. Shutting down...
+2026-03-24 00:21:01,468 - xiuxianbot - INFO - Stopping aiogram adapter (PID 30496)
+2026-03-24 00:21:01,470 - xiuxianbot - INFO - aiogram adapter stopped
+2026-03-24 00:21:01,470 - xiuxianbot - INFO - Stopping core server (PID 38756)
+2026-03-24 00:21:01,471 - xiuxianbot - INFO - XiuXianBot stopped
+2026-03-24 00:21:13,266 - web_local - INFO - runtime_logging_enabled pid=36172 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:21:13,344 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 00:21:13,461 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 00:21:13,471 - Database - INFO - Database tables created/verified
+2026-03-24 00:21:13,476 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 00:21:13,476 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 00:21:13,478 - web_public - INFO - runtime_logging_enabled pid=36172 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:21:13,481 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 00:21:13,481 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 00:21:13,492 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 00:21:13,493 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 00:21:13,493 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:21:13,493 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:22:18,335 - xiuxianbot - INFO - Received SIGINT. Shutting down...
+2026-03-24 00:22:18,502 - xiuxianbot - INFO - Stopping aiogram adapter (PID 43072)
+2026-03-24 00:22:18,503 - xiuxianbot - INFO - aiogram adapter stopped
+2026-03-24 00:22:18,504 - xiuxianbot - INFO - XiuXianBot stopped
+2026-03-24 00:22:24,867 - web_local - INFO - runtime_logging_enabled pid=35312 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:22:24,936 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 00:22:25,042 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 00:22:25,046 - Database - INFO - Database tables created/verified
+2026-03-24 00:22:25,051 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 00:22:25,051 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 00:22:25,053 - web_public - INFO - runtime_logging_enabled pid=35312 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:22:25,057 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 00:22:25,057 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 00:22:25,069 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 00:22:25,069 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 00:22:25,069 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:22:25,070 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:22:50,353 - xiuxianbot - INFO - Received SIGINT. Shutting down...
+2026-03-24 00:22:51,065 - xiuxianbot - INFO - aiogram adapter already stopped
+2026-03-24 00:22:51,065 - xiuxianbot - INFO - XiuXianBot stopped
+2026-03-24 00:23:34,591 - web_local - INFO - runtime_logging_enabled pid=41448 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:23:34,667 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 00:23:34,772 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 00:23:34,782 - Database - INFO - Database tables created/verified
+2026-03-24 00:23:34,788 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 00:23:34,788 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 00:23:34,789 - web_public - INFO - runtime_logging_enabled pid=41448 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:23:34,793 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 00:23:34,793 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 00:23:34,804 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 00:23:34,804 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:23:34,804 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 00:23:34,805 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:25:59,254 - xiuxianbot - INFO - Received SIGINT. Shutting down...
+2026-03-24 00:25:59,845 - xiuxianbot - INFO - aiogram adapter already stopped
+2026-03-24 00:25:59,846 - xiuxianbot - INFO - XiuXianBot stopped
+2026-03-24 00:26:10,404 - web_local - INFO - runtime_logging_enabled pid=46120 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:26:10,476 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 00:26:10,590 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 00:26:10,597 - Database - INFO - Database tables created/verified
+2026-03-24 00:26:10,602 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 00:26:10,602 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 00:26:10,604 - web_public - INFO - runtime_logging_enabled pid=46120 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:26:10,607 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 00:26:10,608 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 00:26:10,619 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 00:26:10,619 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 00:26:10,620 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:26:10,620 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:28:19,473 - xiuxianbot - INFO - Received SIGINT. Shutting down...
+2026-03-24 00:28:19,655 - xiuxianbot - INFO - Stopping aiogram adapter (PID 48416)
+2026-03-24 00:28:19,656 - xiuxianbot - INFO - aiogram adapter stopped
+2026-03-24 00:28:19,657 - xiuxianbot - INFO - Stopping core server (PID 45488)
+2026-03-24 00:28:19,658 - xiuxianbot - INFO - XiuXianBot stopped
+2026-03-24 00:28:30,255 - web_local - INFO - runtime_logging_enabled pid=45524 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:28:30,330 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 00:28:30,439 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 00:28:30,445 - Database - INFO - Database tables created/verified
+2026-03-24 00:28:30,451 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 00:28:30,451 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 00:28:30,452 - web_public - INFO - runtime_logging_enabled pid=45524 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:28:30,455 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 00:28:30,456 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 00:28:30,467 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 00:28:30,467 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 00:28:30,467 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:28:30,467 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:28:39,924 - xiuxianbot - INFO - Received SIGINT. Shutting down...
+2026-03-24 00:28:40,459 - xiuxianbot - INFO - aiogram adapter already stopped
+2026-03-24 00:28:40,459 - xiuxianbot - INFO - XiuXianBot stopped
+2026-03-24 00:28:44,949 - web_local - INFO - runtime_logging_enabled pid=46564 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:28:44,995 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 00:28:45,112 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 00:28:45,122 - Database - INFO - Database tables created/verified
+2026-03-24 00:28:45,127 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 00:28:45,127 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 00:28:45,131 - web_public - INFO - runtime_logging_enabled pid=46564 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:28:45,134 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 00:28:45,134 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 00:28:45,144 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 00:28:45,145 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 00:28:45,145 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:28:45,145 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:29:49,715 - xiuxianbot - INFO - Received SIGINT. Shutting down...
+2026-03-24 00:29:50,152 - xiuxianbot - INFO - aiogram adapter already stopped
+2026-03-24 00:29:50,152 - xiuxianbot - INFO - Stopping core server (PID 2076)
+2026-03-24 00:29:50,154 - xiuxianbot - INFO - XiuXianBot stopped
+2026-03-24 00:29:59,300 - web_local - INFO - runtime_logging_enabled pid=20552 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:29:59,372 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 00:29:59,479 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 00:29:59,489 - Database - INFO - Database tables created/verified
+2026-03-24 00:29:59,493 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 00:29:59,494 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 00:29:59,496 - web_public - INFO - runtime_logging_enabled pid=20552 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:29:59,499 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 00:29:59,499 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 00:29:59,512 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 00:29:59,512 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 00:29:59,512 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:29:59,512 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:31:14,225 - xiuxianbot - INFO - Received SIGINT. Shutting down...
+2026-03-24 00:31:14,522 - xiuxianbot - INFO - aiogram adapter already stopped
+2026-03-24 00:31:14,523 - xiuxianbot - INFO - XiuXianBot stopped
+2026-03-24 00:31:27,808 - web_local - INFO - runtime_logging_enabled pid=43460 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:31:27,854 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 00:31:27,966 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 00:31:27,970 - Database - INFO - Database tables created/verified
+2026-03-24 00:31:27,976 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 00:31:27,976 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 00:31:27,978 - web_public - INFO - runtime_logging_enabled pid=43460 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:31:27,981 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 00:31:27,982 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 00:31:27,995 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 00:31:27,996 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 00:31:27,996 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:31:27,996 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:34:25,631 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 00:34:27,817 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 00:34:27,990 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 00:35:38,858 - web_local - INFO - runtime_logging_enabled pid=39256 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:35:38,936 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 00:35:39,048 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 00:35:39,056 - Database - INFO - Database tables created/verified
+2026-03-24 00:35:39,062 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 00:35:39,062 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 00:35:39,064 - web_public - INFO - runtime_logging_enabled pid=39256 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:35:39,068 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 00:35:39,068 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 00:35:39,081 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 00:35:39,081 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 00:35:39,081 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:35:39,082 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:35:50,453 - xiuxianbot - INFO - Received SIGINT. Shutting down...
+2026-03-24 00:35:51,073 - xiuxianbot - INFO - aiogram adapter already stopped
+2026-03-24 00:35:51,073 - xiuxianbot - INFO - XiuXianBot stopped
+2026-03-24 00:36:22,101 - web_local - INFO - runtime_logging_enabled pid=2460 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:36:22,170 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 00:36:22,276 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 00:36:22,286 - Database - INFO - Database tables created/verified
+2026-03-24 00:36:22,293 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 00:36:22,293 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 00:36:22,295 - web_public - INFO - runtime_logging_enabled pid=2460 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:36:22,299 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 00:36:22,299 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 00:36:22,310 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 00:36:22,310 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 00:36:22,310 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:36:22,310 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:39:19,916 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 00:39:22,107 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 00:39:22,308 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 00:42:19,923 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=360 total_records=22 total_exceptions=0 levels={'INFO': 22}
+2026-03-24 00:42:22,113 - web_local.runtime - INFO - runtime_stats uptime_s=360 total_records=17 total_exceptions=0 levels={'INFO': 17}
+2026-03-24 00:42:22,315 - web_public.runtime - INFO - runtime_stats uptime_s=360 total_records=12 total_exceptions=0 levels={'INFO': 12}
+2026-03-24 00:45:19,929 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=540 total_records=25 total_exceptions=0 levels={'INFO': 25}
+2026-03-24 00:45:22,128 - web_local.runtime - INFO - runtime_stats uptime_s=540 total_records=20 total_exceptions=0 levels={'INFO': 20}
+2026-03-24 00:45:22,328 - web_public.runtime - INFO - runtime_stats uptime_s=540 total_records=15 total_exceptions=0 levels={'INFO': 15}
+2026-03-24 00:48:13,432 - web_local - INFO - runtime_logging_enabled pid=22680 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:48:13,501 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 00:48:13,623 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 00:48:13,627 - Database - INFO - Database tables created/verified
+2026-03-24 00:48:13,633 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 00:48:13,634 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 00:48:13,635 - web_public - INFO - runtime_logging_enabled pid=22680 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 00:48:13,638 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 00:48:13,639 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 00:48:13,651 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 00:48:13,651 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 00:48:13,652 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:48:13,652 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 00:51:11,226 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 00:51:13,440 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 00:51:13,637 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 00:54:11,227 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=360 total_records=22 total_exceptions=0 levels={'INFO': 22}
+2026-03-24 00:54:13,455 - web_local.runtime - INFO - runtime_stats uptime_s=360 total_records=17 total_exceptions=0 levels={'INFO': 17}
+2026-03-24 00:54:13,641 - web_public.runtime - INFO - runtime_stats uptime_s=360 total_records=12 total_exceptions=0 levels={'INFO': 12}
+2026-03-24 00:57:11,240 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=540 total_records=25 total_exceptions=0 levels={'INFO': 25}
+2026-03-24 00:57:13,461 - web_local.runtime - INFO - runtime_stats uptime_s=540 total_records=20 total_exceptions=0 levels={'INFO': 20}
+2026-03-24 00:57:13,648 - web_public.runtime - INFO - runtime_stats uptime_s=540 total_records=15 total_exceptions=0 levels={'INFO': 15}
+2026-03-24 01:00:11,245 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=720 total_records=28 total_exceptions=0 levels={'INFO': 28}
+2026-03-24 01:00:13,466 - web_local.runtime - INFO - runtime_stats uptime_s=720 total_records=23 total_exceptions=0 levels={'INFO': 23}
+2026-03-24 01:00:13,653 - web_public.runtime - INFO - runtime_stats uptime_s=720 total_records=18 total_exceptions=0 levels={'INFO': 18}
+2026-03-24 01:00:48,700 - web_local - INFO - runtime_logging_enabled pid=27932 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 01:00:48,746 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 01:00:48,859 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 01:00:48,865 - Database - INFO - Database tables created/verified
+2026-03-24 01:00:48,870 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 01:00:48,870 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 01:00:48,872 - web_public - INFO - runtime_logging_enabled pid=27932 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 01:00:48,876 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 01:00:48,876 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 01:00:48,889 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 01:00:48,889 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 01:00:48,889 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 01:00:48,889 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 01:03:46,505 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 01:03:48,710 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 01:03:48,880 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 01:05:48,690 - web_local - INFO - runtime_logging_enabled pid=32712 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 01:05:48,764 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 01:05:48,878 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 01:05:48,887 - Database - INFO - Database tables created/verified
+2026-03-24 01:05:48,893 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 01:05:48,893 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 01:05:48,895 - web_public - INFO - runtime_logging_enabled pid=32712 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 01:05:48,899 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 01:05:48,900 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 01:05:48,911 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 01:05:48,911 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 01:05:48,912 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 01:05:48,912 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 01:08:46,494 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 01:08:48,694 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 01:08:48,909 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 01:11:05,270 - web_local - INFO - runtime_logging_enabled pid=10768 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 01:11:05,333 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 01:11:05,442 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 01:11:05,452 - Database - INFO - Database tables created/verified
+2026-03-24 01:11:05,457 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 01:11:05,457 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 01:11:05,459 - web_public - INFO - runtime_logging_enabled pid=10768 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 01:11:05,463 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 01:11:05,464 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 01:11:05,475 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 01:11:05,475 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 01:11:05,475 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 01:11:05,476 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 01:12:56,872 - web_local - INFO - runtime_logging_enabled pid=40420 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 01:12:56,937 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 01:12:57,054 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 01:12:57,064 - Database - INFO - Database tables created/verified
+2026-03-24 01:12:57,069 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 01:12:57,069 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 01:12:57,071 - web_public - INFO - runtime_logging_enabled pid=40420 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 01:12:57,075 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 01:12:57,075 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 01:12:57,087 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 01:12:57,087 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 01:12:57,087 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 01:12:57,087 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 01:13:55,509 - web_local - INFO - runtime_logging_enabled pid=12692 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 01:13:55,578 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 01:13:55,690 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 01:13:55,700 - Database - INFO - Database tables created/verified
+2026-03-24 01:13:55,706 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 01:13:55,706 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 01:13:55,708 - web_public - INFO - runtime_logging_enabled pid=12692 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 01:13:55,712 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 01:13:55,712 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 01:13:55,724 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 01:13:55,724 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 01:13:55,724 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 01:13:55,724 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 01:15:46,713 - web_local - INFO - runtime_logging_enabled pid=43460 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 01:15:46,774 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 01:15:46,881 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 01:15:46,890 - Database - INFO - Database tables created/verified
+2026-03-24 01:15:46,895 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 01:15:46,896 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 01:15:46,897 - web_public - INFO - runtime_logging_enabled pid=43460 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 01:15:46,900 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 01:15:46,900 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 01:15:46,912 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 01:15:46,913 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 01:15:46,913 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 01:15:46,913 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 01:18:44,515 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 01:18:46,713 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 01:18:46,911 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 01:28:30,660 - web_local - INFO - runtime_logging_enabled pid=13724 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 01:28:30,731 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 01:28:30,844 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 01:28:30,854 - Database - INFO - Database tables created/verified
+2026-03-24 01:28:30,859 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 01:28:30,859 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 01:28:30,861 - web_public - INFO - runtime_logging_enabled pid=13724 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 01:28:30,864 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 01:28:30,864 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 01:28:30,877 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 01:28:30,877 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 01:28:30,877 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 01:28:30,877 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 01:31:28,467 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 01:31:30,675 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 01:31:30,875 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 01:32:25,405 - web_local - INFO - runtime_logging_enabled pid=33456 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 01:32:25,451 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 01:32:25,561 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 01:32:25,570 - Database - INFO - Database tables created/verified
+2026-03-24 01:32:25,575 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 01:32:25,576 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 01:32:25,577 - web_public - INFO - runtime_logging_enabled pid=33456 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 01:32:25,582 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 01:32:25,582 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 01:32:25,593 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 01:32:25,594 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 01:32:25,594 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 01:32:25,594 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 01:35:23,204 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 01:35:25,420 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 01:35:25,593 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 01:38:23,214 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=360 total_records=22 total_exceptions=0 levels={'INFO': 22}
+2026-03-24 01:38:25,429 - web_local.runtime - INFO - runtime_stats uptime_s=360 total_records=17 total_exceptions=0 levels={'INFO': 17}
+2026-03-24 01:38:25,600 - web_public.runtime - INFO - runtime_stats uptime_s=360 total_records=12 total_exceptions=0 levels={'INFO': 12}
+2026-03-24 01:41:23,224 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=540 total_records=25 total_exceptions=0 levels={'INFO': 25}
+2026-03-24 01:41:25,441 - web_local.runtime - INFO - runtime_stats uptime_s=540 total_records=20 total_exceptions=0 levels={'INFO': 20}
+2026-03-24 01:41:25,612 - web_public.runtime - INFO - runtime_stats uptime_s=540 total_records=15 total_exceptions=0 levels={'INFO': 15}
+2026-03-24 01:44:23,235 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=720 total_records=28 total_exceptions=0 levels={'INFO': 28}
+2026-03-24 01:44:25,446 - web_local.runtime - INFO - runtime_stats uptime_s=720 total_records=23 total_exceptions=0 levels={'INFO': 23}
+2026-03-24 01:44:25,614 - web_public.runtime - INFO - runtime_stats uptime_s=720 total_records=18 total_exceptions=0 levels={'INFO': 18}
+2026-03-24 01:47:23,249 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=900 total_records=31 total_exceptions=0 levels={'INFO': 31}
+2026-03-24 01:47:25,448 - web_local.runtime - INFO - runtime_stats uptime_s=900 total_records=26 total_exceptions=0 levels={'INFO': 26}
+2026-03-24 01:47:25,619 - web_public.runtime - INFO - runtime_stats uptime_s=900 total_records=21 total_exceptions=0 levels={'INFO': 21}
+2026-03-24 01:49:54,095 - web_local - INFO - runtime_logging_enabled pid=35364 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 01:49:54,177 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 01:49:54,286 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 01:49:54,296 - Database - INFO - Database tables created/verified
+2026-03-24 01:49:54,302 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 01:49:54,302 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 01:49:54,303 - web_public - INFO - runtime_logging_enabled pid=35364 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 01:49:54,306 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 01:49:54,307 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 01:49:54,319 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 01:49:54,320 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 01:49:54,320 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 01:49:54,320 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 01:52:51,913 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 01:52:54,098 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 01:52:54,315 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 01:55:51,922 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=360 total_records=22 total_exceptions=0 levels={'INFO': 22}
+2026-03-24 01:55:54,111 - web_local.runtime - INFO - runtime_stats uptime_s=360 total_records=17 total_exceptions=0 levels={'INFO': 17}
+2026-03-24 01:55:54,327 - web_public.runtime - INFO - runtime_stats uptime_s=360 total_records=12 total_exceptions=0 levels={'INFO': 12}
+2026-03-24 01:58:51,932 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=540 total_records=25 total_exceptions=0 levels={'INFO': 25}
+2026-03-24 01:58:54,118 - web_local.runtime - INFO - runtime_stats uptime_s=540 total_records=20 total_exceptions=0 levels={'INFO': 20}
+2026-03-24 01:58:54,335 - web_public.runtime - INFO - runtime_stats uptime_s=540 total_records=15 total_exceptions=0 levels={'INFO': 15}
+2026-03-24 02:01:51,944 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=720 total_records=28 total_exceptions=0 levels={'INFO': 28}
+2026-03-24 02:01:54,127 - web_local.runtime - INFO - runtime_stats uptime_s=720 total_records=23 total_exceptions=0 levels={'INFO': 23}
+2026-03-24 02:01:54,346 - web_public.runtime - INFO - runtime_stats uptime_s=720 total_records=18 total_exceptions=0 levels={'INFO': 18}
+2026-03-24 02:03:24,099 - web_local - INFO - runtime_logging_enabled pid=44868 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 02:03:24,129 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 02:03:24,248 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 02:03:24,257 - Database - INFO - Database tables created/verified
+2026-03-24 02:03:24,262 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 02:03:24,262 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 02:03:24,264 - web_public - INFO - runtime_logging_enabled pid=44868 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 02:03:24,268 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 02:03:24,268 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 02:03:24,281 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 02:03:24,281 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 02:03:24,282 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 02:03:24,282 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 02:06:21,898 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 02:06:24,111 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 02:06:24,267 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 02:09:21,909 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=360 total_records=22 total_exceptions=0 levels={'INFO': 22}
+2026-03-24 02:09:24,121 - web_local.runtime - INFO - runtime_stats uptime_s=360 total_records=17 total_exceptions=0 levels={'INFO': 17}
+2026-03-24 02:09:24,277 - web_public.runtime - INFO - runtime_stats uptime_s=360 total_records=12 total_exceptions=0 levels={'INFO': 12}
+2026-03-24 02:12:08,809 - web_local - INFO - runtime_logging_enabled pid=47056 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 02:12:08,839 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 02:12:08,948 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 02:12:08,967 - Database - INFO - Database tables created/verified
+2026-03-24 02:12:08,972 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 02:12:08,972 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 02:12:08,974 - web_public - INFO - runtime_logging_enabled pid=47056 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 02:12:08,977 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 02:12:08,977 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 02:12:08,989 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 02:12:08,990 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 02:12:08,990 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 02:12:08,990 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 02:15:06,604 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 02:15:08,813 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 02:15:08,982 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 02:18:06,610 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=360 total_records=22 total_exceptions=0 levels={'INFO': 22}
+2026-03-24 02:18:08,822 - web_local.runtime - INFO - runtime_stats uptime_s=360 total_records=17 total_exceptions=0 levels={'INFO': 17}
+2026-03-24 02:18:08,992 - web_public.runtime - INFO - runtime_stats uptime_s=360 total_records=12 total_exceptions=0 levels={'INFO': 12}
+2026-03-24 02:21:06,619 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=540 total_records=25 total_exceptions=0 levels={'INFO': 25}
+2026-03-24 02:21:08,834 - web_local.runtime - INFO - runtime_stats uptime_s=540 total_records=20 total_exceptions=0 levels={'INFO': 20}
+2026-03-24 02:21:09,005 - web_public.runtime - INFO - runtime_stats uptime_s=540 total_records=15 total_exceptions=0 levels={'INFO': 15}
+2026-03-24 02:24:06,622 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=720 total_records=28 total_exceptions=0 levels={'INFO': 28}
+2026-03-24 02:24:08,838 - web_local.runtime - INFO - runtime_stats uptime_s=720 total_records=23 total_exceptions=0 levels={'INFO': 23}
+2026-03-24 02:24:09,007 - web_public.runtime - INFO - runtime_stats uptime_s=720 total_records=18 total_exceptions=0 levels={'INFO': 18}
+2026-03-24 02:27:06,635 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=900 total_records=31 total_exceptions=0 levels={'INFO': 31}
+2026-03-24 02:27:08,843 - web_local.runtime - INFO - runtime_stats uptime_s=900 total_records=26 total_exceptions=0 levels={'INFO': 26}
+2026-03-24 02:27:09,014 - web_public.runtime - INFO - runtime_stats uptime_s=900 total_records=21 total_exceptions=0 levels={'INFO': 21}
+2026-03-24 02:30:06,642 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1080 total_records=34 total_exceptions=0 levels={'INFO': 34}
+2026-03-24 02:30:08,844 - web_local.runtime - INFO - runtime_stats uptime_s=1080 total_records=29 total_exceptions=0 levels={'INFO': 29}
+2026-03-24 02:30:09,014 - web_public.runtime - INFO - runtime_stats uptime_s=1080 total_records=24 total_exceptions=0 levels={'INFO': 24}
+2026-03-24 02:33:06,649 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1260 total_records=37 total_exceptions=0 levels={'INFO': 37}
+2026-03-24 02:33:08,846 - web_local.runtime - INFO - runtime_stats uptime_s=1260 total_records=32 total_exceptions=0 levels={'INFO': 32}
+2026-03-24 02:33:09,014 - web_public.runtime - INFO - runtime_stats uptime_s=1260 total_records=27 total_exceptions=0 levels={'INFO': 27}
+2026-03-24 02:36:06,660 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1440 total_records=40 total_exceptions=0 levels={'INFO': 40}
+2026-03-24 02:36:08,858 - web_local.runtime - INFO - runtime_stats uptime_s=1440 total_records=35 total_exceptions=0 levels={'INFO': 35}
+2026-03-24 02:36:09,028 - web_public.runtime - INFO - runtime_stats uptime_s=1440 total_records=30 total_exceptions=0 levels={'INFO': 30}
+2026-03-24 02:39:06,664 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1620 total_records=43 total_exceptions=0 levels={'INFO': 43}
+2026-03-24 02:39:08,863 - web_local.runtime - INFO - runtime_stats uptime_s=1620 total_records=38 total_exceptions=0 levels={'INFO': 38}
+2026-03-24 02:39:09,030 - web_public.runtime - INFO - runtime_stats uptime_s=1620 total_records=33 total_exceptions=0 levels={'INFO': 33}
+2026-03-24 02:42:06,674 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1800 total_records=46 total_exceptions=0 levels={'INFO': 46}
+2026-03-24 02:42:08,869 - web_local.runtime - INFO - runtime_stats uptime_s=1800 total_records=41 total_exceptions=0 levels={'INFO': 41}
+2026-03-24 02:42:09,038 - web_public.runtime - INFO - runtime_stats uptime_s=1800 total_records=36 total_exceptions=0 levels={'INFO': 36}
+2026-03-24 02:44:31,692 - web_local - INFO - runtime_logging_enabled pid=49216 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 02:44:31,775 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 02:44:31,895 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 02:44:31,902 - Database - INFO - Database tables created/verified
+2026-03-24 02:44:31,907 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 02:44:31,907 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 02:44:31,910 - web_public - INFO - runtime_logging_enabled pid=49216 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 02:44:31,913 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 02:44:31,914 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 02:44:31,926 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 02:44:31,926 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 02:44:31,926 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 02:44:31,926 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 02:47:29,495 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 02:47:31,706 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 02:47:31,924 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 02:50:29,503 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=360 total_records=22 total_exceptions=0 levels={'INFO': 22}
+2026-03-24 02:50:31,709 - web_local.runtime - INFO - runtime_stats uptime_s=360 total_records=17 total_exceptions=0 levels={'INFO': 17}
+2026-03-24 02:50:31,926 - web_public.runtime - INFO - runtime_stats uptime_s=360 total_records=12 total_exceptions=0 levels={'INFO': 12}
+2026-03-24 02:53:29,511 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=540 total_records=25 total_exceptions=0 levels={'INFO': 25}
+2026-03-24 02:53:31,718 - web_local.runtime - INFO - runtime_stats uptime_s=540 total_records=20 total_exceptions=0 levels={'INFO': 20}
+2026-03-24 02:53:31,936 - web_public.runtime - INFO - runtime_stats uptime_s=540 total_records=15 total_exceptions=0 levels={'INFO': 15}
+2026-03-24 02:56:29,524 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=720 total_records=28 total_exceptions=0 levels={'INFO': 28}
+2026-03-24 02:56:31,719 - web_local.runtime - INFO - runtime_stats uptime_s=720 total_records=23 total_exceptions=0 levels={'INFO': 23}
+2026-03-24 02:56:31,953 - web_public.runtime - INFO - runtime_stats uptime_s=720 total_records=18 total_exceptions=0 levels={'INFO': 18}
+2026-03-24 02:59:29,531 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=900 total_records=31 total_exceptions=0 levels={'INFO': 31}
+2026-03-24 02:59:31,721 - web_local.runtime - INFO - runtime_stats uptime_s=900 total_records=26 total_exceptions=0 levels={'INFO': 26}
+2026-03-24 02:59:31,954 - web_public.runtime - INFO - runtime_stats uptime_s=900 total_records=21 total_exceptions=0 levels={'INFO': 21}
+2026-03-24 03:02:29,535 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1080 total_records=34 total_exceptions=0 levels={'INFO': 34}
+2026-03-24 03:02:31,722 - web_local.runtime - INFO - runtime_stats uptime_s=1080 total_records=29 total_exceptions=0 levels={'INFO': 29}
+2026-03-24 03:02:31,970 - web_public.runtime - INFO - runtime_stats uptime_s=1080 total_records=24 total_exceptions=0 levels={'INFO': 24}
+2026-03-24 03:05:29,545 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1260 total_records=37 total_exceptions=0 levels={'INFO': 37}
+2026-03-24 03:05:31,731 - web_local.runtime - INFO - runtime_stats uptime_s=1260 total_records=32 total_exceptions=0 levels={'INFO': 32}
+2026-03-24 03:05:31,980 - web_public.runtime - INFO - runtime_stats uptime_s=1260 total_records=27 total_exceptions=0 levels={'INFO': 27}
+2026-03-24 03:08:29,550 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1440 total_records=40 total_exceptions=0 levels={'INFO': 40}
+2026-03-24 03:08:31,734 - web_local.runtime - INFO - runtime_stats uptime_s=1440 total_records=35 total_exceptions=0 levels={'INFO': 35}
+2026-03-24 03:08:31,982 - web_public.runtime - INFO - runtime_stats uptime_s=1440 total_records=30 total_exceptions=0 levels={'INFO': 30}
+2026-03-24 03:11:29,553 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1620 total_records=43 total_exceptions=0 levels={'INFO': 43}
+2026-03-24 03:11:31,748 - web_local.runtime - INFO - runtime_stats uptime_s=1620 total_records=38 total_exceptions=0 levels={'INFO': 38}
+2026-03-24 03:11:31,991 - web_public.runtime - INFO - runtime_stats uptime_s=1620 total_records=33 total_exceptions=0 levels={'INFO': 33}
+2026-03-24 03:12:43,332 - web_local - INFO - runtime_logging_enabled pid=240 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 03:12:43,375 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 03:12:43,502 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 03:12:43,510 - Database - INFO - Database tables created/verified
+2026-03-24 03:12:43,515 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 03:12:43,515 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 03:12:43,517 - web_public - INFO - runtime_logging_enabled pid=240 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 03:12:43,521 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 03:12:43,522 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 03:12:43,536 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 03:12:43,536 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 03:12:43,536 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 03:12:43,536 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 03:15:41,112 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 03:15:43,344 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 03:15:43,530 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 03:18:39,764 - web_local - INFO - runtime_logging_enabled pid=15808 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 03:18:39,839 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 03:18:39,968 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 03:18:39,979 - Database - INFO - Database tables created/verified
+2026-03-24 03:18:39,985 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 03:18:39,985 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 03:18:39,988 - web_public - INFO - runtime_logging_enabled pid=15808 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 03:18:39,991 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 03:18:39,991 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 03:18:40,002 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 03:18:40,002 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 03:18:40,002 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 03:18:40,002 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 03:21:37,570 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 03:21:39,778 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 03:21:39,996 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 03:24:37,579 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=360 total_records=22 total_exceptions=0 levels={'INFO': 22}
+2026-03-24 03:24:39,781 - web_local.runtime - INFO - runtime_stats uptime_s=360 total_records=17 total_exceptions=0 levels={'INFO': 17}
+2026-03-24 03:24:40,000 - web_public.runtime - INFO - runtime_stats uptime_s=360 total_records=12 total_exceptions=0 levels={'INFO': 12}
+2026-03-24 03:27:37,582 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=540 total_records=25 total_exceptions=0 levels={'INFO': 25}
+2026-03-24 03:27:39,784 - web_local.runtime - INFO - runtime_stats uptime_s=540 total_records=20 total_exceptions=0 levels={'INFO': 20}
+2026-03-24 03:27:40,001 - web_public.runtime - INFO - runtime_stats uptime_s=540 total_records=15 total_exceptions=0 levels={'INFO': 15}
+2026-03-24 03:30:37,583 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=720 total_records=28 total_exceptions=0 levels={'INFO': 28}
+2026-03-24 03:30:39,786 - web_local.runtime - INFO - runtime_stats uptime_s=720 total_records=23 total_exceptions=0 levels={'INFO': 23}
+2026-03-24 03:30:40,003 - web_public.runtime - INFO - runtime_stats uptime_s=720 total_records=18 total_exceptions=0 levels={'INFO': 18}
+2026-03-24 03:33:37,586 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=900 total_records=31 total_exceptions=0 levels={'INFO': 31}
+2026-03-24 03:33:39,787 - web_local.runtime - INFO - runtime_stats uptime_s=900 total_records=26 total_exceptions=0 levels={'INFO': 26}
+2026-03-24 03:33:40,017 - web_public.runtime - INFO - runtime_stats uptime_s=900 total_records=21 total_exceptions=0 levels={'INFO': 21}
+2026-03-24 03:36:37,592 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1080 total_records=34 total_exceptions=0 levels={'INFO': 34}
+2026-03-24 03:36:39,791 - web_local.runtime - INFO - runtime_stats uptime_s=1080 total_records=29 total_exceptions=0 levels={'INFO': 29}
+2026-03-24 03:36:40,023 - web_public.runtime - INFO - runtime_stats uptime_s=1080 total_records=24 total_exceptions=0 levels={'INFO': 24}
+2026-03-24 03:39:37,601 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1260 total_records=37 total_exceptions=0 levels={'INFO': 37}
+2026-03-24 03:39:39,798 - web_local.runtime - INFO - runtime_stats uptime_s=1260 total_records=32 total_exceptions=0 levels={'INFO': 32}
+2026-03-24 03:39:40,032 - web_public.runtime - INFO - runtime_stats uptime_s=1260 total_records=27 total_exceptions=0 levels={'INFO': 27}
+2026-03-24 03:42:37,610 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1440 total_records=40 total_exceptions=0 levels={'INFO': 40}
+2026-03-24 03:42:39,803 - web_local.runtime - INFO - runtime_stats uptime_s=1440 total_records=35 total_exceptions=0 levels={'INFO': 35}
+2026-03-24 03:42:40,035 - web_public.runtime - INFO - runtime_stats uptime_s=1440 total_records=30 total_exceptions=0 levels={'INFO': 30}
+2026-03-24 03:45:37,611 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1620 total_records=43 total_exceptions=0 levels={'INFO': 43}
+2026-03-24 03:45:39,815 - web_local.runtime - INFO - runtime_stats uptime_s=1620 total_records=38 total_exceptions=0 levels={'INFO': 38}
+2026-03-24 03:45:40,046 - web_public.runtime - INFO - runtime_stats uptime_s=1620 total_records=33 total_exceptions=0 levels={'INFO': 33}
+2026-03-24 03:48:37,619 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1800 total_records=46 total_exceptions=0 levels={'INFO': 46}
+2026-03-24 03:48:39,817 - web_local.runtime - INFO - runtime_stats uptime_s=1800 total_records=41 total_exceptions=0 levels={'INFO': 41}
+2026-03-24 03:48:40,049 - web_public.runtime - INFO - runtime_stats uptime_s=1800 total_records=36 total_exceptions=0 levels={'INFO': 36}
+2026-03-24 03:51:37,622 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1980 total_records=49 total_exceptions=0 levels={'INFO': 49}
+2026-03-24 03:51:39,825 - web_local.runtime - INFO - runtime_stats uptime_s=1980 total_records=44 total_exceptions=0 levels={'INFO': 44}
+2026-03-24 03:51:40,057 - web_public.runtime - INFO - runtime_stats uptime_s=1980 total_records=39 total_exceptions=0 levels={'INFO': 39}
+2026-03-24 03:54:37,633 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=2160 total_records=52 total_exceptions=0 levels={'INFO': 52}
+2026-03-24 03:54:39,829 - web_local.runtime - INFO - runtime_stats uptime_s=2160 total_records=47 total_exceptions=0 levels={'INFO': 47}
+2026-03-24 03:54:40,059 - web_public.runtime - INFO - runtime_stats uptime_s=2160 total_records=42 total_exceptions=0 levels={'INFO': 42}
+2026-03-24 03:57:37,637 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=2340 total_records=55 total_exceptions=0 levels={'INFO': 55}
+2026-03-24 03:57:39,844 - web_local.runtime - INFO - runtime_stats uptime_s=2340 total_records=50 total_exceptions=0 levels={'INFO': 50}
+2026-03-24 03:57:40,060 - web_public.runtime - INFO - runtime_stats uptime_s=2340 total_records=45 total_exceptions=0 levels={'INFO': 45}
+2026-03-24 04:00:37,652 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=2520 total_records=58 total_exceptions=0 levels={'INFO': 58}
+2026-03-24 04:00:39,851 - web_local.runtime - INFO - runtime_stats uptime_s=2520 total_records=53 total_exceptions=0 levels={'INFO': 53}
+2026-03-24 04:00:40,070 - web_public.runtime - INFO - runtime_stats uptime_s=2520 total_records=48 total_exceptions=0 levels={'INFO': 48}
+2026-03-24 04:03:37,652 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=2700 total_records=61 total_exceptions=0 levels={'INFO': 61}
+2026-03-24 04:03:39,852 - web_local.runtime - INFO - runtime_stats uptime_s=2700 total_records=56 total_exceptions=0 levels={'INFO': 56}
+2026-03-24 04:03:40,083 - web_public.runtime - INFO - runtime_stats uptime_s=2700 total_records=51 total_exceptions=0 levels={'INFO': 51}
+2026-03-24 04:06:37,659 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=2880 total_records=64 total_exceptions=0 levels={'INFO': 64}
+2026-03-24 04:06:39,853 - web_local.runtime - INFO - runtime_stats uptime_s=2880 total_records=59 total_exceptions=0 levels={'INFO': 59}
+2026-03-24 04:06:40,087 - web_public.runtime - INFO - runtime_stats uptime_s=2880 total_records=54 total_exceptions=0 levels={'INFO': 54}
+2026-03-24 04:09:37,669 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=3060 total_records=67 total_exceptions=0 levels={'INFO': 67}
+2026-03-24 04:09:39,868 - web_local.runtime - INFO - runtime_stats uptime_s=3060 total_records=62 total_exceptions=0 levels={'INFO': 62}
+2026-03-24 04:09:40,099 - web_public.runtime - INFO - runtime_stats uptime_s=3060 total_records=57 total_exceptions=0 levels={'INFO': 57}
+2026-03-24 04:12:37,674 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=3240 total_records=70 total_exceptions=0 levels={'INFO': 70}
+2026-03-24 04:12:39,870 - web_local.runtime - INFO - runtime_stats uptime_s=3240 total_records=65 total_exceptions=0 levels={'INFO': 65}
+2026-03-24 04:12:40,100 - web_public.runtime - INFO - runtime_stats uptime_s=3240 total_records=60 total_exceptions=0 levels={'INFO': 60}
+2026-03-24 04:14:59,842 - web_local - INFO - runtime_logging_enabled pid=32812 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 04:14:59,913 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 04:15:00,039 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 04:15:00,048 - Database - INFO - Database tables created/verified
+2026-03-24 04:15:00,053 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 04:15:00,053 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 04:15:00,055 - web_public - INFO - runtime_logging_enabled pid=32812 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 04:15:00,059 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 04:15:00,059 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 04:15:00,071 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 04:15:00,071 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 04:15:00,071 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 04:15:00,072 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 04:17:57,647 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 04:17:59,846 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 04:18:00,061 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 04:20:57,658 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=360 total_records=22 total_exceptions=0 levels={'INFO': 22}
+2026-03-24 04:20:59,858 - web_local.runtime - INFO - runtime_stats uptime_s=360 total_records=17 total_exceptions=0 levels={'INFO': 17}
+2026-03-24 04:21:00,075 - web_public.runtime - INFO - runtime_stats uptime_s=360 total_records=12 total_exceptions=0 levels={'INFO': 12}
+2026-03-24 04:23:57,668 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=540 total_records=25 total_exceptions=0 levels={'INFO': 25}
+2026-03-24 04:23:59,863 - web_local.runtime - INFO - runtime_stats uptime_s=540 total_records=20 total_exceptions=0 levels={'INFO': 20}
+2026-03-24 04:24:00,082 - web_public.runtime - INFO - runtime_stats uptime_s=540 total_records=15 total_exceptions=0 levels={'INFO': 15}
+2026-03-24 04:26:57,673 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=720 total_records=28 total_exceptions=0 levels={'INFO': 28}
+2026-03-24 04:26:59,874 - web_local.runtime - INFO - runtime_stats uptime_s=720 total_records=23 total_exceptions=0 levels={'INFO': 23}
+2026-03-24 04:27:00,093 - web_public.runtime - INFO - runtime_stats uptime_s=720 total_records=18 total_exceptions=0 levels={'INFO': 18}
+2026-03-24 04:29:57,687 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=900 total_records=31 total_exceptions=0 levels={'INFO': 31}
+2026-03-24 04:29:59,875 - web_local.runtime - INFO - runtime_stats uptime_s=900 total_records=26 total_exceptions=0 levels={'INFO': 26}
+2026-03-24 04:30:00,108 - web_public.runtime - INFO - runtime_stats uptime_s=900 total_records=21 total_exceptions=0 levels={'INFO': 21}
+2026-03-24 04:32:57,701 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1080 total_records=34 total_exceptions=0 levels={'INFO': 34}
+2026-03-24 04:32:59,881 - web_local.runtime - INFO - runtime_stats uptime_s=1080 total_records=29 total_exceptions=0 levels={'INFO': 29}
+2026-03-24 04:33:00,116 - web_public.runtime - INFO - runtime_stats uptime_s=1080 total_records=24 total_exceptions=0 levels={'INFO': 24}
+2026-03-24 04:35:57,705 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1260 total_records=37 total_exceptions=0 levels={'INFO': 37}
+2026-03-24 04:35:59,884 - web_local.runtime - INFO - runtime_stats uptime_s=1260 total_records=32 total_exceptions=0 levels={'INFO': 32}
+2026-03-24 04:36:00,128 - web_public.runtime - INFO - runtime_stats uptime_s=1260 total_records=27 total_exceptions=0 levels={'INFO': 27}
+2026-03-24 04:38:57,717 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1440 total_records=40 total_exceptions=0 levels={'INFO': 40}
+2026-03-24 04:38:59,900 - web_local.runtime - INFO - runtime_stats uptime_s=1440 total_records=35 total_exceptions=0 levels={'INFO': 35}
+2026-03-24 04:39:00,134 - web_public.runtime - INFO - runtime_stats uptime_s=1440 total_records=30 total_exceptions=0 levels={'INFO': 30}
+2026-03-24 04:41:08,068 - web_local - INFO - runtime_logging_enabled pid=45128 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 04:41:08,133 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 04:41:08,245 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 04:41:08,255 - Database - INFO - Database tables created/verified
+2026-03-24 04:41:08,260 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 04:41:08,260 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 04:41:08,262 - web_public - INFO - runtime_logging_enabled pid=45128 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 04:41:08,266 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 04:41:08,267 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 04:41:08,278 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 04:41:08,279 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 04:41:08,279 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 04:41:08,279 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 04:44:05,869 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 04:44:08,072 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 04:44:08,274 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 04:47:05,882 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=360 total_records=22 total_exceptions=0 levels={'INFO': 22}
+2026-03-24 04:47:08,074 - web_local.runtime - INFO - runtime_stats uptime_s=360 total_records=17 total_exceptions=0 levels={'INFO': 17}
+2026-03-24 04:47:08,276 - web_public.runtime - INFO - runtime_stats uptime_s=360 total_records=12 total_exceptions=0 levels={'INFO': 12}
+2026-03-24 04:50:05,896 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=540 total_records=25 total_exceptions=0 levels={'INFO': 25}
+2026-03-24 04:50:08,081 - web_local.runtime - INFO - runtime_stats uptime_s=540 total_records=20 total_exceptions=0 levels={'INFO': 20}
+2026-03-24 04:50:08,279 - web_public.runtime - INFO - runtime_stats uptime_s=540 total_records=15 total_exceptions=0 levels={'INFO': 15}
+2026-03-24 04:53:05,907 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=720 total_records=28 total_exceptions=0 levels={'INFO': 28}
+2026-03-24 04:53:08,089 - web_local.runtime - INFO - runtime_stats uptime_s=720 total_records=23 total_exceptions=0 levels={'INFO': 23}
+2026-03-24 04:53:08,290 - web_public.runtime - INFO - runtime_stats uptime_s=720 total_records=18 total_exceptions=0 levels={'INFO': 18}
+2026-03-24 04:56:05,914 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=900 total_records=31 total_exceptions=0 levels={'INFO': 31}
+2026-03-24 04:56:08,098 - web_local.runtime - INFO - runtime_stats uptime_s=900 total_records=26 total_exceptions=0 levels={'INFO': 26}
+2026-03-24 04:56:08,304 - web_public.runtime - INFO - runtime_stats uptime_s=900 total_records=21 total_exceptions=0 levels={'INFO': 21}
+2026-03-24 04:59:05,916 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1080 total_records=34 total_exceptions=0 levels={'INFO': 34}
+2026-03-24 04:59:08,102 - web_local.runtime - INFO - runtime_stats uptime_s=1080 total_records=29 total_exceptions=0 levels={'INFO': 29}
+2026-03-24 04:59:08,315 - web_public.runtime - INFO - runtime_stats uptime_s=1080 total_records=24 total_exceptions=0 levels={'INFO': 24}
+2026-03-24 05:02:05,928 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1260 total_records=37 total_exceptions=0 levels={'INFO': 37}
+2026-03-24 05:02:08,113 - web_local.runtime - INFO - runtime_stats uptime_s=1260 total_records=32 total_exceptions=0 levels={'INFO': 32}
+2026-03-24 05:02:08,327 - web_public.runtime - INFO - runtime_stats uptime_s=1260 total_records=27 total_exceptions=0 levels={'INFO': 27}
+2026-03-24 05:05:05,937 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1440 total_records=40 total_exceptions=0 levels={'INFO': 40}
+2026-03-24 05:05:08,128 - web_local.runtime - INFO - runtime_stats uptime_s=1440 total_records=35 total_exceptions=0 levels={'INFO': 35}
+2026-03-24 05:05:08,327 - web_public.runtime - INFO - runtime_stats uptime_s=1440 total_records=30 total_exceptions=0 levels={'INFO': 30}
+2026-03-24 05:08:05,938 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1620 total_records=43 total_exceptions=0 levels={'INFO': 43}
+2026-03-24 05:08:08,138 - web_local.runtime - INFO - runtime_stats uptime_s=1620 total_records=38 total_exceptions=0 levels={'INFO': 38}
+2026-03-24 05:08:08,342 - web_public.runtime - INFO - runtime_stats uptime_s=1620 total_records=33 total_exceptions=0 levels={'INFO': 33}
+2026-03-24 05:11:05,950 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1800 total_records=46 total_exceptions=0 levels={'INFO': 46}
+2026-03-24 05:11:08,141 - web_local.runtime - INFO - runtime_stats uptime_s=1800 total_records=41 total_exceptions=0 levels={'INFO': 41}
+2026-03-24 05:11:08,344 - web_public.runtime - INFO - runtime_stats uptime_s=1800 total_records=36 total_exceptions=0 levels={'INFO': 36}
+2026-03-24 05:14:05,957 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1980 total_records=49 total_exceptions=0 levels={'INFO': 49}
+2026-03-24 05:14:08,151 - web_local.runtime - INFO - runtime_stats uptime_s=1980 total_records=44 total_exceptions=0 levels={'INFO': 44}
+2026-03-24 05:14:08,353 - web_public.runtime - INFO - runtime_stats uptime_s=1980 total_records=39 total_exceptions=0 levels={'INFO': 39}
+2026-03-24 05:17:05,963 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=2160 total_records=52 total_exceptions=0 levels={'INFO': 52}
+2026-03-24 05:17:08,155 - web_local.runtime - INFO - runtime_stats uptime_s=2160 total_records=47 total_exceptions=0 levels={'INFO': 47}
+2026-03-24 05:17:08,357 - web_public.runtime - INFO - runtime_stats uptime_s=2160 total_records=42 total_exceptions=0 levels={'INFO': 42}
+2026-03-24 05:20:05,970 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=2340 total_records=55 total_exceptions=0 levels={'INFO': 55}
+2026-03-24 05:20:08,160 - web_local.runtime - INFO - runtime_stats uptime_s=2340 total_records=50 total_exceptions=0 levels={'INFO': 50}
+2026-03-24 05:20:08,361 - web_public.runtime - INFO - runtime_stats uptime_s=2340 total_records=45 total_exceptions=0 levels={'INFO': 45}
+2026-03-24 05:23:05,970 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=2520 total_records=58 total_exceptions=0 levels={'INFO': 58}
+2026-03-24 05:23:08,175 - web_local.runtime - INFO - runtime_stats uptime_s=2520 total_records=53 total_exceptions=0 levels={'INFO': 53}
+2026-03-24 05:23:08,374 - web_public.runtime - INFO - runtime_stats uptime_s=2520 total_records=48 total_exceptions=0 levels={'INFO': 48}
+2026-03-24 05:26:05,975 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=2700 total_records=61 total_exceptions=0 levels={'INFO': 61}
+2026-03-24 05:26:08,183 - web_local.runtime - INFO - runtime_stats uptime_s=2700 total_records=56 total_exceptions=0 levels={'INFO': 56}
+2026-03-24 05:26:08,382 - web_public.runtime - INFO - runtime_stats uptime_s=2700 total_records=51 total_exceptions=0 levels={'INFO': 51}
+2026-03-24 05:29:05,984 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=2880 total_records=64 total_exceptions=0 levels={'INFO': 64}
+2026-03-24 05:29:08,188 - web_local.runtime - INFO - runtime_stats uptime_s=2880 total_records=59 total_exceptions=0 levels={'INFO': 59}
+2026-03-24 05:29:08,389 - web_public.runtime - INFO - runtime_stats uptime_s=2880 total_records=54 total_exceptions=0 levels={'INFO': 54}
+2026-03-24 05:32:05,985 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=3060 total_records=67 total_exceptions=0 levels={'INFO': 67}
+2026-03-24 05:32:08,194 - web_local.runtime - INFO - runtime_stats uptime_s=3060 total_records=62 total_exceptions=0 levels={'INFO': 62}
+2026-03-24 05:32:08,394 - web_public.runtime - INFO - runtime_stats uptime_s=3060 total_records=57 total_exceptions=0 levels={'INFO': 57}
+2026-03-24 05:35:06,000 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=3240 total_records=70 total_exceptions=0 levels={'INFO': 70}
+2026-03-24 05:35:08,199 - web_local.runtime - INFO - runtime_stats uptime_s=3240 total_records=65 total_exceptions=0 levels={'INFO': 65}
+2026-03-24 05:35:08,399 - web_public.runtime - INFO - runtime_stats uptime_s=3240 total_records=60 total_exceptions=0 levels={'INFO': 60}
+2026-03-24 05:38:06,003 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=3420 total_records=73 total_exceptions=0 levels={'INFO': 73}
+2026-03-24 05:38:08,204 - web_local.runtime - INFO - runtime_stats uptime_s=3420 total_records=68 total_exceptions=0 levels={'INFO': 68}
+2026-03-24 05:38:08,404 - web_public.runtime - INFO - runtime_stats uptime_s=3420 total_records=63 total_exceptions=0 levels={'INFO': 63}
+2026-03-24 05:41:06,013 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=3600 total_records=76 total_exceptions=0 levels={'INFO': 76}
+2026-03-24 05:41:08,216 - web_local.runtime - INFO - runtime_stats uptime_s=3600 total_records=71 total_exceptions=0 levels={'INFO': 71}
+2026-03-24 05:41:08,417 - web_public.runtime - INFO - runtime_stats uptime_s=3600 total_records=66 total_exceptions=0 levels={'INFO': 66}
+2026-03-24 05:44:06,016 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=3780 total_records=79 total_exceptions=0 levels={'INFO': 79}
+2026-03-24 05:44:08,223 - web_local.runtime - INFO - runtime_stats uptime_s=3780 total_records=74 total_exceptions=0 levels={'INFO': 74}
+2026-03-24 05:44:08,426 - web_public.runtime - INFO - runtime_stats uptime_s=3780 total_records=69 total_exceptions=0 levels={'INFO': 69}
+2026-03-24 05:47:06,018 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=3960 total_records=82 total_exceptions=0 levels={'INFO': 82}
+2026-03-24 05:47:08,236 - web_local.runtime - INFO - runtime_stats uptime_s=3960 total_records=77 total_exceptions=0 levels={'INFO': 77}
+2026-03-24 05:47:08,439 - web_public.runtime - INFO - runtime_stats uptime_s=3960 total_records=72 total_exceptions=0 levels={'INFO': 72}
+2026-03-24 05:50:06,028 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=4140 total_records=85 total_exceptions=0 levels={'INFO': 85}
+2026-03-24 05:50:08,248 - web_local.runtime - INFO - runtime_stats uptime_s=4140 total_records=80 total_exceptions=0 levels={'INFO': 80}
+2026-03-24 05:50:08,449 - web_public.runtime - INFO - runtime_stats uptime_s=4140 total_records=75 total_exceptions=0 levels={'INFO': 75}
+2026-03-24 05:53:06,040 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=4320 total_records=88 total_exceptions=0 levels={'INFO': 88}
+2026-03-24 05:53:08,254 - web_local.runtime - INFO - runtime_stats uptime_s=4320 total_records=83 total_exceptions=0 levels={'INFO': 83}
+2026-03-24 05:53:08,455 - web_public.runtime - INFO - runtime_stats uptime_s=4320 total_records=78 total_exceptions=0 levels={'INFO': 78}
+2026-03-24 05:56:06,051 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=4500 total_records=91 total_exceptions=0 levels={'INFO': 91}
+2026-03-24 05:56:08,269 - web_local.runtime - INFO - runtime_stats uptime_s=4500 total_records=86 total_exceptions=0 levels={'INFO': 86}
+2026-03-24 05:56:08,470 - web_public.runtime - INFO - runtime_stats uptime_s=4500 total_records=81 total_exceptions=0 levels={'INFO': 81}
+2026-03-24 05:59:06,066 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=4680 total_records=94 total_exceptions=0 levels={'INFO': 94}
+2026-03-24 05:59:08,282 - web_local.runtime - INFO - runtime_stats uptime_s=4680 total_records=89 total_exceptions=0 levels={'INFO': 89}
+2026-03-24 05:59:08,482 - web_public.runtime - INFO - runtime_stats uptime_s=4680 total_records=84 total_exceptions=0 levels={'INFO': 84}
+2026-03-24 06:02:06,068 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=4860 total_records=97 total_exceptions=0 levels={'INFO': 97}
+2026-03-24 06:02:08,290 - web_local.runtime - INFO - runtime_stats uptime_s=4860 total_records=92 total_exceptions=0 levels={'INFO': 92}
+2026-03-24 06:02:08,490 - web_public.runtime - INFO - runtime_stats uptime_s=4860 total_records=87 total_exceptions=0 levels={'INFO': 87}
+2026-03-24 06:05:06,069 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=5040 total_records=100 total_exceptions=0 levels={'INFO': 100}
+2026-03-24 06:05:08,303 - web_local.runtime - INFO - runtime_stats uptime_s=5040 total_records=95 total_exceptions=0 levels={'INFO': 95}
+2026-03-24 06:05:08,502 - web_public.runtime - INFO - runtime_stats uptime_s=5040 total_records=90 total_exceptions=0 levels={'INFO': 90}
+2026-03-24 06:08:06,071 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=5220 total_records=103 total_exceptions=0 levels={'INFO': 103}
+2026-03-24 06:08:08,318 - web_local.runtime - INFO - runtime_stats uptime_s=5220 total_records=98 total_exceptions=0 levels={'INFO': 98}
+2026-03-24 06:08:08,504 - web_public.runtime - INFO - runtime_stats uptime_s=5220 total_records=93 total_exceptions=0 levels={'INFO': 93}
+2026-03-24 06:11:06,073 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=5400 total_records=106 total_exceptions=0 levels={'INFO': 106}
+2026-03-24 06:11:08,327 - web_local.runtime - INFO - runtime_stats uptime_s=5400 total_records=101 total_exceptions=0 levels={'INFO': 101}
+2026-03-24 06:11:08,515 - web_public.runtime - INFO - runtime_stats uptime_s=5400 total_records=96 total_exceptions=0 levels={'INFO': 96}
+2026-03-24 06:14:06,087 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=5580 total_records=109 total_exceptions=0 levels={'INFO': 109}
+2026-03-24 06:14:08,338 - web_local.runtime - INFO - runtime_stats uptime_s=5580 total_records=104 total_exceptions=0 levels={'INFO': 104}
+2026-03-24 06:14:08,524 - web_public.runtime - INFO - runtime_stats uptime_s=5580 total_records=99 total_exceptions=0 levels={'INFO': 99}
+2026-03-24 06:17:06,096 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=5760 total_records=112 total_exceptions=0 levels={'INFO': 112}
+2026-03-24 06:17:08,341 - web_local.runtime - INFO - runtime_stats uptime_s=5760 total_records=107 total_exceptions=0 levels={'INFO': 107}
+2026-03-24 06:17:08,527 - web_public.runtime - INFO - runtime_stats uptime_s=5760 total_records=102 total_exceptions=0 levels={'INFO': 102}
+2026-03-24 06:20:06,109 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=5940 total_records=115 total_exceptions=0 levels={'INFO': 115}
+2026-03-24 06:20:08,343 - web_local.runtime - INFO - runtime_stats uptime_s=5940 total_records=110 total_exceptions=0 levels={'INFO': 110}
+2026-03-24 06:20:08,528 - web_public.runtime - INFO - runtime_stats uptime_s=5940 total_records=105 total_exceptions=0 levels={'INFO': 105}
+2026-03-24 06:23:06,118 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=6120 total_records=118 total_exceptions=0 levels={'INFO': 118}
+2026-03-24 06:23:08,358 - web_local.runtime - INFO - runtime_stats uptime_s=6120 total_records=113 total_exceptions=0 levels={'INFO': 113}
+2026-03-24 06:23:08,530 - web_public.runtime - INFO - runtime_stats uptime_s=6120 total_records=108 total_exceptions=0 levels={'INFO': 108}
+2026-03-24 06:24:55,162 - web_local - INFO - runtime_logging_enabled pid=52040 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 06:24:55,233 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 06:24:55,359 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 06:24:55,365 - Database - INFO - Database tables created/verified
+2026-03-24 06:24:55,371 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 06:24:55,371 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 06:24:55,375 - web_public - INFO - runtime_logging_enabled pid=52040 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 06:24:55,378 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 06:24:55,378 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 06:24:55,390 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 06:24:55,390 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 06:24:55,391 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 06:24:55,391 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 06:27:52,879 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 06:27:55,164 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 06:27:55,381 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 06:30:52,891 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=360 total_records=22 total_exceptions=0 levels={'INFO': 22}
+2026-03-24 06:30:55,178 - web_local.runtime - INFO - runtime_stats uptime_s=360 total_records=17 total_exceptions=0 levels={'INFO': 17}
+2026-03-24 06:30:55,394 - web_public.runtime - INFO - runtime_stats uptime_s=360 total_records=12 total_exceptions=0 levels={'INFO': 12}
+2026-03-24 06:33:52,894 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=540 total_records=25 total_exceptions=0 levels={'INFO': 25}
+2026-03-24 06:33:55,192 - web_local.runtime - INFO - runtime_stats uptime_s=540 total_records=20 total_exceptions=0 levels={'INFO': 20}
+2026-03-24 06:33:55,407 - web_public.runtime - INFO - runtime_stats uptime_s=540 total_records=15 total_exceptions=0 levels={'INFO': 15}
+2026-03-24 06:36:21,863 - web_local - INFO - runtime_logging_enabled pid=47176 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 06:36:21,946 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 06:36:22,060 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 06:36:22,069 - Database - INFO - Database tables created/verified
+2026-03-24 06:36:22,074 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 06:36:22,075 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 06:36:22,077 - web_public - INFO - runtime_logging_enabled pid=47176 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 06:36:22,080 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 06:36:22,080 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 06:36:22,093 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 06:36:22,093 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 06:36:22,093 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 06:36:22,093 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 20:09:13,718 - web_local - INFO - runtime_logging_enabled pid=38940 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 20:09:13,758 - xiuxianbot - ERROR - Failed to start local admin dashboard: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+2026-03-24 20:09:13,758 - xiuxianbot - ERROR - Failed to start local admin dashboard. Exiting.
+2026-03-24 20:17:36,098 - web_local - INFO - runtime_logging_enabled pid=44484 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 20:17:36,241 - xiuxianbot - ERROR - Failed to start local admin dashboard: 'utf-8' codec can't decode byte 0xd6 in position 235: invalid continuation byte
+2026-03-24 20:17:36,241 - xiuxianbot - ERROR - Failed to start local admin dashboard. Exiting.
+2026-03-24 20:26:25,344 - web_local - INFO - runtime_logging_enabled pid=11436 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 20:26:25,432 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 20:26:25,475 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 20:26:25,481 - Database - INFO - Database tables created/verified
+2026-03-24 20:26:25,486 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 20:26:25,487 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 20:26:25,489 - web_public - INFO - runtime_logging_enabled pid=11436 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 20:26:25,492 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 20:26:25,493 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 20:26:25,506 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 20:26:25,506 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 20:26:25,506 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 20:26:25,507 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 20:29:23,145 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 20:29:25,357 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 20:29:25,495 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 20:32:23,148 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=360 total_records=22 total_exceptions=0 levels={'INFO': 22}
+2026-03-24 20:32:25,362 - web_local.runtime - INFO - runtime_stats uptime_s=360 total_records=17 total_exceptions=0 levels={'INFO': 17}
+2026-03-24 20:32:25,500 - web_public.runtime - INFO - runtime_stats uptime_s=360 total_records=12 total_exceptions=0 levels={'INFO': 12}
+2026-03-24 20:35:23,162 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=540 total_records=25 total_exceptions=0 levels={'INFO': 25}
+2026-03-24 20:35:25,366 - web_local.runtime - INFO - runtime_stats uptime_s=540 total_records=20 total_exceptions=0 levels={'INFO': 20}
+2026-03-24 20:35:25,505 - web_public.runtime - INFO - runtime_stats uptime_s=540 total_records=15 total_exceptions=0 levels={'INFO': 15}
+2026-03-24 20:38:23,164 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=720 total_records=28 total_exceptions=0 levels={'INFO': 28}
+2026-03-24 20:38:25,378 - web_local.runtime - INFO - runtime_stats uptime_s=720 total_records=23 total_exceptions=0 levels={'INFO': 23}
+2026-03-24 20:38:25,518 - web_public.runtime - INFO - runtime_stats uptime_s=720 total_records=18 total_exceptions=0 levels={'INFO': 18}
+2026-03-24 20:41:23,165 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=900 total_records=31 total_exceptions=0 levels={'INFO': 31}
+2026-03-24 20:41:25,385 - web_local.runtime - INFO - runtime_stats uptime_s=900 total_records=26 total_exceptions=0 levels={'INFO': 26}
+2026-03-24 20:41:25,524 - web_public.runtime - INFO - runtime_stats uptime_s=900 total_records=21 total_exceptions=0 levels={'INFO': 21}
+2026-03-24 20:44:23,166 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1080 total_records=34 total_exceptions=0 levels={'INFO': 34}
+2026-03-24 20:44:25,402 - web_local.runtime - INFO - runtime_stats uptime_s=1080 total_records=29 total_exceptions=0 levels={'INFO': 29}
+2026-03-24 20:44:25,526 - web_public.runtime - INFO - runtime_stats uptime_s=1080 total_records=24 total_exceptions=0 levels={'INFO': 24}
+2026-03-24 20:47:23,174 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1260 total_records=37 total_exceptions=0 levels={'INFO': 37}
+2026-03-24 20:47:25,416 - web_local.runtime - INFO - runtime_stats uptime_s=1260 total_records=32 total_exceptions=0 levels={'INFO': 32}
+2026-03-24 20:47:25,540 - web_public.runtime - INFO - runtime_stats uptime_s=1260 total_records=27 total_exceptions=0 levels={'INFO': 27}
+2026-03-24 20:50:23,182 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1440 total_records=40 total_exceptions=0 levels={'INFO': 40}
+2026-03-24 20:50:25,428 - web_local.runtime - INFO - runtime_stats uptime_s=1440 total_records=35 total_exceptions=0 levels={'INFO': 35}
+2026-03-24 20:50:25,553 - web_public.runtime - INFO - runtime_stats uptime_s=1440 total_records=30 total_exceptions=0 levels={'INFO': 30}
+2026-03-24 20:53:23,185 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1620 total_records=43 total_exceptions=0 levels={'INFO': 43}
+2026-03-24 20:53:25,437 - web_local.runtime - INFO - runtime_stats uptime_s=1620 total_records=38 total_exceptions=0 levels={'INFO': 38}
+2026-03-24 20:53:25,561 - web_public.runtime - INFO - runtime_stats uptime_s=1620 total_records=33 total_exceptions=0 levels={'INFO': 33}
+2026-03-24 20:56:23,195 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1800 total_records=46 total_exceptions=0 levels={'INFO': 46}
+2026-03-24 20:56:25,441 - web_local.runtime - INFO - runtime_stats uptime_s=1800 total_records=41 total_exceptions=0 levels={'INFO': 41}
+2026-03-24 20:56:25,565 - web_public.runtime - INFO - runtime_stats uptime_s=1800 total_records=36 total_exceptions=0 levels={'INFO': 36}
+2026-03-24 20:59:23,206 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1980 total_records=49 total_exceptions=0 levels={'INFO': 49}
+2026-03-24 20:59:25,444 - web_local.runtime - INFO - runtime_stats uptime_s=1980 total_records=44 total_exceptions=0 levels={'INFO': 44}
+2026-03-24 20:59:25,568 - web_public.runtime - INFO - runtime_stats uptime_s=1980 total_records=39 total_exceptions=0 levels={'INFO': 39}
+2026-03-24 21:02:23,213 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=2160 total_records=52 total_exceptions=0 levels={'INFO': 52}
+2026-03-24 21:02:25,452 - web_local.runtime - INFO - runtime_stats uptime_s=2160 total_records=47 total_exceptions=0 levels={'INFO': 47}
+2026-03-24 21:02:25,575 - web_public.runtime - INFO - runtime_stats uptime_s=2160 total_records=42 total_exceptions=0 levels={'INFO': 42}
+2026-03-24 21:05:23,219 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=2340 total_records=55 total_exceptions=0 levels={'INFO': 55}
+2026-03-24 21:05:25,464 - web_local.runtime - INFO - runtime_stats uptime_s=2340 total_records=50 total_exceptions=0 levels={'INFO': 50}
+2026-03-24 21:05:25,587 - web_public.runtime - INFO - runtime_stats uptime_s=2340 total_records=45 total_exceptions=0 levels={'INFO': 45}
+2026-03-24 21:08:23,234 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=2520 total_records=58 total_exceptions=0 levels={'INFO': 58}
+2026-03-24 21:08:25,474 - web_local.runtime - INFO - runtime_stats uptime_s=2520 total_records=53 total_exceptions=0 levels={'INFO': 53}
+2026-03-24 21:08:25,598 - web_public.runtime - INFO - runtime_stats uptime_s=2520 total_records=48 total_exceptions=0 levels={'INFO': 48}
+2026-03-24 21:11:23,246 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=2700 total_records=61 total_exceptions=0 levels={'INFO': 61}
+2026-03-24 21:11:25,476 - web_local.runtime - INFO - runtime_stats uptime_s=2700 total_records=56 total_exceptions=0 levels={'INFO': 56}
+2026-03-24 21:11:25,599 - web_public.runtime - INFO - runtime_stats uptime_s=2700 total_records=51 total_exceptions=0 levels={'INFO': 51}
+2026-03-24 21:14:23,249 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=2880 total_records=64 total_exceptions=0 levels={'INFO': 64}
+2026-03-24 21:14:25,480 - web_local.runtime - INFO - runtime_stats uptime_s=2880 total_records=59 total_exceptions=0 levels={'INFO': 59}
+2026-03-24 21:14:25,606 - web_public.runtime - INFO - runtime_stats uptime_s=2880 total_records=54 total_exceptions=0 levels={'INFO': 54}
+2026-03-24 21:17:23,254 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=3060 total_records=67 total_exceptions=0 levels={'INFO': 67}
+2026-03-24 21:17:25,490 - web_local.runtime - INFO - runtime_stats uptime_s=3060 total_records=62 total_exceptions=0 levels={'INFO': 62}
+2026-03-24 21:17:25,613 - web_public.runtime - INFO - runtime_stats uptime_s=3060 total_records=57 total_exceptions=0 levels={'INFO': 57}
+2026-03-24 21:20:23,255 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=3240 total_records=70 total_exceptions=0 levels={'INFO': 70}
+2026-03-24 21:20:25,498 - web_local.runtime - INFO - runtime_stats uptime_s=3240 total_records=65 total_exceptions=0 levels={'INFO': 65}
+2026-03-24 21:20:25,621 - web_public.runtime - INFO - runtime_stats uptime_s=3240 total_records=60 total_exceptions=0 levels={'INFO': 60}
+2026-03-24 21:23:23,255 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=3420 total_records=73 total_exceptions=0 levels={'INFO': 73}
+2026-03-24 21:23:25,499 - web_local.runtime - INFO - runtime_stats uptime_s=3420 total_records=68 total_exceptions=0 levels={'INFO': 68}
+2026-03-24 21:23:25,623 - web_public.runtime - INFO - runtime_stats uptime_s=3420 total_records=63 total_exceptions=0 levels={'INFO': 63}
+2026-03-24 21:26:23,256 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=3600 total_records=76 total_exceptions=0 levels={'INFO': 76}
+2026-03-24 21:26:25,512 - web_local.runtime - INFO - runtime_stats uptime_s=3600 total_records=71 total_exceptions=0 levels={'INFO': 71}
+2026-03-24 21:26:25,637 - web_public.runtime - INFO - runtime_stats uptime_s=3600 total_records=66 total_exceptions=0 levels={'INFO': 66}
+2026-03-24 21:29:23,270 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=3780 total_records=79 total_exceptions=0 levels={'INFO': 79}
+2026-03-24 21:29:25,517 - web_local.runtime - INFO - runtime_stats uptime_s=3780 total_records=74 total_exceptions=0 levels={'INFO': 74}
+2026-03-24 21:29:25,641 - web_public.runtime - INFO - runtime_stats uptime_s=3780 total_records=69 total_exceptions=0 levels={'INFO': 69}
+2026-03-24 21:32:23,276 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=3960 total_records=82 total_exceptions=0 levels={'INFO': 82}
+2026-03-24 21:32:25,524 - web_local.runtime - INFO - runtime_stats uptime_s=3960 total_records=77 total_exceptions=0 levels={'INFO': 77}
+2026-03-24 21:32:25,648 - web_public.runtime - INFO - runtime_stats uptime_s=3960 total_records=72 total_exceptions=0 levels={'INFO': 72}
+2026-03-24 21:35:23,290 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=4140 total_records=85 total_exceptions=0 levels={'INFO': 85}
+2026-03-24 21:35:25,531 - web_local.runtime - INFO - runtime_stats uptime_s=4140 total_records=80 total_exceptions=0 levels={'INFO': 80}
+2026-03-24 21:35:25,654 - web_public.runtime - INFO - runtime_stats uptime_s=4140 total_records=75 total_exceptions=0 levels={'INFO': 75}
+2026-03-24 21:38:23,305 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=4320 total_records=88 total_exceptions=0 levels={'INFO': 88}
+2026-03-24 21:38:25,540 - web_local.runtime - INFO - runtime_stats uptime_s=4320 total_records=83 total_exceptions=0 levels={'INFO': 83}
+2026-03-24 21:38:25,666 - web_public.runtime - INFO - runtime_stats uptime_s=4320 total_records=78 total_exceptions=0 levels={'INFO': 78}
+2026-03-24 21:41:23,321 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=4500 total_records=91 total_exceptions=0 levels={'INFO': 91}
+2026-03-24 21:41:25,541 - web_local.runtime - INFO - runtime_stats uptime_s=4500 total_records=86 total_exceptions=0 levels={'INFO': 86}
+2026-03-24 21:41:25,680 - web_public.runtime - INFO - runtime_stats uptime_s=4500 total_records=81 total_exceptions=0 levels={'INFO': 81}
+2026-03-24 21:44:23,331 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=4680 total_records=94 total_exceptions=0 levels={'INFO': 94}
+2026-03-24 21:44:25,552 - web_local.runtime - INFO - runtime_stats uptime_s=4680 total_records=89 total_exceptions=0 levels={'INFO': 89}
+2026-03-24 21:44:25,692 - web_public.runtime - INFO - runtime_stats uptime_s=4680 total_records=84 total_exceptions=0 levels={'INFO': 84}
+2026-03-24 21:47:23,334 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=4860 total_records=97 total_exceptions=0 levels={'INFO': 97}
+2026-03-24 21:47:25,562 - web_local.runtime - INFO - runtime_stats uptime_s=4860 total_records=92 total_exceptions=0 levels={'INFO': 92}
+2026-03-24 21:47:25,701 - web_public.runtime - INFO - runtime_stats uptime_s=4860 total_records=87 total_exceptions=0 levels={'INFO': 87}
+2026-03-24 21:50:23,334 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=5040 total_records=100 total_exceptions=0 levels={'INFO': 100}
+2026-03-24 21:50:25,564 - web_local.runtime - INFO - runtime_stats uptime_s=5040 total_records=95 total_exceptions=0 levels={'INFO': 95}
+2026-03-24 21:50:25,702 - web_public.runtime - INFO - runtime_stats uptime_s=5040 total_records=90 total_exceptions=0 levels={'INFO': 90}
+2026-03-24 21:53:23,346 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=5220 total_records=103 total_exceptions=0 levels={'INFO': 103}
+2026-03-24 21:53:25,576 - web_local.runtime - INFO - runtime_stats uptime_s=5220 total_records=98 total_exceptions=0 levels={'INFO': 98}
+2026-03-24 21:53:25,715 - web_public.runtime - INFO - runtime_stats uptime_s=5220 total_records=93 total_exceptions=0 levels={'INFO': 93}
+2026-03-24 21:56:23,356 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=5400 total_records=106 total_exceptions=0 levels={'INFO': 106}
+2026-03-24 21:56:25,587 - web_local.runtime - INFO - runtime_stats uptime_s=5400 total_records=101 total_exceptions=0 levels={'INFO': 101}
+2026-03-24 21:56:25,726 - web_public.runtime - INFO - runtime_stats uptime_s=5400 total_records=96 total_exceptions=0 levels={'INFO': 96}
+2026-03-24 21:59:23,370 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=5580 total_records=109 total_exceptions=0 levels={'INFO': 109}
+2026-03-24 21:59:25,589 - web_local.runtime - INFO - runtime_stats uptime_s=5580 total_records=104 total_exceptions=0 levels={'INFO': 104}
+2026-03-24 21:59:25,729 - web_public.runtime - INFO - runtime_stats uptime_s=5580 total_records=99 total_exceptions=0 levels={'INFO': 99}
+2026-03-24 22:02:23,370 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=5760 total_records=112 total_exceptions=0 levels={'INFO': 112}
+2026-03-24 22:02:25,600 - web_local.runtime - INFO - runtime_stats uptime_s=5760 total_records=107 total_exceptions=0 levels={'INFO': 107}
+2026-03-24 22:02:25,740 - web_public.runtime - INFO - runtime_stats uptime_s=5760 total_records=102 total_exceptions=0 levels={'INFO': 102}
+2026-03-24 22:05:23,377 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=5940 total_records=115 total_exceptions=0 levels={'INFO': 115}
+2026-03-24 22:05:25,605 - web_local.runtime - INFO - runtime_stats uptime_s=5940 total_records=110 total_exceptions=0 levels={'INFO': 110}
+2026-03-24 22:05:25,742 - web_public.runtime - INFO - runtime_stats uptime_s=5940 total_records=105 total_exceptions=0 levels={'INFO': 105}
+2026-03-24 22:08:03,903 - web_local - INFO - runtime_logging_enabled pid=45964 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 22:08:03,974 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 22:08:04,017 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 22:08:04,024 - Database - INFO - Database tables created/verified
+2026-03-24 22:08:04,029 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 22:08:04,030 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 22:08:04,032 - web_public - INFO - runtime_logging_enabled pid=45964 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 22:08:04,035 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 22:08:04,036 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 22:08:04,048 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 22:08:04,048 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 22:08:04,049 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 22:08:04,049 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 22:10:02,892 - web_local - INFO - runtime_logging_enabled pid=46700 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 22:10:02,977 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 22:10:03,023 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 22:10:03,029 - Database - INFO - Database tables created/verified
+2026-03-24 22:10:03,035 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 22:10:03,035 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 22:10:03,037 - web_public - INFO - runtime_logging_enabled pid=46700 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 22:10:03,040 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 22:10:03,042 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 22:10:03,054 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 22:10:03,054 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 22:10:03,054 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 22:10:03,054 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 22:13:00,684 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 22:13:02,902 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 22:13:03,042 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 22:16:00,685 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=360 total_records=22 total_exceptions=0 levels={'INFO': 22}
+2026-03-24 22:16:02,907 - web_local.runtime - INFO - runtime_stats uptime_s=360 total_records=17 total_exceptions=0 levels={'INFO': 17}
+2026-03-24 22:16:03,047 - web_public.runtime - INFO - runtime_stats uptime_s=360 total_records=12 total_exceptions=0 levels={'INFO': 12}
+2026-03-24 22:19:00,688 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=540 total_records=25 total_exceptions=0 levels={'INFO': 25}
+2026-03-24 22:19:02,909 - web_local.runtime - INFO - runtime_stats uptime_s=540 total_records=20 total_exceptions=0 levels={'INFO': 20}
+2026-03-24 22:19:03,052 - web_public.runtime - INFO - runtime_stats uptime_s=540 total_records=15 total_exceptions=0 levels={'INFO': 15}
+2026-03-24 22:21:36,636 - web_local - INFO - runtime_logging_enabled pid=31672 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 22:21:36,721 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 22:21:36,758 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 22:21:36,765 - Database - INFO - Database tables created/verified
+2026-03-24 22:21:36,771 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 22:21:36,771 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 22:21:36,773 - web_public - INFO - runtime_logging_enabled pid=31672 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 22:21:36,777 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 22:21:36,778 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 22:21:36,789 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 22:21:36,789 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 22:21:36,789 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 22:21:36,790 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 22:22:08,217 - web_local - INFO - runtime_logging_enabled pid=40720 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 22:22:08,303 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 22:22:08,341 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 22:22:08,347 - Database - INFO - Database tables created/verified
+2026-03-24 22:22:08,353 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 22:22:08,353 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 22:22:08,355 - web_public - INFO - runtime_logging_enabled pid=40720 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 22:22:08,357 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 22:22:08,358 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 22:22:08,372 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 22:22:08,372 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 22:22:08,372 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 22:22:08,372 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 22:25:06,029 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 22:25:08,217 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 22:25:08,356 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 22:25:55,004 - web_local - INFO - runtime_logging_enabled pid=45912 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 22:25:55,204 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 22:25:55,243 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 22:25:55,249 - Database - INFO - Database tables created/verified
+2026-03-24 22:25:55,254 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 22:25:55,254 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 22:25:55,256 - web_public - INFO - runtime_logging_enabled pid=45912 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 22:25:55,260 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 22:25:55,260 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 22:25:55,271 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 22:25:55,272 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 22:25:55,272 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 22:25:55,272 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 22:27:22,253 - web_local - INFO - runtime_logging_enabled pid=47540 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 22:27:22,337 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 22:27:22,376 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 22:27:22,383 - Database - INFO - Database tables created/verified
+2026-03-24 22:27:22,388 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 22:27:22,388 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 22:27:22,390 - web_public - INFO - runtime_logging_enabled pid=47540 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 22:27:22,394 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 22:27:22,394 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 22:27:22,405 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 22:27:22,406 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 22:27:22,406 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 22:27:22,406 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 22:30:20,047 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 22:30:22,262 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 22:30:22,401 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 22:33:20,054 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=360 total_records=22 total_exceptions=0 levels={'INFO': 22}
+2026-03-24 22:33:22,269 - web_local.runtime - INFO - runtime_stats uptime_s=360 total_records=17 total_exceptions=0 levels={'INFO': 17}
+2026-03-24 22:33:22,407 - web_public.runtime - INFO - runtime_stats uptime_s=360 total_records=12 total_exceptions=0 levels={'INFO': 12}
+2026-03-24 22:36:20,067 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=540 total_records=25 total_exceptions=0 levels={'INFO': 25}
+2026-03-24 22:36:22,270 - web_local.runtime - INFO - runtime_stats uptime_s=540 total_records=20 total_exceptions=0 levels={'INFO': 20}
+2026-03-24 22:36:22,408 - web_public.runtime - INFO - runtime_stats uptime_s=540 total_records=15 total_exceptions=0 levels={'INFO': 15}
+2026-03-24 22:39:20,075 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=720 total_records=28 total_exceptions=0 levels={'INFO': 28}
+2026-03-24 22:39:22,273 - web_local.runtime - INFO - runtime_stats uptime_s=720 total_records=23 total_exceptions=0 levels={'INFO': 23}
+2026-03-24 22:39:22,414 - web_public.runtime - INFO - runtime_stats uptime_s=720 total_records=18 total_exceptions=0 levels={'INFO': 18}
+2026-03-24 22:42:20,075 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=900 total_records=31 total_exceptions=0 levels={'INFO': 31}
+2026-03-24 22:42:22,286 - web_local.runtime - INFO - runtime_stats uptime_s=900 total_records=26 total_exceptions=0 levels={'INFO': 26}
+2026-03-24 22:42:22,425 - web_public.runtime - INFO - runtime_stats uptime_s=900 total_records=21 total_exceptions=0 levels={'INFO': 21}
+2026-03-24 22:45:20,090 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1080 total_records=34 total_exceptions=0 levels={'INFO': 34}
+2026-03-24 22:45:22,288 - web_local.runtime - INFO - runtime_stats uptime_s=1080 total_records=29 total_exceptions=0 levels={'INFO': 29}
+2026-03-24 22:45:22,426 - web_public.runtime - INFO - runtime_stats uptime_s=1080 total_records=24 total_exceptions=0 levels={'INFO': 24}
+2026-03-24 22:48:20,101 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1260 total_records=37 total_exceptions=0 levels={'INFO': 37}
+2026-03-24 22:48:22,301 - web_local.runtime - INFO - runtime_stats uptime_s=1260 total_records=32 total_exceptions=0 levels={'INFO': 32}
+2026-03-24 22:48:22,438 - web_public.runtime - INFO - runtime_stats uptime_s=1260 total_records=27 total_exceptions=0 levels={'INFO': 27}
+2026-03-24 22:51:20,112 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1440 total_records=40 total_exceptions=0 levels={'INFO': 40}
+2026-03-24 22:51:22,306 - web_local.runtime - INFO - runtime_stats uptime_s=1440 total_records=35 total_exceptions=0 levels={'INFO': 35}
+2026-03-24 22:51:22,446 - web_public.runtime - INFO - runtime_stats uptime_s=1440 total_records=30 total_exceptions=0 levels={'INFO': 30}
+2026-03-24 22:54:20,126 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1620 total_records=43 total_exceptions=0 levels={'INFO': 43}
+2026-03-24 22:54:22,319 - web_local.runtime - INFO - runtime_stats uptime_s=1620 total_records=38 total_exceptions=0 levels={'INFO': 38}
+2026-03-24 22:54:22,457 - web_public.runtime - INFO - runtime_stats uptime_s=1620 total_records=33 total_exceptions=0 levels={'INFO': 33}
+2026-03-24 22:57:20,132 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1800 total_records=46 total_exceptions=0 levels={'INFO': 46}
+2026-03-24 22:57:22,320 - web_local.runtime - INFO - runtime_stats uptime_s=1800 total_records=41 total_exceptions=0 levels={'INFO': 41}
+2026-03-24 22:57:22,459 - web_public.runtime - INFO - runtime_stats uptime_s=1800 total_records=36 total_exceptions=0 levels={'INFO': 36}
+2026-03-24 23:00:20,146 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=1980 total_records=49 total_exceptions=0 levels={'INFO': 49}
+2026-03-24 23:00:22,328 - web_local.runtime - INFO - runtime_stats uptime_s=1980 total_records=44 total_exceptions=0 levels={'INFO': 44}
+2026-03-24 23:00:22,467 - web_public.runtime - INFO - runtime_stats uptime_s=1980 total_records=39 total_exceptions=0 levels={'INFO': 39}
+2026-03-24 23:03:20,154 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=2160 total_records=52 total_exceptions=0 levels={'INFO': 52}
+2026-03-24 23:03:22,333 - web_local.runtime - INFO - runtime_stats uptime_s=2160 total_records=47 total_exceptions=0 levels={'INFO': 47}
+2026-03-24 23:03:22,471 - web_public.runtime - INFO - runtime_stats uptime_s=2160 total_records=42 total_exceptions=0 levels={'INFO': 42}
+2026-03-24 23:06:20,170 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=2340 total_records=55 total_exceptions=0 levels={'INFO': 55}
+2026-03-24 23:06:22,339 - web_local.runtime - INFO - runtime_stats uptime_s=2340 total_records=50 total_exceptions=0 levels={'INFO': 50}
+2026-03-24 23:06:22,477 - web_public.runtime - INFO - runtime_stats uptime_s=2340 total_records=45 total_exceptions=0 levels={'INFO': 45}
+2026-03-24 23:09:20,174 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=2520 total_records=58 total_exceptions=0 levels={'INFO': 58}
+2026-03-24 23:09:22,340 - web_local.runtime - INFO - runtime_stats uptime_s=2520 total_records=53 total_exceptions=0 levels={'INFO': 53}
+2026-03-24 23:09:22,494 - web_public.runtime - INFO - runtime_stats uptime_s=2520 total_records=48 total_exceptions=0 levels={'INFO': 48}
+2026-03-24 23:10:18,369 - web_local - INFO - runtime_logging_enabled pid=39808 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 23:10:18,561 - Database - INFO - Connected to PostgreSQL (pool 2-10)
+2026-03-24 23:10:18,604 - Database - INFO - Ensured 64 indexes exist
+2026-03-24 23:10:18,607 - Database - INFO - Database tables created/verified
+2026-03-24 23:10:18,613 - xiuxianbot - INFO - Local admin dashboard started at http://127.0.0.1:11451
+2026-03-24 23:10:18,613 - xiuxianbot - INFO - Starting public web on 127.0.0.1:11452
+2026-03-24 23:10:18,615 - web_public - INFO - runtime_logging_enabled pid=39808 cwd=E:\myPrograms\xiuxian\xiuxian_bot python=3.13.9
+2026-03-24 23:10:18,619 - xiuxianbot - INFO - Public web started at http://127.0.0.1:11452
+2026-03-24 23:10:18,619 - xiuxianbot - INFO - XiuXianBot is running. Press Ctrl+C to stop.
+2026-03-24 23:10:18,630 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11452
+2026-03-24 23:10:18,631 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:11451
+2026-03-24 23:10:18,631 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 23:10:18,631 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-24 23:13:16,174 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=180 total_records=19 total_exceptions=0 levels={'INFO': 19}
+2026-03-24 23:13:18,377 - web_local.runtime - INFO - runtime_stats uptime_s=180 total_records=14 total_exceptions=0 levels={'INFO': 14}
+2026-03-24 23:13:18,626 - web_public.runtime - INFO - runtime_stats uptime_s=180 total_records=9 total_exceptions=0 levels={'INFO': 9}
+2026-03-24 23:16:16,185 - xiuxianbot.runtime - INFO - runtime_stats uptime_s=360 total_records=22 total_exceptions=0 levels={'INFO': 22}
+2026-03-24 23:16:18,388 - web_local.runtime - INFO - runtime_stats uptime_s=360 total_records=17 total_exceptions=0 levels={'INFO': 17}
+2026-03-24 23:16:18,636 - web_public.runtime - INFO - runtime_stats uptime_s=360 total_records=12 total_exceptions=0 levels={'INFO': 12}

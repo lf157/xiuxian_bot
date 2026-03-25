@@ -125,8 +125,7 @@ def test_settle_breakthrough_uses_preview_rate_for_final_roll(monkeypatch, test_
     resp, status = settlement_extra.settle_breakthrough(
         user_id="bt_force_roll",
         use_pill=False,
-        strategy="normal",
-        call_for_help=False,
+        strategy="steady",
     )
 
     assert status == 400
@@ -146,8 +145,7 @@ def test_settle_breakthrough_tribulation_failure_has_extra_penalty(monkeypatch, 
     resp, status = settlement_extra.settle_breakthrough(
         user_id="bt_fail_tribulation",
         use_pill=False,
-        strategy="normal",
-        call_for_help=False,
+        strategy="steady",
     )
 
     assert status == 400

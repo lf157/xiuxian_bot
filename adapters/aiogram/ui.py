@@ -9,6 +9,27 @@ from typing import Any, Iterable
 from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+_ELEMENT_NAMES = {
+    "fire": "火灵根",
+    "water": "水灵根",
+    "wood": "木灵根",
+    "metal": "金灵根",
+    "earth": "土灵根",
+    "火": "火灵根",
+    "水": "水灵根",
+    "木": "木灵根",
+    "金": "金灵根",
+    "土": "土灵根",
+}
+
+_ELEMENT_EMOJI = {
+    "火": "🔥", "fire": "🔥",
+    "水": "🌊", "water": "🌊",
+    "木": "🌿", "wood": "🌿",
+    "金": "🗡️", "metal": "🗡️",
+    "土": "🪨", "earth": "🪨",
+}
+
 
 def _to_int(value: Any, default: int = 0) -> int:
     try:
@@ -58,8 +79,8 @@ def _fmt_status_short(status: dict[str, Any]) -> str:
     mp = _to_int(status.get("mp"), 0)
     max_mp = _to_int(status.get("max_mp"), mp)
     return (
-        f"❤️ HP: {hp}/{max_hp}\n"
-        f"💙 MP: {mp}/{max_mp}\n"
+        f"❤️ 气血: {hp}/{max_hp}\n"
+        f"💙 灵力: {mp}/{max_mp}\n"
         f"⚡ 精力: {status.get('stamina', 0)}/{status.get('max_stamina', 24)}"
     )
 
@@ -70,8 +91,12 @@ def _fmt_skills_lines(skills: Iterable[dict[str, Any]]) -> list[str]:
         name = skill.get("name", skill.get("id", "技能"))
         mp_cost_text = skill.get("mp_cost_text")
         if not mp_cost_text:
-            mp_cost_text = f"消耗{_to_int(skill.get('mp_cost'))}MP"
-        rows.append(f"• {name} - {mp_cost_text}")
+            mp_cost_text = f"消耗{_to_int(skill.get('mp_cost'))}灵力"
+        damage_pct = _to_int(skill.get("damage_pct"), 0)
+        if damage_pct > 0 and damage_pct != 100:
+            rows.append(f"• {name} — {damage_pct}%伤害 / {mp_cost_text}")
+        else:
+            rows.append(f"• {name} — {mp_cost_text}")
     return rows
 
 
@@ -84,9 +109,9 @@ def _fmt_rewards(rewards: dict[str, Any] | None) -> list[str]:
     if exp > 0:
         lines.append(f"• 修为 +{_fmt_num(exp)}")
     if copper > 0:
-        lines.append(f"• 下品灵石 +{_fmt_num(copper)}")
+        lines.append(f"• 🟦 下品灵石 +{_fmt_num(copper)}")
     if gold > 0:
-        lines.append(f"• 中品灵石 +{_fmt_num(gold)}")
+        lines.append(f"• 🟩 中品灵石 +{_fmt_num(gold)}")
     if len(lines) == 1:
         lines.append("• 无")
     return lines
@@ -114,6 +139,21 @@ def register_keyboard() -> InlineKeyboardMarkup:
     return builder.as_markup()
 
 
+def element_keyboard() -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    elements = [
+        ("🔥 火灵根", "fire"),
+        ("🌊 水灵根", "water"),
+        ("🌿 木灵根", "wood"),
+        ("🗡 金灵根", "metal"),
+        ("🪨 土灵根", "earth"),
+    ]
+    for text, val in elements:
+        builder.button(text=text, callback_data=f"register:element:{val}")
+    builder.adjust(2, 2, 1)
+    return builder.as_markup()
+
+
 def cultivation_keyboard(*, is_cultivating: bool) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     if is_cultivating:
@@ -137,11 +177,12 @@ def main_menu_keyboard(*, registered: bool = True) -> InlineKeyboardMarkup:
     builder.button(text="📊 状态", callback_data="menu:stat")
     builder.button(text="🧘 修炼", callback_data="cul:status")
     builder.button(text="🦴 狩猎", callback_data="hunt:list")
-    builder.button(text="⚡ 突破", callback_data="break:preview:normal")
+    builder.button(text="⚡ 突破", callback_data="break:preview:steady")
     builder.button(text="🎒 储物袋", callback_data="bag:page:0")
     builder.button(text="👕 灵装", callback_data="gear:page:0")
     builder.button(text="📘 技能", callback_data="skill:list")
-    builder.button(text="🗺️ 秘境", callback_data="secret:list")
+    builder.button(text="🗺️ 地图", callback_data="travel:map")
+    builder.button(text="🌀 秘境", callback_data="secret:list")
     builder.button(text="🏪 万宝阁", callback_data="shop:currency:copper")
     builder.button(text="👥 社交", callback_data="social:menu")
     builder.button(text="🏯 宗门", callback_data="sect:menu")
@@ -156,7 +197,7 @@ def main_menu_keyboard(*, registered: bool = True) -> InlineKeyboardMarkup:
     builder.button(text="🔨 锻造", callback_data="forge:menu")
     builder.button(text="📖 指南", callback_data="story:chapter:guide")
     builder.button(text="🔄 刷新菜单", callback_data="menu:home")
-    builder.adjust(2, 2, 3, 2, 3, 3, 3, 3, 1)
+    builder.adjust(2, 2, 3, 3, 2, 3, 3, 3, 2, 1)
     return builder.as_markup()
 
 
@@ -184,7 +225,13 @@ def hunt_battle_keyboard(skills: Iterable[dict[str, Any]]) -> InlineKeyboardMark
         if not sid:
             continue
         name = str(skill.get("name", sid))
-        builder.button(text=f"✨ {name}", callback_data=f"hunt:act_skill:{sid}")
+        mp_cost_text = skill.get("mp_cost_text") or f"{_to_int(skill.get('mp_cost'))}灵力"
+        damage_pct = _to_int(skill.get("damage_pct"), 0)
+        if damage_pct > 0 and damage_pct != 100:
+            label = f"✨ {name}（{damage_pct}% {mp_cost_text}）"
+        else:
+            label = f"✨ {name}（{mp_cost_text}）"
+        builder.button(text=label, callback_data=f"hunt:act_skill:{sid}")
     builder.button(text="🧹 结束战斗", callback_data="hunt:exit")
     builder.adjust(1, 2, 1, 1)
     return builder.as_markup()
@@ -198,24 +245,48 @@ def hunt_settlement_keyboard() -> InlineKeyboardMarkup:
     return builder.as_markup()
 
 
-def breakthrough_keyboard(selected_strategy: str | None, call_for_help: bool = True) -> InlineKeyboardMarkup:
-    current = (selected_strategy or "normal").strip().lower()
-    options = [
-        ("normal", "普通冲关"),
-        ("steady", "稳妥突破"),
-        ("protect", "护脉突破"),
-        ("desperate", "生死突破"),
-    ]
+def breakthrough_keyboard(
+    selected_strategy: str | None,
+    *,
+    resource_ok: bool = True,
+    is_tribulation: bool = False,
+) -> InlineKeyboardMarkup:
+    current = (selected_strategy or "steady").strip().lower()
     builder = InlineKeyboardBuilder()
-    for key, label in options:
-        text = f"✅ {label}" if key == current else label
-        builder.button(text=text, callback_data=f"break:preview:{key}")
-    help_text = "🤝 道友助阵：开" if call_for_help else "🤝 道友助阵：关"
-    builder.button(text=help_text, callback_data="break:help_toggle")
-    builder.button(text="⚡ 执行突破", callback_data="break:confirm")
-    builder.button(text="🧹 取消突破", callback_data="break:cancel")
+    if is_tribulation:
+        # 渡劫模式：不显示策略切换按钮
+        confirm_text = "⛈️ 执行渡劫" if resource_ok else "⚠️ 资源不足"
+        builder.button(text=confirm_text, callback_data="break:confirm")
+        builder.button(text="⬅️ 主菜单", callback_data="menu:home")
+        builder.adjust(1, 1)
+    else:
+        options = [
+            ("steady", "🛡️ 稳妥突破"),
+            ("protect", "🌿 护脉突破"),
+            ("desperate", "🔥 生死突破"),
+        ]
+        for key, label in options:
+            text = f"👉 {label}" if key == current else label
+            builder.button(text=text, callback_data=f"break:preview:{key}")
+        confirm_text = "⚡ 执行突破" if resource_ok else "⚠️ 资源不足"
+        builder.button(text=confirm_text, callback_data="break:confirm")
+        builder.button(text="⬅️ 主菜单", callback_data="menu:home")
+        builder.adjust(3, 1, 1)
+    return builder.as_markup()
+
+
+def breakthrough_trial_keyboard(trial_requirements: dict[str, Any] | None = None) -> InlineKeyboardMarkup:
+    """突破失败（试炼未完成）时的导航键盘。"""
+    builder = InlineKeyboardBuilder()
+    reqs = trial_requirements or {}
+    hunt = reqs.get("hunt") or {}
+    secret = reqs.get("secret") or {}
+    if int(hunt.get("remaining", 0) or 0) > 0:
+        builder.button(text="🦴 前往狩猎", callback_data="hunt:list")
+    if int(secret.get("remaining", 0) or 0) > 0:
+        builder.button(text="🗺️ 前往秘境", callback_data="secret:list")
     builder.button(text="⬅️ 主菜单", callback_data="menu:home")
-    builder.adjust(2, 2, 1, 1, 1, 1)
+    builder.adjust(2, 1)
     return builder.as_markup()
 
 
@@ -295,23 +366,43 @@ def _next_step_guide(rank: int, status: dict[str, Any]) -> str:
     if is_cultivating:
         return "🧘 正在修炼中，修炼结束后记得结算修为。"
 
+    exp_enough = next_exp > 0 and exp >= next_exp
+
     if rank <= 1:
         return "🌱 刚踏入修行之路！先去「修炼」积累修为，达到100点即可「突破」至练气期。"
     if rank <= 5:
-        if next_exp > 0 and exp >= next_exp:
-            return "⚡ 修为已足够突破！立刻前往「突破」提升境界。"
+        if exp_enough:
+            return "⚡ 修为已满！前往「突破」查看所需资源，准备好灵石和突破丹再行突破。"
         return "🗡️ 练气阶段：「狩猎」赚灵石和修为，「修炼」提升根基。攒够修为就去「突破」！"
     if rank <= 9:
-        if next_exp > 0 and exp >= next_exp:
-            return "⚡ 修为已满，准备好突破丹和灵石，前往「突破」冲击金丹！"
+        if exp_enough:
+            return "⚡ 修为已满！前往「突破」确认灵石、突破丹等资源是否充足，再选择策略突破。"
         return "🗺️ 筑基阶段：探索「秘境」获取稀有材料，到「万宝阁」购置突破丹。尝试加入宗门获得修炼加成。"
     if rank <= 13:
+        if exp_enough:
+            return "⚡ 修为已满！前往「突破」检查资源与策略，冲击更高境界。"
         return "🔥 金丹阶段：「锻造」装备提升战力，挑战高级怪物。准备凝丹露突破元婴！"
     if rank <= 17:
+        if exp_enough:
+            return "⚡ 修为已满！前往「突破」检查资源与策略，冲击更高境界。"
         return "🌌 元婴阶段：前往星陨海探索，挑战更强的秘境Boss。收集元婴结晶冲击化神！"
     if rank <= 21:
+        if exp_enough:
+            return "⚡ 修为已满！前往「突破」检查资源与策略，向渡劫之路迈进！"
         return "⛈️ 化神阶段：逆墟荒原等待你的探索，法则之力蕴含无上机缘。向渡劫之路迈进！"
+    if exp_enough:
+        return "⚡ 修为已满！前往「突破」检查资源，向更高境界发起冲击！"
     return "🏔️ 你已是当世顶尖强者。继续探索未知领域，追寻长生大道！"
+
+
+def _bar(current: int, maximum: int, length: int = 10) -> str:
+    """生成进度条 ██████████"""
+    if maximum <= 0:
+        filled = length
+    else:
+        pct = min(100, int(current / maximum * 100))
+        filled = pct * length // 100
+    return "█" * filled + "░" * (length - filled)
 
 
 def format_status_card(
@@ -319,40 +410,84 @@ def format_status_card(
     *,
     quests: list[dict[str, Any]] | None = None,
 ) -> str:
+    rank = _to_int(status.get("rank"), 1)
+    exp = _to_int(status.get("exp"), 0)
+    next_exp = _to_int(status.get("next_exp"), 0)
+    hp = _to_int(status.get("hp"), 0)
+    max_hp = _to_int(status.get("max_hp"), max(hp, 1))
+    mp = _to_int(status.get("mp"), 0)
+    max_mp = _to_int(status.get("max_mp"), max(mp, 1))
+    stamina = status.get("stamina", 0)
+    max_stamina = _to_int(status.get("max_stamina"), 24)
+    try:
+        stamina_int = int(float(stamina))
+    except (TypeError, ValueError):
+        stamina_int = 0
+
+    # 元素
+    element_raw = str(status.get("element") or "无")
+    element_name = _ELEMENT_NAMES.get(element_raw, element_raw)
+    element_emoji = _ELEMENT_EMOJI.get(element_raw, "")
+
+    # 虚弱
     weak_until = _to_int(status.get("weak_until"), 0)
     weak_remaining = _to_int(status.get("weak_remaining_seconds"), 0)
     if weak_remaining <= 0 and weak_until > 0:
         weak_remaining = max(0, weak_until - int(time.time()))
-    weak_line = "正常"
-    if weak_remaining > 0 or bool(status.get("is_weak")):
-        weak_line = f"虚弱中（剩余 {_fmt_seconds(weak_remaining)}）"
+    is_weak = weak_remaining > 0 or bool(status.get("is_weak"))
 
-    rank = _to_int(status.get("rank"), 1)
-    next_exp = _to_int(status.get("next_exp"), 0)
-    exp = _to_int(status.get("exp"), 0)
+    # 异常状态
+    abnormal = "无"
+    if is_weak:
+        abnormal = f"☠️ 虚弱中（剩余 {_fmt_seconds(weak_remaining)}）"
+
+    # 修炼状态
+    is_cultivating = bool(status.get("state"))
+    cultivate_text = "修炼中" if is_cultivating else "无"
+
     # 修为进度条
     if next_exp > 0:
-        pct = min(100, int(exp / next_exp * 100)) if next_exp > 0 else 100
-        filled = pct // 10
-        bar = "█" * filled + "░" * (10 - filled)
-        exp_line = f"✨ 修为: {_fmt_num(exp)}/{_fmt_num(next_exp)}  [{bar} {pct}%]"
+        exp_bar = f"📖修为  {_bar(exp, next_exp)} {_fmt_num(exp)}/{_fmt_num(next_exp)}"
     else:
-        exp_line = f"✨ 修为: {_fmt_num(exp)}（已满级）"
+        exp_bar = f"📖修为  {'█' * 10} {_fmt_num(exp)}（已满级）"
 
-    lines = [
-        f"👤 *{status.get('in_game_username', '修士')}*",
-        f"🔮 境界: *{status.get('realm_name', '凡人')}*",
-        f"🌟 五行: {status.get('element', '无')}",
-        exp_line,
-        f"💰 灵石: {_fmt_num(status.get('copper', 0))} 下品 / {_fmt_num(status.get('gold', 0))} 中品",
-        _fmt_status_short(status),
-        f"🧘 {'*修炼中*' if bool(status.get('state')) else '空闲'}　☠️ {weak_line}",
+    # ── 头部 ──
+    realm_name = str(status.get("realm_name") or "凡人")
+    username = str(status.get("in_game_username") or "修士")
+    header = f"👤 *{username}* · {element_emoji}{element_name} · {realm_name}"
+
+    # ── 🧘状态 ──
+    state_label = "修炼中" if is_cultivating else "空闲中"
+    abnormal_label = abnormal if is_weak else "无异常"
+    state_lines = [
+        f"——🧘状态 · {state_label} · {abnormal_label}——",
+        exp_bar,
+        f"❤️气血  {_bar(hp, max_hp)} {_fmt_num(hp)}/{_fmt_num(max_hp)}",
+        f"💙灵力  {_bar(mp, max_mp)} {_fmt_num(mp)}/{_fmt_num(max_mp)}",
+        f"⚡️精力  {_bar(stamina_int, max_stamina)} {stamina_int}/{max_stamina}",
     ]
 
-    # 每日任务进度
+    # ── 🗺所在地 ──
+    map_name = str(status.get("current_map_name") or status.get("current_map") or "苍澜城")
+    location_lines = [
+        "——🗺所在地——",
+        f"📌{map_name}",
+    ]
+
+    # ── 💰钱袋 ──
+    copper = _to_int(status.get("copper"), 0)
+    gold = _to_int(status.get("gold"), 0)
+    wallet_lines = [
+        "——💰钱袋——",
+        f"🟦 下品灵石 {_fmt_num(copper)}",
+        f"🟩 中品灵石 {_fmt_num(gold)}",
+    ]
+
+    # ── 📋今日任务 ──
+    quest_lines: list[str] = []
     if quests:
-        lines.append("")
-        lines.append("📋 *今日任务*")
+        quest_lines.append("")
+        quest_lines.append("——📋 今日任务——")
         done_count = 0
         for q in quests:
             progress = _to_int(q.get("progress"), 0)
@@ -360,20 +495,30 @@ def format_status_card(
             claimed = bool(q.get("claimed"))
             name = q.get("name", "任务")
             if claimed:
-                lines.append(f"  ✅ {name}")
+                quest_lines.append(f"✅ {name}")
                 done_count += 1
             elif progress >= goal:
-                lines.append(f"  🎁 {name}（可领取）")
+                quest_lines.append(f"🎁 {name}（可领取）")
             else:
-                lines.append(f"  ⬜ {name} ({progress}/{goal})")
+                quest_lines.append(f"⏳ {name} ({progress}/{goal})")
         if done_count == len(quests):
-            lines.append("  🎉 今日全部完成！")
+            quest_lines.append("🎉 今日全部完成！")
 
-    # 下一步引导（加粗）
-    lines.append("")
-    lines.append(f"*{_next_step_guide(rank, status)}*")
+    # ── 底部引导 ──
+    tip = _next_step_guide(rank, status)
 
-    return "\n".join(lines)
+    parts = [header, ""]
+    parts.extend(state_lines)
+    parts.append("")
+    parts.extend(location_lines)
+    parts.append("")
+    parts.extend(wallet_lines)
+    if quest_lines:
+        parts.extend(quest_lines)
+    parts.append("")
+    parts.append(f"_{tip}_")
+
+    return "\n".join(parts)
 
 
 def format_hunt_panel(
@@ -410,8 +555,8 @@ def format_hunt_battle_open(payload: dict[str, Any]) -> str:
     enemy = payload.get("enemy") or {}
     lines = [
         f"⚔️ 狩猎战斗已开始（回合 {payload.get('round', 0)}）",
-        f"你: {_fmt_num(player.get('hp'))}/{_fmt_num(player.get('max_hp'))} HP, {_fmt_num(player.get('mp'))}/{_fmt_num(player.get('max_mp'))} MP",
-        f"敌: {enemy.get('name', '怪物')} {_fmt_num(enemy.get('hp'))}/{_fmt_num(enemy.get('max_hp'))} HP",
+        f"你: {_fmt_num(player.get('hp'))}/{_fmt_num(player.get('max_hp'))} 气血, {_fmt_num(player.get('mp'))}/{_fmt_num(player.get('max_mp'))} 灵力",
+        f"敌: {enemy.get('name', '怪物')} {_fmt_num(enemy.get('hp'))}/{_fmt_num(enemy.get('max_hp'))} 气血",
     ]
     skills = _fmt_skills_lines(payload.get("active_skills") or [])
     if skills:
@@ -425,8 +570,8 @@ def format_battle_round(payload: dict[str, Any], *, title: str) -> str:
     enemy = payload.get("enemy") or {}
     lines = [
         f"{title}（回合 {payload.get('round', 0)}）",
-        f"你: {_fmt_num(player.get('hp'))}/{_fmt_num(player.get('max_hp'))} HP, {_fmt_num(player.get('mp'))}/{_fmt_num(player.get('max_mp'))} MP",
-        f"敌: {enemy.get('name', '怪物')} {_fmt_num(enemy.get('hp'))}/{_fmt_num(enemy.get('max_hp'))} HP",
+        f"你: {_fmt_num(player.get('hp'))}/{_fmt_num(player.get('max_hp'))} 气血, {_fmt_num(player.get('mp'))}/{_fmt_num(player.get('max_mp'))} 灵力",
+        f"敌: {enemy.get('name', '怪物')} {_fmt_num(enemy.get('hp'))}/{_fmt_num(enemy.get('max_hp'))} 气血",
     ]
     round_log = list(payload.get("round_log") or [])
     if round_log:
@@ -457,44 +602,171 @@ def format_hunt_settlement(payload: dict[str, Any]) -> str:
 
 
 def format_breakthrough_preview(preview: dict[str, Any]) -> str:
-    strategy_name = preview.get("strategy_name", "普通冲关")
+    strategy = str(preview.get("strategy", "steady")).strip().lower()
+    strategy_name = preview.get("strategy_name", "稳妥突破")
     is_tribulation = bool(preview.get("is_tribulation", False))
+    current_realm = preview.get("current_realm", "未知")
+    next_realm = preview.get("next_realm", "未知")
+
+    # ── 环境 ──
     location_name = str(preview.get("location_name") or preview.get("current_map") or "未知地带")
     spirit_density = float(preview.get("spirit_density", 1.0) or 1.0)
     location_bonus = _fmt_signed_pct_from_ratio(preview.get("location_bonus"))
     fortune_label = str(preview.get("fortune_label") or "平")
     fortune_bonus = _fmt_signed_pct_from_ratio(preview.get("fortune_bonus"))
-    call_for_help = bool(preview.get("call_for_help", True))
-    ally_bonus = _fmt_signed_pct_from_ratio(preview.get("ally_help_bonus"))
-    tribulation_flat_penalty = float(preview.get("tribulation_flat_penalty", 0.0) or 0.0)
-    tribulation_rate_multiplier = float(preview.get("tribulation_rate_multiplier", 1.0) or 1.0)
-    tribulation_extra_cost = _to_int(preview.get("tribulation_extra_cost_copper"), 0)
-    tribulation_extra_stamina = _to_int(preview.get("tribulation_extra_stamina"), 0)
-    lines = [
-        "⛈️ 渡劫突破预览" if is_tribulation else "⚡ 突破预览",
-        f"策略: {strategy_name}",
-        f"关卡类型: {'圆满渡劫（天雷劫）' if is_tribulation else '常规破境'}",
-        f"当前境界: {preview.get('current_realm', '未知')} → {preview.get('next_realm', '未知')}",
-        f"所在地: {location_name}（灵气×{spirit_density:.2f}，地脉{location_bonus}）",
-        f"今日运势: {fortune_label}（{fortune_bonus}）",
-        f"道友助阵: {'已召集' if call_for_help else '未召集'}（{ally_bonus if call_for_help else '0%'}）",
-        f"成功率: {preview.get('success_rate_pct', 0)}%",
-        f"消耗: {_fmt_num(preview.get('cost_copper', 0))} 下品灵石 + {preview.get('stamina_cost', 1)} 精力",
-    ]
-    if is_tribulation:
-        lines.append(
-            f"雷劫压制: {_fmt_signed_pct_from_ratio(-tribulation_flat_penalty)}，倍率 x{tribulation_rate_multiplier:.2f}"
-        )
-        lines.append(f"雷劫附加消耗: +{_fmt_num(tribulation_extra_cost)} 下品灵石，+{tribulation_extra_stamina} 精力")
+
+    # ── 消耗 ──
+    cost_copper = _to_int(preview.get("cost_copper"), 0)
+    stamina_cost = _to_int(preview.get("stamina_cost"), 1)
+    protect_material_need = _to_int(preview.get("protect_material_need") or preview.get("extra_cost_copper"), 0)
+
+    # ── 用户资源 ──
+    user_copper = _to_int(preview.get("user_copper"), 0)
+    user_stamina = _to_int(preview.get("user_stamina"), 0)
+    user_spirit_stone = _to_int(preview.get("user_spirit_stone"), 0)
+    user_exp = _to_int(preview.get("user_exp"), 0)
+    next_exp = _to_int(preview.get("next_exp"), 0)
+
+    # ── 突破丹信息 ──
+    steady_pill_name = str(preview.get("steady_pill_name") or "").strip()
+    steady_pill_bonus = float(preview.get("steady_pill_bonus", 0.0) or 0.0)
+    related_items = list(preview.get("related_items") or [])
+    # 按类型统计突破丹
+    _PILL_IDS = {"breakthrough_pill", "advanced_breakthrough_pill", "super_breakthrough_pill"}
+    pill_lines: list[str] = []
+    pill_total = 0
+    for ri in related_items:
+        iid = str(ri.get("item_id") or "")
+        if iid in _PILL_IDS:
+            qty = int(ri.get("quantity", 0) or 0)
+            pill_total += qty
+            if qty > 0:
+                pill_lines.append(f"{ri.get('item_name', iid)} x{qty}")
+
+    # ── Buff 状态 ──
+    protect_buff_active = bool(preview.get("protect_buff_active", False))
+    protect_buff_remaining = _to_int(preview.get("protect_buff_remaining"), 0)
+    boost_buff_active = bool(preview.get("boost_buff_active", False))
+    boost_buff_remaining = _to_int(preview.get("boost_buff_remaining"), 0)
+    boost_buff_pct = float(preview.get("boost_buff_pct", 0.0) or 0.0)
+
+    # ── 成功率 ──
+    success_rate_pct = _to_int(preview.get("success_rate_pct"), 0)
     rate_parts = list(preview.get("rate_parts") or [])
-    if rate_parts:
-        lines.append("加成构成：")
-        for part in rate_parts[:5]:
-            lines.append(f"• {part}")
-    strategy_notes = str(preview.get("strategy_notes", "")).strip()
-    if strategy_notes:
-        lines.append("策略说明：")
-        lines.append(strategy_notes)
+
+    # ── 资源检查 ──
+    resource_ok = bool(preview.get("resource_ok", True))
+    resource_hints = list(preview.get("resource_hints") or [])
+
+    # ── 头部 ──
+    header = "⛈️ 突破 · 渡劫突破" if is_tribulation else "⚡ 突破 · 常规破境"
+    lines = [
+        header,
+        "",
+        f"【{current_realm}】 至 【{next_realm}】",
+    ]
+
+    # ── 环境区 ──
+    lines.append("")
+    lines.append("——🗺环境——")
+    lines.append(f"所在地：{location_name}")
+    lines.append(f"灵气浓度：×{spirit_density:.2f}（地脉{location_bonus}）")
+    lines.append(f"今日运势：{fortune_label} {fortune_bonus}")
+
+    # ── 资源区 ──
+    lines.append("")
+    lines.append("——💰资源——")
+    if next_exp > 0:
+        lines.append(f"📖 修为：{_fmt_num(user_exp)}/{_fmt_num(next_exp)}")
+    else:
+        lines.append(f"📖 修为：{_fmt_num(user_exp)}（已满级）")
+    lines.append(f"🟦 下品灵石：{_fmt_num(user_copper)}")
+    lines.append(f"⚡ 精力：{user_stamina}")
+    lines.append(f"🪨 聚元石：{user_spirit_stone}")
+    if pill_lines:
+        lines.append(f"💊 突破丹：{' / '.join(pill_lines)}")
+    else:
+        lines.append("💊 突破丹：无")
+
+    # ── 增益状态 ──
+    buff_parts: list[str] = []
+    if protect_buff_active and protect_buff_remaining > 0:
+        buff_parts.append(f"🛡️ 保护丹 剩余{_fmt_seconds(protect_buff_remaining)}")
+    if boost_buff_active and boost_buff_remaining > 0:
+        buff_parts.append(f"✨ 聚灵增益 +{int(boost_buff_pct)}% 剩余{_fmt_seconds(boost_buff_remaining)}")
+    if buff_parts:
+        lines.append("")
+        lines.append("——🔮增益——")
+        for bp in buff_parts:
+            lines.append(bp)
+
+    # ── 方案区 ──
+    lines.append("")
+    lines.append("——📋方案——")
+    _STRATEGY_LABELS = {
+        "steady": "🛡️稳妥突破",
+        "protect": "🌿护脉突破",
+        "desperate": "🔥生死突破",
+    }
+    if is_tribulation:
+        lines.append("当前方案：⛈️渡劫突破")
+    else:
+        lines.append(f"当前方案：{_STRATEGY_LABELS.get(strategy, strategy_name)}")
+    lines.append(f"成功率：{success_rate_pct}%")
+
+    # 消耗行
+    cost_parts: list[str] = [f"🟦下品灵石×{_fmt_num(cost_copper)}"]
+    if strategy == "protect" and protect_material_need > 0:
+        cost_parts.append(f"🪨聚元石×{protect_material_need}")
+    if strategy == "steady" and steady_pill_name:
+        bonus_text = f"（+{int(steady_pill_bonus * 100)}%）" if steady_pill_bonus > 0 else ""
+        cost_parts.append(f"💊{steady_pill_name}×1{bonus_text}")
+    elif strategy == "steady" and not steady_pill_name:
+        if boost_buff_active:
+            cost_parts.append("💊无需突破丹（聚灵增益替代）")
+        else:
+            cost_parts.append("💊突破丹×1（缺少）")
+    cost_parts.append(f"⚡精力×{stamina_cost}")
+    lines.append(f"消耗：{' + '.join(cost_parts)}")
+
+    # 策略特殊效果
+    if is_tribulation:
+        lines.append("特殊效果：渡劫模式，无法选择其他策略")
+    elif strategy == "steady":
+        lines.append("特殊效果：失败损失减半")
+    elif strategy == "protect":
+        lines.append("特殊效果：失败不进虚弱")
+    elif strategy == "desperate":
+        lines.append("特殊效果：成功额外奖励，失败惩罚加重")
+
+    # 渡劫信息
+    if is_tribulation:
+        tribulation_flat_penalty = float(preview.get("tribulation_flat_penalty", 0.0) or 0.0)
+        tribulation_rate_multiplier = float(preview.get("tribulation_rate_multiplier", 1.0) or 1.0)
+        tribulation_extra_cost = _to_int(preview.get("tribulation_extra_cost_copper"), 0)
+        tribulation_extra_stamina = _to_int(preview.get("tribulation_extra_stamina"), 0)
+        if bool(preview.get("tribulation_rate_ignored")):
+            lines.append(f"雷劫压制：已被{steady_pill_name or '高阶突破丹'}豁免")
+        else:
+            lines.append(f"雷劫压制：{_fmt_signed_pct_from_ratio(-tribulation_flat_penalty)}，×{tribulation_rate_multiplier:.2f}")
+        lines.append(f"雷劫附加：+{_fmt_num(tribulation_extra_cost)}灵石 +{tribulation_extra_stamina}精力")
+
+    # ── 成功率明细 ──
+    lines.append("")
+    lines.append("——✨成功率——")
+    for part in rate_parts[:8]:
+        lines.append(f"• {part}")
+    lines.append(f"总计：{success_rate_pct}%")
+
+    # ── 资源检查提示 ──
+    lines.append("")
+    if resource_ok:
+        lines.append("✅ 资源充足，可以突破！")
+    else:
+        lines.append("⚠️ 资源不足，无法突破：")
+        for hint in resource_hints[:4]:
+            lines.append(f"• {hint}")
+
     return "\n".join(lines)
 
 
@@ -510,9 +782,8 @@ def format_breakthrough_result(payload: dict[str, Any]) -> str:
             lines.append(f"📦 {payload.get('strategy_cost_text')}")
         if payload.get("stamina_cost") is not None:
             lines.append(f"⚡ 精力消耗: {payload.get('stamina_cost')}")
-        if payload.get("post_breakthrough_restore_ratio") is not None:
-            ratio = int(float(payload.get("post_breakthrough_restore_ratio", 0.0)) * 100)
-            lines.append(f"❤️💙 突破后恢复系数: {ratio}%")
+        if payload.get("post_breakthrough_hp") is not None:
+            lines.append("❤️💙 精力充沛，气血与灵力恢复至巅峰")
         return "\n".join([row for row in lines if row])
 
     lines = [
@@ -585,8 +856,8 @@ def format_secret_battle_open(payload: dict[str, Any]) -> str:
     enemy = payload.get("enemy") or {}
     lines = [
         f"⚔️ 秘境遭遇战（{(payload.get('encounter') or {}).get('label', '战斗')}）",
-        f"你: {_fmt_num(player.get('hp'))}/{_fmt_num(player.get('max_hp'))} HP, {_fmt_num(player.get('mp'))}/{_fmt_num(player.get('max_mp'))} MP",
-        f"敌: {enemy.get('name', '怪物')} {_fmt_num(enemy.get('hp'))}/{_fmt_num(enemy.get('max_hp'))} HP",
+        f"你: {_fmt_num(player.get('hp'))}/{_fmt_num(player.get('max_hp'))} 气血, {_fmt_num(player.get('mp'))}/{_fmt_num(player.get('max_mp'))} 灵力",
+        f"敌: {enemy.get('name', '怪物')} {_fmt_num(enemy.get('hp'))}/{_fmt_num(enemy.get('max_hp'))} 气血",
     ]
     skills = _fmt_skills_lines(payload.get("active_skills") or [])
     if skills:
@@ -643,9 +914,9 @@ _CATEGORY_LABELS: dict[str, str] = {
 
 def shop_currency_keyboard() -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
-    builder.button(text="💰 下品灵石", callback_data="shop:currency:copper")
-    builder.button(text="💎 中品灵石", callback_data="shop:currency:gold")
-    builder.button(text="✨ 上品灵石", callback_data="shop:currency:spirit_high")
+    builder.button(text="🟦 下品灵石", callback_data="shop:currency:copper")
+    builder.button(text="🟩 中品灵石", callback_data="shop:currency:gold")
+    builder.button(text="🟨 上品灵石", callback_data="shop:currency:spirit_high")
     builder.button(text="⬅️ 主菜单", callback_data="menu:home")
     builder.adjust(1, 1, 1, 1)
     return builder.as_markup()
@@ -700,12 +971,14 @@ def format_shop_panel(
     total_pages: int,
     currency_role: str = "",
 ) -> str:
+    _CURRENCY_EMOJI = {"copper": "🟦", "gold": "🟩", "spirit_high": "🟨"}
     currency_label = _CURRENCY_LABELS.get(currency, currency)
+    currency_emoji = _CURRENCY_EMOJI.get(currency, "🟦")
     lines = [
         f"🏪 万宝阁 — {currency_label}商店",
     ]
     if currency_role:
-        lines.append(f"💰 当前{currency_label}: {_fmt_num(currency_role)}")
+        lines.append(f"{currency_emoji} 当前{currency_label}: {_fmt_num(currency_role)}")
     lines.append(f"📖 第 {page}/{total_pages} 页")
     lines.append("")
 
@@ -914,7 +1187,7 @@ def quest_menu_keyboard(payload: dict[str, Any] | None = None) -> InlineKeyboard
         elif progress >= goal:
             builder.button(text=f"🎁 领取 {name}", callback_data=f"quest:claim:{quest_id}")
         else:
-            builder.button(text=f"📌 {name}", callback_data=f"quest:detail:{quest_id}")
+            builder.button(text=f"⏳ {name}", callback_data=f"quest:detail:{quest_id}")
     builder.button(text="🔄 刷新任务", callback_data="quest:list")
     builder.button(text="⬅️ 主菜单", callback_data="menu:home")
     builder.adjust(*([1] * min(len(quests), 8)), 1, 1)
@@ -930,10 +1203,11 @@ def event_menu_keyboard(payload: dict[str, Any] | None = None) -> InlineKeyboard
             continue
         name = str(row.get("name") or event_id)
         can_claim = bool(row.get("can_claim"))
-        if can_claim:
-            builder.button(text=f"🎁 领取 {name}", callback_data=f"event:claim:{event_id}")
+        claimed_today = bool(row.get("claimed_today") or row.get("claimed"))
+        if claimed_today:
+            builder.button(text=f"✅ {name}", callback_data=f"event:detail:{event_id}")
         else:
-            builder.button(text=f"📌 {name}", callback_data=f"event:detail:{event_id}")
+            builder.button(text=f"🎁 领取 {name}", callback_data=f"event:claim:{event_id}")
     builder.button(text="🔄 刷新活动", callback_data="event:list")
     builder.button(text="⬅️ 主菜单", callback_data="menu:home")
     builder.adjust(*([1] * min(len(events), 8)), 1, 1)
@@ -1181,7 +1455,7 @@ def format_quest_panel(payload: dict[str, Any] | None = None) -> str:
         elif progress >= goal:
             lines.append(f"🎁 {name}（可领取）")
         else:
-            lines.append(f"⬜ {name} ({progress}/{goal})")
+            lines.append(f"⏳ {name} ({progress}/{goal})")
     return "\n".join(lines)
 
 
@@ -1193,8 +1467,11 @@ def format_event_panel(payload: dict[str, Any] | None = None) -> str:
         lines.append("当前暂无活动。")
     for row in events[:8]:
         name = row.get("name", row.get("id", "活动"))
-        can_claim = bool(row.get("can_claim"))
-        lines.append(f"{'🎁' if can_claim else '📌'} {name}")
+        claimed_today = bool(row.get("claimed_today") or row.get("claimed"))
+        if claimed_today:
+            lines.append(f"✅ {name}")
+        else:
+            lines.append(f"🎁 {name}")
     return "\n".join(lines)
 
 
@@ -1263,4 +1540,118 @@ def format_rank_panel(payload: dict[str, Any] | None = None) -> str:
         name = row.get("username") or row.get("name") or row.get("user_id") or "匿名修士"
         score = row.get("score", row.get("value", row.get("rating", "-")))
         lines.append(f"{idx}. {name} - {score}")
+    return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Travel / Map (地图)
+# ---------------------------------------------------------------------------
+
+
+def travel_map_keyboard(
+    map_nodes: Iterable[dict[str, Any]],
+    *,
+    current_map_id: str = "",
+) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    rows = list(map_nodes or [])
+    btn_count = 0
+    for node in rows:
+        map_id = str(node.get("id", "")).strip()
+        if not map_id or map_id == current_map_id:
+            continue
+        if not node.get("is_adjacent"):
+            continue
+        name = str(node.get("name", map_id))
+        cost = _to_int(node.get("travel_cost"), 0)
+        density = float(node.get("spirit_density", 1.0) or 1.0)
+        if node.get("can_travel"):
+            label = f"🚶 {name}（⚡{cost} 灵气×{density:.1f}）"
+            builder.button(text=label, callback_data=f"travel:go:{map_id}")
+        else:
+            reason = str(node.get("unlock_reason") or node.get("travel_block_reason") or "不可前往")
+            short_reason = reason[:12]
+            label = f"🔒 {name}（{short_reason}）"
+            builder.button(text=label, callback_data=f"travel:info:{map_id}")
+        btn_count += 1
+        if btn_count >= 8:
+            break
+    builder.button(text="🔄 刷新地图", callback_data="travel:map")
+    builder.button(text="⬅️ 主菜单", callback_data="menu:home")
+    builder.adjust(*([1] * btn_count), 1, 1)
+    return builder.as_markup()
+
+
+def format_travel_map_panel(payload: dict[str, Any] | None = None) -> str:
+    data = payload or {}
+    player = data.get("player") or {}
+    world = data.get("world") or {}
+    maps = list(data.get("maps") or [])
+
+    current_map_id = str(player.get("current_map") or "")
+    current_map_name = str(player.get("current_map_name") or current_map_id or "未知")
+    stamina = player.get("stamina", 0)
+    try:
+        stamina_int = int(float(stamina))
+    except (TypeError, ValueError):
+        stamina_int = 0
+
+    # 找到当前地图节点
+    current_node: dict[str, Any] = {}
+    for m in maps:
+        if str(m.get("id", "")) == current_map_id:
+            current_node = m
+            break
+
+    spirit_density = float(current_node.get("spirit_density", 1.0) or 1.0)
+
+    lines = [
+        "🗺️ 大地图",
+        "",
+        f"📍 当前位置：{current_map_name}",
+        f"灵气浓度：×{spirit_density:.2f}",
+        f"⚡ 精力：{stamina_int}",
+    ]
+
+    if current_node.get("desc"):
+        lines.append(f"_{current_node['desc']}_")
+
+    # 可前往的相邻地点
+    adjacent = [m for m in maps if m.get("is_adjacent") and str(m.get("id", "")) != current_map_id]
+    if adjacent:
+        lines.append("")
+        lines.append("——🚶可前往——")
+        for node in adjacent[:8]:
+            name = str(node.get("name", node.get("id", "未知")))
+            cost = _to_int(node.get("travel_cost"), 0)
+            density = float(node.get("spirit_density", 1.0) or 1.0)
+            if node.get("can_travel"):
+                lines.append(f"• {name}  灵气×{density:.2f}  ⚡{cost}")
+            else:
+                reason = str(node.get("unlock_reason") or node.get("travel_block_reason") or "")
+                lines.append(f"• 🔒 {name}（{reason}）" if reason else f"• 🔒 {name}")
+    else:
+        lines.append("")
+        lines.append("当前无可前往的相邻地点。")
+
+    return "\n".join(lines)
+
+
+def format_travel_result(payload: dict[str, Any] | None = None) -> str:
+    data = payload or {}
+    if not data.get("success"):
+        return f"❌ {data.get('message', '移动失败')}"
+
+    to_name = str(data.get("to_name") or data.get("to_map") or "未知")
+    stamina_cost = _to_int(data.get("stamina_cost"), 0)
+    lines = [
+        f"✅ 已抵达 *{to_name}*",
+        f"⚡ 消耗精力 {stamina_cost}",
+    ]
+    if data.get("to_desc"):
+        lines.append(f"_{data['to_desc']}_")
+    if data.get("first_visit"):
+        lines.append("🌟 首次到达！")
+        if data.get("first_visit_text"):
+            lines.append(str(data["first_visit_text"]))
     return "\n".join(lines)

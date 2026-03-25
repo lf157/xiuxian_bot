@@ -21,7 +21,9 @@ os.makedirs(LOG_DIR, exist_ok=True)
 
 logger = setup_runtime_logging("xiuxianbot", project_root=BASE_DIR, stats_interval_seconds=180)
 
+# 模块级进程/线程状态。仅在主线程中访问（信号处理 & 启动流程），无需加锁。
 adapter_processes = {}
+adapter_log_handles = {}
 core_process = None
 web_thread = None
 web_local_module = None
@@ -35,6 +37,15 @@ from core.config import config
 
 def _is_subprocess_running(process) -> bool:
     return isinstance(process, subprocess.Popen) and process.poll() is None
+
+
+def _version_env() -> dict:
+    """返回版本环境变量字典，用于注入子进程或当前进程。"""
+    return {
+        "CORE_VERSION": CORE_VERSION,
+        "WEB_VERSION": WEB_VERSION,
+        "TELEGRAM_VERSION": TELEGRAM_VERSION,
+    }
 
 def start_web_local():
     try:
@@ -51,9 +62,7 @@ def start_web_local():
         if web_local_dir not in sys.path:
             sys.path.insert(0, web_local_dir)
             
-        os.environ["CORE_VERSION"] = CORE_VERSION
-        os.environ["WEB_VERSION"] = WEB_VERSION
-        os.environ["TELEGRAM_VERSION"] = TELEGRAM_VERSION
+        os.environ.update(_version_env())
 
         spec = importlib.util.spec_from_file_location("app", web_local_path)
         web_local = importlib.util.module_from_spec(spec)
@@ -102,9 +111,7 @@ def start_web_public():
         if web_public_dir not in sys.path:
             sys.path.insert(0, web_public_dir)
 
-        os.environ["CORE_VERSION"] = CORE_VERSION
-        os.environ["WEB_VERSION"] = WEB_VERSION
-        os.environ["TELEGRAM_VERSION"] = TELEGRAM_VERSION
+        os.environ.update(_version_env())
 
         spec = importlib.util.spec_from_file_location("web_public_app", web_public_path)
         web_public = importlib.util.module_from_spec(spec)
@@ -138,10 +145,7 @@ def start_core():
         logger.error(f"Core server path not found: {server_path}")
         return None
 
-    env = os.environ.copy()
-    env["CORE_VERSION"] = CORE_VERSION
-    env["WEB_VERSION"] = WEB_VERSION
-    env["TELEGRAM_VERSION"] = TELEGRAM_VERSION
+    env = {**os.environ, **_version_env()}
 
     process = subprocess.Popen(
         [sys.executable, server_path],
@@ -188,24 +192,18 @@ def start_adapter(adapter_name):
             logger.error(f"Adapter path not found: {adapter_path}")
             return None
         
-        env = os.environ.copy()
-        env["CORE_VERSION"] = CORE_VERSION
-        env["WEB_VERSION"] = WEB_VERSION
-        env["TELEGRAM_VERSION"] = TELEGRAM_VERSION
-        env[CAPTURED_STDIO_ENV] = "1"
+        env = {**os.environ, **_version_env(), CAPTURED_STDIO_ENV: "1"}
 
         log_path = os.path.join(LOG_DIR, f"{adapter_name}.log")
         log_file = open(log_path, "a", encoding="utf-8")
-        try:
-            process = subprocess.Popen(
-                [sys.executable, adapter_path],
-                stdout=log_file,
-                stderr=log_file,
-                text=True,
-                env=env
-            )
-        finally:
-            log_file.close()
+        process = subprocess.Popen(
+            [sys.executable, adapter_path],
+            stdout=log_file,
+            stderr=log_file,
+            text=True,
+            env=env
+        )
+        adapter_log_handles[adapter_name] = log_file
         
         adapter_processes[adapter_name] = process
         if web_local_module is not None:
@@ -229,9 +227,21 @@ def stop_adapter(adapter_name):
         if isinstance(process, threading.Thread):
             logger.info(f"Adapter {adapter_name} runs in-thread; skipping terminate")
             del adapter_processes[adapter_name]
+            log_handle = adapter_log_handles.pop(adapter_name, None)
+            if log_handle is not None:
+                try:
+                    log_handle.close()
+                except Exception:
+                    pass
             return True
         if process.poll() is not None:
             del adapter_processes[adapter_name]
+            log_handle = adapter_log_handles.pop(adapter_name, None)
+            if log_handle is not None:
+                try:
+                    log_handle.close()
+                except Exception:
+                    pass
             if web_local_module is not None:
                 web_local_module.running_processes['adapters'].pop(adapter_name, None)
             logger.info(f"{adapter_name} adapter already stopped")
@@ -247,6 +257,12 @@ def stop_adapter(adapter_name):
             process.kill()
         
         del adapter_processes[adapter_name]
+        log_handle = adapter_log_handles.pop(adapter_name, None)
+        if log_handle is not None:
+            try:
+                log_handle.close()
+            except Exception:
+                pass
         if web_local_module is not None:
             web_local_module.running_processes['adapters'].pop(adapter_name, None)
         logger.info(f"{adapter_name} adapter stopped")
@@ -284,9 +300,7 @@ def _install_signal_handlers():
 def main():
     logger.info("Starting XiuXianBot")
 
-    os.environ["CORE_VERSION"] = CORE_VERSION
-    os.environ["WEB_VERSION"] = WEB_VERSION
-    os.environ["TELEGRAM_VERSION"] = TELEGRAM_VERSION
+    os.environ.update(_version_env())
     _install_signal_handlers()
 
     if not start_core():

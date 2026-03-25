@@ -14,7 +14,7 @@ import psycopg2
 import tempfile
 import ipaddress
 from core.database.connection import (
-    connect_sqlite,
+    connect_db,
     create_tables,
     fetch_one,
     fetch_all,
@@ -162,7 +162,7 @@ def load_config():
 
 cfg = load_config()
 db_path = app_config.db_path
-connect_sqlite()
+connect_db()
 create_tables()
 
 def save_config(cfg):
@@ -204,10 +204,10 @@ def start_core():
         logger.info("Starting core server")
         
         try:
-            from core.database.connection import connect_sqlite, create_tables
+            from core.database.connection import connect_db, create_tables
             from core.game.mechanics import initialize_game_mechanics
 
-            connect_sqlite()
+            connect_db()
             create_tables()
 
             initialize_game_mechanics()

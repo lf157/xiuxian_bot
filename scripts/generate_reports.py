@@ -4,7 +4,7 @@ import json
 import os
 from typing import Any, Dict, List, Tuple
 
-from core.database.connection import get_sqlite, execute, fetch_all
+from core.database.connection import get_db, execute, fetch_all
 from core.services.metrics_service import log_guardrail_alert
 
 
@@ -326,7 +326,7 @@ def main() -> None:
 
     report_date = args.date
     start_ts, end_ts = _parse_date(report_date)
-    _ = get_sqlite()  # ensure db connection
+    _ = get_db()  # ensure db connection
 
     economy = _economy_summary(start_ts, end_ts)
     funnels = _action_funnels(start_ts, end_ts)

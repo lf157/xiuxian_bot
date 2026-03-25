@@ -9,7 +9,7 @@ import psycopg2.extras
 import logging
 from typing import Optional, Dict, Any, List, Tuple
 
-from core.database.connection import get_sqlite, fetch_one, execute
+from core.database.connection import get_db, fetch_one, execute
 
 logger = logging.getLogger("Migrations")
 
@@ -72,7 +72,7 @@ def run_migrations(target_version: int = None) -> List[str]:
         target_version = max(MIGRATIONS.keys()) if MIGRATIONS else current
 
     executed = []
-    conn = get_sqlite()
+    conn = get_db()
 
     if target_version > current:
         # 升级
@@ -243,7 +243,7 @@ def _migrate_v6_down(conn: object) -> None:
 # ── 幂等性辅助（保留原有功能）──
 
 def ensure_idempotency_tables() -> None:
-    conn = get_sqlite()
+    conn = get_db()
     cur = conn.cursor()
     cur.execute(
         "SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'request_dedup'"
@@ -339,7 +339,7 @@ def reserve_request(
       ("reserved", None) if caller should proceed.
     """
     now_ts = int(time.time()) if now is None else int(now)
-    conn = get_sqlite()
+    conn = get_db()
     cur = conn.cursor()
     cur.execute(
         """INSERT INTO request_dedup(request_id, user_id, action, created_at, response_json)
@@ -416,7 +416,7 @@ def cleanup_expired_dedup(max_age_days: int = 7) -> int:
     返回删除的行数。
     """
     cutoff = int(time.time()) - (max_age_days * 86400)
-    conn = get_sqlite()
+    conn = get_db()
     cur = conn.cursor()
     cur.execute(
         "DELETE FROM request_dedup WHERE created_at < %s",

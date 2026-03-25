@@ -232,24 +232,12 @@ def cultivate_end():
                 if int(cur.rowcount or 0) <= 0:
                     raise ValueError("CONFLICT")
 
-                stone_cfg = config.get_nested("balance", "cultivation_spirit_stone", default={}) or {}
-                per_session = int(stone_cfg.get("per_session", max(1, rank_now // 10)) or max(1, rank_now // 10))
-                daily_limit = int(stone_cfg.get("daily_limit", max(3, rank_now // 4)) or max(3, rank_now // 4))
-                day_key = local_day_key()
-                last_day = int(locked_user.get("daily_cultivate_stone_day", 0) or 0)
-                claimed_today = int(locked_user.get("daily_cultivate_stone_claimed", 0) or 0) if last_day == day_key else 0
-                stone_reward = max(0, min(per_session, daily_limit - claimed_today))
-                new_claimed = claimed_today + stone_reward
-
                 cur.execute(
                     """UPDATE users
                        SET state = 0,
-                           exp = exp + %s,
-                           copper = copper + %s,
-                           daily_cultivate_stone_day = %s,
-                           daily_cultivate_stone_claimed = %s
+                           exp = exp + %s
                        WHERE user_id = %s AND state = 1""",
-                    (gain, stone_reward, day_key, new_claimed, user_id),
+                    (gain, user_id),
                 )
                 if int(cur.rowcount or 0) != 1:
                     raise ValueError("NOT_CULTIVATING")
@@ -277,15 +265,6 @@ def cultivate_end():
             efficiency=0,
             tip="修炼记录异常，已重置状态。",
             recovered=True,
-        )
-
-    if stone_reward > 0:
-        write_audit_log(
-            module="cultivation",
-            action="daily_spirit_reward",
-            user_id=user_id,
-            success=True,
-            detail={"stone_reward": stone_reward, "claimed_today": new_claimed, "daily_limit": daily_limit},
         )
 
     # Quest progress: cultivate
@@ -317,23 +296,17 @@ def cultivate_end():
         module="cultivation",
         action="cultivate_end",
         delta_exp=int(gain or 0),
-        delta_copper=int(stone_reward or 0),
+        delta_copper=0,
         success=True,
         rank=rank_now,
         meta={
             "hours": gain_result["hours"],
             "efficiency": gain_result["efficiency"],
-            "daily_spirit_stone_reward": int(stone_reward or 0),
-            "daily_spirit_stone_claimed": int(new_claimed or 0),
-            "daily_spirit_stone_limit": int(daily_limit or 0),
         },
     )
     return success(
         gain=gain,
         total_exp=new_exp,
-        spirit_stone_low_reward=int(stone_reward or 0),
-        spirit_stone_low_daily_claimed=int(new_claimed or 0),
-        spirit_stone_low_daily_limit=int(daily_limit or 0),
         can_breakthrough=can_break,
         hours=gain_result["hours"],
         efficiency=gain_result["efficiency"],
@@ -395,12 +368,10 @@ def breakthrough_preview(user_id: str):
     strategy = str(request.args.get("strategy", "steady") or "steady")
     use_pill_raw = str(request.args.get("use_pill", "false") or "false").strip().lower()
     use_pill = use_pill_raw in ("1", "true", "yes", "on")
-    call_for_help = _parse_bool_value(request.args.get("call_for_help"), default=True)
     resp, http_status = get_breakthrough_preview(
         user_id=user_id,
         use_pill=use_pill,
         strategy=strategy,
-        call_for_help=call_for_help,
     )
     return jsonify(resp), http_status
 
@@ -415,14 +386,12 @@ def breakthrough():
     if auth_error:
         return auth_error
     use_pill = data.get("use_pill", False)
-    strategy = data.get("strategy", "normal")
-    call_for_help = _parse_bool_value(data.get("call_for_help"), default=True)
+    strategy = data.get("strategy", "steady")
     log_action(
         "breakthrough",
         user_id=user_id,
         use_pill=bool(use_pill),
         strategy=strategy,
-        call_for_help=call_for_help,
     )
 
     if not user_id:
@@ -432,7 +401,6 @@ def breakthrough():
         user_id=user_id,
         use_pill=bool(use_pill),
         strategy=strategy,
-        call_for_help=call_for_help,
     )
 
     # success: ensure final stats include equipment bonuses (and refill hp/mp)

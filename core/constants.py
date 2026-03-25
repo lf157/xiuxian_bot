@@ -1,0 +1,21 @@
+"""
+核心游戏常量定义
+
+所有游戏平衡相关的默认值集中管理于此，避免在多个文件中重复硬编码。
+"""
+
+# ── 体力系统 ──
+DEFAULT_STAMINA_MAX = 24
+DEFAULT_STAMINA_REGEN_SECONDS = 1800  # 30 分钟恢复 1 点
+
+# ── 生命/法力恢复 ──
+DEFAULT_VITALS_REGEN_SECONDS = 60
+DEFAULT_VITALS_REGEN_PCT = 0.10  # 每次恢复 10%
+
+# ── 新玩家初始属性 ──
+DEFAULT_HP = 100
+DEFAULT_MP = 50
+DEFAULT_ATTACK = 10
+DEFAULT_DEFENSE = 5
+DEFAULT_CRIT_RATE = 0.05
+DEFAULT_PVP_RATING = 1000

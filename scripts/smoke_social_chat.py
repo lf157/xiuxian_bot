@@ -34,7 +34,7 @@ def main() -> None:
     if str(root) not in sys.path:
         sys.path.insert(0, str(root))
 
-    from core.database.connection import connect_sqlite, create_tables, execute, fetch_one, close_sqlite
+    from core.database.connection import connect_db, create_tables, execute, fetch_one, close_db
     from core.services.social_service import (
         CHAT_REQUEST_TTL_SECONDS,
         accept_chat_request,
@@ -43,7 +43,7 @@ def main() -> None:
     )
     from core.utils.timeutil import midnight_timestamp
 
-    connect_sqlite()
+    connect_db()
     create_tables()
     now = int(time.time())
 
@@ -324,7 +324,7 @@ def main() -> None:
             "(validation/forbidden/pending/expired/reset/limit/concurrency)."
         )
     finally:
-        close_sqlite()
+        close_db()
 
 
 if __name__ == "__main__":

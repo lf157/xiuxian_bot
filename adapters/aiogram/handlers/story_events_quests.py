@@ -17,6 +17,8 @@ from adapters.aiogram.services import (
     handle_expired_callback,
     new_request_id,
     parse_callback,
+    reject_non_owner,
+    reply_or_answer,
     resolve_uid,
     respond_query,
     safe_answer,
@@ -162,6 +164,25 @@ def _story_read_keyboard(chapter_id: str, *, is_finished: bool) -> Any:
     return builder.as_markup()
 
 
+def _enrich_quest_data(data: dict | None) -> dict:
+    """将 quest_defs 中的 name/desc 合并到 quests 行，使 UI 层能显示中文名。"""
+    payload = data if isinstance(data, dict) else {}
+    defs = list(payload.get("quest_defs") or [])
+    def_map = {str(d.get("id") or ""): d for d in defs if isinstance(d, dict)}
+    quests = list(payload.get("quests") or [])
+    for row in quests:
+        if not isinstance(row, dict):
+            continue
+        qid = str(row.get("quest_id") or row.get("id") or "")
+        qdef = def_map.get(qid)
+        if qdef:
+            row.setdefault("name", qdef.get("name"))
+            row.setdefault("desc", qdef.get("desc"))
+            row.setdefault("description", qdef.get("desc"))
+    payload["quests"] = quests
+    return payload
+
+
 def _find_quest(data: dict, quest_id: str) -> dict | None:
     qid = str(quest_id or "").strip()
     if not qid:
@@ -229,94 +250,94 @@ def _should_fallback_to_bounty_accept(result: dict | None) -> bool:
     return any(token in message for token in _BOUNTY_ACCEPT_FALLBACK_HINTS)
 
 
-@router.message(Command("xian_quest", "xian_quests", "xian_task", "quest", "quests", "task"))
+@router.message(Command("xian_quest"))
 async def cmd_quest(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message)
     if not uid:
-        await message.answer("未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
         return
-    data = await api_get(f"/api/quests/{uid}", actor_uid=uid)
+    data = _enrich_quest_data(await api_get(f"/api/quests/{uid}", actor_uid=uid))
     await state.set_state(StoryEventsFSM.quest_menu)
     await state.update_data(uid=uid)
-    await message.answer(ui.format_quest_panel(data), reply_markup=ui.quest_menu_keyboard(data))
+    await reply_or_answer(message, ui.format_quest_panel(data), reply_markup=ui.quest_menu_keyboard(data))
 
 
-@router.message(Command("xian_events", "events"))
+@router.message(Command("xian_events"))
 async def cmd_events(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message)
     if not uid:
-        await message.answer("未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
         return
     data = await _load_event_payload(uid)
     await state.set_state(StoryEventsFSM.event_menu)
-    await message.answer(ui.format_event_panel(data), reply_markup=ui.event_menu_keyboard(data))
+    await reply_or_answer(message, ui.format_event_panel(data), reply_markup=ui.event_menu_keyboard(data))
 
 
-@router.message(Command("xian_bounty", "bounty"))
+@router.message(Command("xian_bounty"))
 async def cmd_bounty(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message)
     if not uid:
-        await message.answer("未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
         return
     data = await _load_bounty_payload(uid)
     await state.set_state(StoryEventsFSM.bounty_menu)
-    await message.answer(
+    await reply_or_answer(message,
         ui.format_bounty_panel(data, actor_uid=uid),
         reply_markup=ui.bounty_menu_keyboard(data, actor_uid=uid),
     )
 
 
-@router.message(Command("xian_worldboss", "xian_boss", "worldboss", "boss"))
+@router.message(Command("xian_boss"))
 async def cmd_worldboss(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message)
     if not uid:
-        await message.answer("未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
         return
     data = await api_get("/api/worldboss/status", actor_uid=uid)
     await state.set_state(StoryEventsFSM.boss_menu)
-    await message.answer(ui.format_boss_panel(data), reply_markup=ui.boss_menu_keyboard())
+    await reply_or_answer(message, ui.format_boss_panel(data), reply_markup=ui.boss_menu_keyboard())
 
 
-@router.message(Command("xian_rank", "xian_leaderboard", "rank", "leaderboard"))
+@router.message(Command("xian_rank"))
 async def cmd_rank(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message)
     if not uid:
-        await message.answer("未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
         return
     data = await api_get("/api/pvp/ranking", params={"limit": 10}, actor_uid=uid)
     await state.set_state(StoryEventsFSM.rank_menu)
-    await message.answer(ui.format_rank_panel(data), reply_markup=ui.rank_menu_keyboard())
+    await reply_or_answer(message, ui.format_rank_panel(data), reply_markup=ui.rank_menu_keyboard())
 
 
-@router.message(Command("xian_guide", "xian_realms", "guide", "realms"))
+@router.message(Command("xian_guide"))
 async def cmd_guide(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message)
     if not uid:
-        await message.answer("未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
         return
     data = await api_get(f"/api/story/{uid}", actor_uid=uid)
     await state.set_state(StoryEventsFSM.story_menu)
     text, keyboard = _format_story_status_panel(data)
-    await message.answer(text, reply_markup=keyboard)
+    await reply_or_answer(message, text, reply_markup=keyboard)
 
 
-@router.message(Command("xian_achievements", "xian_ach", "achievements", "ach"))
+@router.message(Command("xian_achievements"))
 async def cmd_achievements(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message)
     if not uid:
-        await message.answer("未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
         return
     data = await api_get(f"/api/story/{uid}", actor_uid=uid)
     await state.set_state(StoryEventsFSM.story_menu)
     text, keyboard = _format_story_status_panel(data)
-    await message.answer(text, reply_markup=keyboard)
+    await reply_or_answer(message, text, reply_markup=keyboard)
 
 
-@router.message(Command("xian_codex", "codex"))
+@router.message(Command("xian_codex"))
 async def cmd_codex(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message)
     if not uid:
-        await message.answer("未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
         return
     data = await api_get(f"/api/codex/{uid}", params={"kind": "items"}, actor_uid=uid)
     lines = ["📚 图鉴（物品）", ""]
@@ -328,7 +349,7 @@ async def cmd_codex(message: Message, state: FSMContext) -> None:
             name = str(row.get("name") or row.get("item_id") or "未知物品")
             lines.append(f"• {name}")
     await state.set_state(StoryEventsFSM.story_menu)
-    await message.answer("\n".join(lines), reply_markup=ui.main_menu_keyboard(registered=True))
+    await reply_or_answer(message, "\n".join(lines), reply_markup=ui.main_menu_keyboard(registered=True))
 
 
 @router.callback_query(
@@ -340,6 +361,8 @@ async def cmd_codex(message: Message, state: FSMContext) -> None:
     | F.data.startswith("rank:")
 )
 async def cb_story_events_quests(query: CallbackQuery, state: FSMContext) -> None:
+    if await reject_non_owner(query):
+        return
     parsed = parse_callback(str(query.data or ""))
     if parsed is None:
         await handle_expired_callback(query)
@@ -353,7 +376,7 @@ async def cb_story_events_quests(query: CallbackQuery, state: FSMContext) -> Non
 
     if domain == "quest":
         if action == "list":
-            data = await api_get(f"/api/quests/{uid}", actor_uid=uid)
+            data = _enrich_quest_data(await api_get(f"/api/quests/{uid}", actor_uid=uid))
             await state.set_state(StoryEventsFSM.quest_menu)
             await respond_query(query, ui.format_quest_panel(data), reply_markup=ui.quest_menu_keyboard(data))
             await safe_answer(query)
@@ -361,19 +384,32 @@ async def cb_story_events_quests(query: CallbackQuery, state: FSMContext) -> Non
         if action == "claim":
             quest_id = args[0] if args else ""
             if not str(quest_id).strip():
-                refreshed = await api_get(f"/api/quests/{uid}", actor_uid=uid)
+                refreshed = _enrich_quest_data(await api_get(f"/api/quests/{uid}", actor_uid=uid))
                 await respond_query(query, ui.format_quest_panel(refreshed), reply_markup=ui.quest_menu_keyboard(refreshed))
                 await safe_answer(query, text="任务ID无效")
                 return
             result = await api_post("/api/quests/claim", {"user_id": uid, "quest_id": quest_id, "request_id": new_request_id()}, actor_uid=uid)
-            refreshed = await api_get(f"/api/quests/{uid}", actor_uid=uid)
-            await respond_query(query, ui.format_quest_panel(refreshed), reply_markup=ui.quest_menu_keyboard(refreshed))
-            message = "领取成功" if result.get("success") else str(result.get("message") or "领取失败")
-            await safe_answer(query, text=message)
+            refreshed = _enrich_quest_data(await api_get(f"/api/quests/{uid}", actor_uid=uid))
+            panel_text = ui.format_quest_panel(refreshed)
+            if result.get("success"):
+                rewards = result.get("rewards") if isinstance(result.get("rewards"), dict) else {}
+                parts = []
+                if int(rewards.get("copper", 0) or 0):
+                    parts.append(f"🟦下品灵石+{int(rewards['copper'])}")
+                if int(rewards.get("exp", 0) or 0):
+                    parts.append(f"📖修为+{int(rewards['exp'])}")
+                if int(rewards.get("gold", 0) or 0):
+                    parts.append(f"🟩中品灵石+{int(rewards['gold'])}")
+                reward_line = "  ".join(parts) if parts else "领取成功"
+                panel_text = f"🎁 {reward_line}\n\n{panel_text}"
+            else:
+                panel_text = f"⚠️ {result.get('message') or '领取失败'}\n\n{panel_text}"
+            await respond_query(query, panel_text, reply_markup=ui.quest_menu_keyboard(refreshed))
+            await safe_answer(query, text="领取成功" if result.get("success") else str(result.get("message") or "领取失败"))
             return
         if action == "detail":
             quest_id = args[0] if args else ""
-            data = await api_get(f"/api/quests/{uid}", actor_uid=uid)
+            data = _enrich_quest_data(await api_get(f"/api/quests/{uid}", actor_uid=uid))
             quest = _find_quest(data, quest_id)
             if quest is None:
                 text = f"📜 未找到任务：{quest_id}" if quest_id else "📜 任务ID无效"
@@ -408,9 +444,30 @@ async def cb_story_events_quests(query: CallbackQuery, state: FSMContext) -> Non
                 return
             result = await api_post("/api/events/claim", {"user_id": uid, "event_id": event_id}, actor_uid=uid)
             refreshed = await _load_event_payload(uid)
-            await respond_query(query, ui.format_event_panel(refreshed), reply_markup=ui.event_menu_keyboard(refreshed))
-            message = "领取成功" if result.get("success") else str(result.get("message") or "领取失败")
-            await safe_answer(query, text=message)
+            panel_text = ui.format_event_panel(refreshed)
+            if result.get("success"):
+                rewards = result.get("rewards") if isinstance(result.get("rewards"), dict) else {}
+                parts = []
+                if int(rewards.get("copper", 0) or 0):
+                    parts.append(f"🟦下品灵石+{int(rewards['copper'])}")
+                if int(rewards.get("exp", 0) or 0):
+                    parts.append(f"📖修为+{int(rewards['exp'])}")
+                if int(rewards.get("gold", 0) or 0):
+                    parts.append(f"🟩中品灵石+{int(rewards['gold'])}")
+                items = rewards.get("items") or []
+                for it in items:
+                    item_name = it.get("item_name") or it.get("item_id") or "物品"
+                    qty = int(it.get("quantity", 1) or 1)
+                    parts.append(f"📦{item_name}x{qty}")
+                pts = int(result.get("points_granted", 0) or 0)
+                if pts > 0:
+                    parts.append(f"🏅积分+{pts}")
+                reward_line = "  ".join(parts) if parts else "领取成功"
+                panel_text = f"🎁 {reward_line}\n\n{panel_text}"
+            else:
+                panel_text = f"⚠️ {result.get('message') or '领取失败'}\n\n{panel_text}"
+            await respond_query(query, panel_text, reply_markup=ui.event_menu_keyboard(refreshed))
+            await safe_answer(query, text="领取成功" if result.get("success") else str(result.get("message") or "领取失败"))
             return
         if action == "detail":
             event_id = args[0] if args else ""
@@ -523,10 +580,25 @@ async def cb_story_events_quests(query: CallbackQuery, state: FSMContext) -> Non
                 details: list[str] = []
                 if result.get("damage") is not None:
                     details.append(f"本次伤害: {result.get('damage')}")
+                rewards = result.get("rewards") or {}
+                reward_copper = int(rewards.get("copper", 0) or 0)
+                reward_exp = int(rewards.get("exp", 0) or 0)
+                reward_gold = int(rewards.get("gold", 0) or 0)
+                if reward_exp > 0:
+                    details.append(f"修为 +{reward_exp:,}")
+                if reward_copper > 0:
+                    details.append(f"🟦 下品灵石 +{reward_copper:,}")
+                if reward_gold > 0:
+                    details.append(f"🟩 中品灵石 +{reward_gold:,}")
+                reward_items = list(rewards.get("items") or [])
+                for item in reward_items[:5]:
+                    item_name = str(item.get("item_name") or item.get("item_id") or "物品")
+                    qty = int(item.get("quantity", 1) or 1)
+                    details.append(f"🎒 {item_name} x{qty}")
                 if result.get("attacks_left") is not None:
                     details.append(f"剩余次数: {result.get('attacks_left')}")
                 if result.get("defeated"):
-                    details.append("世界BOSS已被击败")
+                    details.append("🎉 世界BOSS已被击败！")
                 if details:
                     panel_text = f"{panel_text}\n\n" + "\n".join(f"• {line}" for line in details)
             elif result.get("message"):
