@@ -110,12 +110,12 @@ _server_start_error: Optional[Exception] = None
 
 def initialize_core_components() -> bool:
     try:
-        from core.database.connection import connect_sqlite, create_tables
+        from core.database.connection import connect_db, create_tables
         from core.database.migrations import run_migrations
         from core.game.mechanics import initialize_game_mechanics
 
         logger.info("Initialising core components ...")
-        connect_sqlite()
+        connect_db()
         create_tables()
         applied = run_migrations()
         if applied:

@@ -17,6 +17,8 @@ from adapters.aiogram.services import (
     handle_expired_callback,
     new_request_id,
     parse_callback,
+    reject_non_owner,
+    reply_or_answer,
     resolve_uid,
     respond_query,
     safe_answer,
@@ -123,9 +125,9 @@ async def _show_skill_menu_message(message: Message, state: FSMContext, uid: str
     skills, err = await _fetch_skills(uid)
     await state.set_state(SkillsFSM.listing)
     if err:
-        await message.answer(f"❌ {err}", reply_markup=ui.main_menu_keyboard(registered=True))
+        await reply_or_answer(message, f"❌ {err}", reply_markup=ui.main_menu_keyboard(registered=True))
         return
-    await message.answer(ui.format_skill_panel(skills), reply_markup=ui.skill_list_keyboard(skills))
+    await reply_or_answer(message, ui.format_skill_panel(skills), reply_markup=ui.skill_list_keyboard(skills))
 
 
 async def _show_skill_menu_query(query: CallbackQuery, state: FSMContext, uid: str) -> None:
@@ -154,17 +156,19 @@ async def _show_skill_menu_with_hint(query: CallbackQuery, state: FSMContext, ui
     )
 
 
-@router.message(Command("xian_skills", "xian_skill", "skills", "skill"))
+@router.message(Command("xian_skills"))
 async def cmd_skills(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message, state)
     if not uid:
-        await message.answer("未找到角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到角色，请先注册。", reply_markup=ui.register_keyboard())
         return
     await _show_skill_menu_message(message, state, uid)
 
 
 @router.callback_query(F.data.startswith("skill:"))
 async def cb_skills(query: CallbackQuery, state: FSMContext) -> None:
+    if await reject_non_owner(query):
+        return
     await safe_answer(query)
     parsed = parse_callback(str(query.data or ""))
     if parsed is None:

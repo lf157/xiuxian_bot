@@ -48,14 +48,14 @@ def _reset_public_tables(conn) -> None:
 
 @pytest.fixture()
 def test_db():
-    from core.database.connection import connect_sqlite, create_tables, close_sqlite
-    conn = connect_sqlite()
+    from core.database.connection import connect_db, create_tables, close_db
+    conn = connect_db()
     _ensure_safe_test_database(conn)
     _reset_public_tables(conn)
     create_tables(conn)
     yield conn
     _reset_public_tables(conn)
-    close_sqlite()
+    close_db()
 
 
 def create_user(user_id: str, username: str, rank: int = 1, element: str = "火"):

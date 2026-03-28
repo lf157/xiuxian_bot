@@ -15,6 +15,8 @@ from adapters.aiogram.services import (
     api_post,
     handle_expired_callback,
     parse_callback,
+    reject_non_owner,
+    reply_or_answer,
     resolve_uid,
     respond_query,
     safe_answer,
@@ -108,7 +110,7 @@ async def _panel_status(uid: str) -> tuple[str, bool]:
 async def _show_panel_message(message: Message, state: FSMContext, uid: str) -> None:
     text, is_active = await _panel_status(uid)
     await state.set_state(CultivationFSM.idle)
-    await message.answer(
+    await reply_or_answer(message,
         text,
         reply_markup=ui.cultivation_keyboard(is_cultivating=is_active),
     )
@@ -124,17 +126,19 @@ async def _show_panel_query(query: CallbackQuery, state: FSMContext, uid: str) -
     )
 
 
-@router.message(Command("xian_cul", "xian_cultivate", "cul", "cultivate"))
+@router.message(Command("xian_cul"))
 async def cmd_cultivation(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message, state)
     if not uid:
-        await message.answer("未找到角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到角色，请先注册。", reply_markup=ui.register_keyboard())
         return
     await _show_panel_message(message, state, uid)
 
 
 @router.callback_query(F.data.startswith("cul:"))
 async def cb_cultivation(query: CallbackQuery, state: FSMContext) -> None:
+    if await reject_non_owner(query):
+        return
     await safe_answer(query)
     parsed = parse_callback(str(query.data or ""))
     if parsed is None:
@@ -165,8 +169,22 @@ async def cb_cultivation(query: CallbackQuery, state: FSMContext) -> None:
         if not data.get("success"):
             await respond_query(query, f"❌ {_error_text(data, '结束修炼失败')}", reply_markup=ui.cultivation_keyboard(is_cultivating=True))
             return
-        await state.set_state(CultivationFSM.reward_preview)
-        await _show_panel_query(query, state, uid)
+        gain = int(data.get("gain") or 0)
+        hours = float(data.get("hours") or 0)
+        tip = str(data.get("tip") or "").strip()
+        can_break = bool(data.get("can_breakthrough"))
+        hours_text = f"{int(hours)}h" if hours == int(hours) else f"{hours:.2f}h"
+        lines = [
+            "🧘 修炼结算",
+            "",
+            f"⏱️ 修炼时长：{hours_text}",
+            f"✨ 获得修为：+{gain:,}",
+        ]
+        if tip:
+            lines.append(f"📝 {tip}")
+        if can_break:
+            lines.append("⚡ 修为已足够突破，前往「突破」提升境界！")
         await state.set_state(CultivationFSM.idle)
+        await respond_query(query, "\n".join(lines), reply_markup=ui.cultivation_keyboard(is_cultivating=False))
         return
     await _show_panel_query(query, state, uid)

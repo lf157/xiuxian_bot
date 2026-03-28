@@ -17,6 +17,8 @@ from adapters.aiogram.services import (
     handle_expired_callback,
     new_request_id,
     parse_callback,
+    reject_non_owner,
+    reply_or_answer,
     resolve_uid,
     respond_query,
     safe_answer,
@@ -90,7 +92,7 @@ def _sect_menu_keyboard(*, in_sect: bool) -> Any:
     builder.button(text="🔄 刷新信息", callback_data="sect:info")
     if in_sect:
         builder.button(text="📦 每日领取", callback_data="sect:contribute")
-        builder.button(text="💰 捐献100灵石", callback_data="sect:donate:100:0")
+        builder.button(text="🟦 捐献100灵石", callback_data="sect:donate:100:0")
         builder.button(text="🧘 宗门修炼", callback_data="sect:train")
         builder.button(text="🚪 离开宗门", callback_data="sect:leave")
     else:
@@ -205,45 +207,47 @@ async def _respond_and_ack(
     await safe_answer(query, text=toast)
 
 
-@router.message(Command("xian_chat", "xian_dao", "chat", "dao"))
+@router.message(Command("xian_chat"))
 async def cmd_social(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message)
     if not uid:
-        await message.answer("未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
         return
     await state.update_data(uid=uid)
     await state.set_state(SocialPvpSectFSM.social_menu)
-    await message.answer(ui.format_social_panel({"uid": uid}), reply_markup=ui.social_menu_keyboard())
+    await reply_or_answer(message, ui.format_social_panel({"uid": uid}), reply_markup=ui.social_menu_keyboard())
 
 
-@router.message(Command("xian_pvp", "pvp"))
+@router.message(Command("xian_pvp"))
 async def cmd_pvp(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message)
     if not uid:
-        await message.answer("未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
         return
     data = await api_get(f"/api/pvp/opponents/{uid}", params={"limit": 3}, actor_uid=uid)
     text, keyboard = _format_pvp_menu(data)
     await state.update_data(uid=uid)
     await state.set_state(SocialPvpSectFSM.pvp_menu)
-    await message.answer(text, reply_markup=keyboard)
+    await reply_or_answer(message, text, reply_markup=keyboard)
 
 
-@router.message(Command("xian_sect", "sect"))
+@router.message(Command("xian_sect"))
 async def cmd_sect(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message)
     if not uid:
-        await message.answer("未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到你的角色，请先注册。", reply_markup=ui.register_keyboard())
         return
     data = await _load_sect_member(uid)
     text, keyboard = _format_sect_menu(data)
     await state.update_data(uid=uid)
     await state.set_state(SocialPvpSectFSM.sect_menu)
-    await message.answer(text, reply_markup=keyboard)
+    await reply_or_answer(message, text, reply_markup=keyboard)
 
 
 @router.callback_query(F.data.startswith("social:") | F.data.startswith("pvp:") | F.data.startswith("sect:"))
 async def cb_social_pvp_sect(query: CallbackQuery, state: FSMContext) -> None:
+    if await reject_non_owner(query):
+        return
     parsed = parse_callback(str(query.data or ""))
     if parsed is None:
         await handle_expired_callback(query)

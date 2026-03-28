@@ -20,7 +20,7 @@ from core.database.connection import (
     fetch_all,
     fetch_one,
     execute,
-    get_sqlite,
+    get_db,
     get_user_by_id,
 )
 from core.game.herb_garden import (
@@ -48,7 +48,7 @@ _GARDEN_SCHEMA_LOCK = threading.Lock()
 
 def _ensure_garden_schema() -> None:
     """创建 herb_garden_plots 表，并为 users 表追加 garden_level / garden_exp 列。"""
-    conn = get_sqlite()
+    conn = get_db()
     cur = conn.cursor()
 
     cur.execute(
