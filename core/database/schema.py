@@ -879,6 +879,7 @@ def create_tables(conn: Optional[object] = None) -> None:
             role TEXT DEFAULT 'member',
             contribution INTEGER DEFAULT 0,
             joined_at INTEGER NOT NULL,
+            daily_claimed TEXT DEFAULT '',
             UNIQUE(user_id)
         )
         """
@@ -982,6 +983,14 @@ def create_tables(conn: Optional[object] = None) -> None:
         ("battle_reward_buff_pct", "ALTER TABLE sects ADD COLUMN battle_reward_buff_pct REAL DEFAULT 10"),
     ]:
         if col_sql[0] not in existing_sect_columns:
+            cur.execute(col_sql[1])
+
+    cur.execute("SELECT column_name FROM information_schema.columns WHERE table_name = 'sect_members' AND table_schema = 'public'")
+    existing_sect_member_columns = {row[0] for row in cur.fetchall()}
+    for col_sql in [
+        ("daily_claimed", "ALTER TABLE sect_members ADD COLUMN daily_claimed TEXT DEFAULT ''"),
+    ]:
+        if col_sql[0] not in existing_sect_member_columns:
             cur.execute(col_sql[1])
 
     cur.execute("SELECT column_name FROM information_schema.columns WHERE table_name = 'sect_branches' AND table_schema = 'public'")

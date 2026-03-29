@@ -491,11 +491,7 @@ def sect_branch_review():
 
 @sect_bp.route("/api/sect/daily_claim", methods=["POST"])
 def sect_daily_claim():
-    """宗门每日资源领取（替代原签到系统）。
-
-    资源多少取决于宗门等级、大方程度、是否压榨弟子。
-    每日只能领取一次。
-    """
+    """宗门每日资源领取。每日只能领取一次。"""
     data, payload_error = parse_json_payload()
     if payload_error:
         return payload_error
@@ -504,15 +500,13 @@ def sect_daily_claim():
         return auth_error
     log_action("sect_daily_claim", user_id=user_id)
 
-    from core.database.connection import fetch_one, execute_query, db_transaction
-    import datetime
-    import json
+    from core.database.connection import fetch_one, db_transaction
+    from core.utils.timeutil import today_local
 
-    today = datetime.date.today()
+    today = today_local()
 
-    # 查玩家宗门
     member = fetch_one(
-        "SELECT sect_id, role, daily_claimed FROM sect_members WHERE player_id = %s",
+        "SELECT sect_id, role, daily_claimed FROM sect_members WHERE user_id = %s",
         (user_id,)
     )
     if not member:
@@ -521,65 +515,26 @@ def sect_daily_claim():
     if member.get("daily_claimed") and str(member["daily_claimed"]) == str(today):
         return jsonify({"success": False, "message": "今日已领取宗门资源，明日再来"}), 400
 
-    # 查宗门定义
     sect = fetch_one(
-        "SELECT * FROM sect_definitions WHERE sect_id = %s",
+        "SELECT * FROM sects WHERE sect_id = %s",
         (member["sect_id"],)
     )
     if not sect:
         return jsonify({"success": False, "message": "宗门数据异常"}), 500
 
-    # 计算资源
-    level = int(sect.get("sect_level", 1) or 1)
-    generosity = float(sect.get("generosity", 0.5) or 0.5)
-    oppression = float(sect.get("oppression", 0.0) or 0.0)
+    level = int(sect.get("level", 1) or 1)
+    base_copper = 100 + (level - 1) * 20
+    base_exp = 50 + (level - 1) * 10
 
-    base_copper = int(sect.get("daily_copper", 100) or 100)
-    base_exp = int(sect.get("daily_exp", 50) or 50)
-
-    # 等级加成 (每级+10%)
-    level_mult = 1.0 + (level - 1) * 0.10
-    # 大方程度加成 (0.5=正常, 1.0=翻倍)
-    gen_mult = 0.5 + generosity
-
-    final_copper = int(base_copper * level_mult * gen_mult)
-    final_exp = int(base_exp * level_mult * gen_mult)
-
-    # 压榨：资源额外+50%但扣心境
-    mentality_cost = 0
-    if oppression > 0:
-        final_copper = int(final_copper * (1 + oppression * 0.5))
-        final_exp = int(final_exp * (1 + oppression * 0.5))
-        mentality_cost = int(oppression * 5)
-
-    # 物品发放
-    daily_items_json = sect.get("daily_items", "[]") or "[]"
-    try:
-        daily_items = json.loads(daily_items_json) if isinstance(daily_items_json, str) else daily_items_json
-    except Exception:
-        daily_items = []
-
-    # 事务：发放资源 + 标记已领取
-    with db_transaction() as conn:
-        cur = conn.cursor()
+    with db_transaction() as cur:
         cur.execute(
             "UPDATE users SET copper = copper + %s, exp = exp + %s WHERE user_id = %s",
-            (final_copper, final_exp, user_id)
+            (base_copper, base_exp, user_id)
         )
-        if mentality_cost > 0:
-            cur.execute(
-                "UPDATE users SET mentality = GREATEST(0, mentality - %s) WHERE user_id = %s",
-                (mentality_cost, user_id)
-            )
         cur.execute(
-            "UPDATE sect_members SET daily_claimed = %s WHERE player_id = %s",
+            "UPDATE sect_members SET daily_claimed = %s WHERE user_id = %s",
             (today, user_id)
         )
 
-    rewards = {
-        "copper": final_copper,
-        "exp": final_exp,
-        "items": daily_items,
-        "mentality_cost": mentality_cost,
-    }
-    return jsonify({"success": True, "rewards": rewards}), 200
+    rewards = {"copper": base_copper, "exp": base_exp, "items": []}
+    return jsonify({"success": True, "rewards": rewards, "message": f"领取成功！获得 {base_copper} 灵石 / {base_exp} 修为"}), 200
