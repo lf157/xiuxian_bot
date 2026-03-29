@@ -16,6 +16,8 @@ from adapters.aiogram.services import (
     handle_expired_callback,
     new_request_id,
     parse_callback,
+    reject_non_owner,
+    reply_or_answer,
     resolve_uid,
     respond_query,
     safe_answer,
@@ -23,6 +25,13 @@ from adapters.aiogram.services import (
 from adapters.aiogram.states.realms import SecretRealmsFSM
 
 router = Router(name="secret_realms")
+
+
+def _to_int(value, default=0):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
 
 
 def _error_text(payload: dict[str, Any] | None, default: str = "操作失败") -> str:
@@ -69,18 +78,24 @@ async def _uid_from_query(query: CallbackQuery, state: FSMContext) -> str | None
 async def _show_secret_panel_message(message: Message, state: FSMContext, uid: str) -> None:
     data = await api_get(f"/api/secret-realms/{uid}", actor_uid=uid)
     if not data.get("success"):
-        await message.answer(
+        await reply_or_answer(message,
             f"❌ {_error_text(data, '获取秘境列表失败')}",
             reply_markup=ui.main_menu_keyboard(registered=True),
         )
         return
     realms = data.get("realms") or []
+    attempts_left = int(data.get("attempts_left", 0) or 0)
     await state.set_state(SecretRealmsFSM.selecting_realm)
     await state.update_data(uid=uid, secret_realms=realms)
-    await message.answer(
-        ui.format_secret_panel(realms, attempts_left=int(data.get("attempts_left", 0) or 0)),
+    panel_text = ui.format_secret_panel(realms, attempts_left=attempts_left)
+    if attempts_left <= 0:
+        panel_text = f"⚠️ 今日秘境次数已用完，请明日再来！\n\n{panel_text}"
+    await reply_or_answer(
+        message,
+        panel_text,
         reply_markup=ui.secret_realms_keyboard(realms),
     )
+
 
 
 async def _show_secret_panel_query(
@@ -98,9 +113,12 @@ async def _show_secret_panel_query(
         )
         return
     realms = data.get("realms") or []
+    attempts_left = int(data.get("attempts_left", 0) or 0)
     await state.set_state(SecretRealmsFSM.selecting_realm)
     await state.update_data(uid=uid, secret_realms=realms)
-    panel_text = ui.format_secret_panel(realms, attempts_left=int(data.get("attempts_left", 0) or 0))
+    panel_text = ui.format_secret_panel(realms, attempts_left=attempts_left)
+    if attempts_left <= 0:
+        panel_text = f"⚠️ 今日秘境次数已用完，请明日再来！\n\n{panel_text}"
     if notice:
         panel_text = f"{notice}\n\n{panel_text}"
     await respond_query(
@@ -167,17 +185,19 @@ async def _reset_session_to_realm(
     await _show_secret_panel_query(query, state, uid, notice=notice)
 
 
-@router.message(Command("xian_secret", "xian_mystic", "secret", "mystic"))
+@router.message(Command("xian_secret"))
 async def cmd_secret(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message, state)
     if not uid:
-        await message.answer("未找到角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到角色，请先注册。", reply_markup=ui.register_keyboard())
         return
     await _show_secret_panel_message(message, state, uid)
 
 
 @router.callback_query(F.data.startswith("secret:"))
 async def cb_secret(query: CallbackQuery, state: FSMContext) -> None:
+    if await reject_non_owner(query):
+        return
     await safe_answer(query)
     parsed = parse_callback(str(query.data or ""))
     if parsed is None:
@@ -199,6 +219,11 @@ async def cb_secret(query: CallbackQuery, state: FSMContext) -> None:
         if not args:
             await _show_secret_panel_query(query, state, uid, notice="缺少秘境参数，已返回秘境列表，请重新选择。")
             return
+        # 选择秘境前再次检查次数
+        check = await api_get(f"/api/secret-realms/{uid}", actor_uid=uid)
+        if check.get("success") and _to_int(check.get("attempts_left")) <= 0:
+            await _show_secret_panel_query(query, state, uid, notice="⚠️ 今日秘境次数已用完，请明日再来！")
+            return
         realm_id = args[0]
         await _show_path_panel_query(query, state, realm_id)
         return
@@ -210,6 +235,11 @@ async def cb_secret(query: CallbackQuery, state: FSMContext) -> None:
                 await _show_path_panel_query(query, state, realm_id, notice="缺少路线参数，请重新选择路线。")
             else:
                 await _show_secret_panel_query(query, state, uid, notice="尚未选择秘境，已返回秘境列表。")
+            return
+        # Check remaining attempts before starting
+        check = await api_get(f"/api/secret-realms/{uid}", actor_uid=uid)
+        if check.get("success") and _to_int(check.get("attempts_left")) <= 0:
+            await _show_secret_panel_query(query, state, uid, notice="⚠️ 今日秘境次数已用完，请明日再来！")
             return
         if not realm_id:
             await _show_secret_panel_query(query, state, uid, notice="尚未选择秘境，已返回秘境列表。")

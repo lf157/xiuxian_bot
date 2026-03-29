@@ -115,6 +115,8 @@ def leaderboard():
         mode = "exp"
     if mode == "exp":
         entries = sorted(entries, key=lambda x: (x["rank"], x["exp"]), reverse=True)
+    elif mode == "wealth":
+        entries = sorted(entries, key=lambda x: (x.get("wealth", 0), x.get("rank", 1)), reverse=True)
     elif mode == "affix_score":
         entries = sorted(entries, key=lambda x: (x.get("affix_score", 0), x.get("rank", 1)), reverse=True)
     elif mode == "growth_7d":

@@ -529,6 +529,7 @@ def _ensure_worldboss_tables(cur) -> None:
             user_id TEXT NOT NULL,
             last_attack_day INTEGER DEFAULT 0,
             attacks_today INTEGER DEFAULT 0,
+            total_damage BIGINT DEFAULT 0,
             UNIQUE(user_id)
         )
         """
@@ -550,6 +551,7 @@ def _ensure_worldboss_tables(cur) -> None:
         ("user_id", "TEXT"),
         ("last_attack_day", "INTEGER DEFAULT 0"),
         ("attacks_today", "INTEGER DEFAULT 0"),
+        ("total_damage", "BIGINT DEFAULT 0"),
     ]:
         if col not in attack_cols:
             cur.execute(f"ALTER TABLE world_boss_attacks ADD COLUMN {col} {ddl}")
@@ -591,6 +593,17 @@ def get_world_boss_status() -> Dict[str, Any]:
             row_data = dict(row) if row is not None else {}
             snapshot = WorldBossSnapshot.from_row(row_data, now_ts=now, day_start_ts=day_start)
             fsm = WorldBossFSM(snapshot)
+        cur.execute(
+            """
+            SELECT a.user_id, a.total_damage, u.in_game_username
+            FROM world_boss_attacks a
+            LEFT JOIN users u ON u.user_id = a.user_id
+            WHERE COALESCE(a.total_damage, 0) > 0
+            ORDER BY a.total_damage DESC, a.user_id ASC
+            LIMIT 10
+            """
+        )
+        top_rows = cur.fetchall() or []
     return {
         "success": True,
         "boss": {
@@ -600,6 +613,14 @@ def get_world_boss_status() -> Dict[str, Any]:
             "max_hp": int(row_data.get("max_hp", 0) or 0),
             "state": fsm.state.value,
         },
+        "top_attackers": [
+            {
+                "user_id": str(r.get("user_id") or ""),
+                "username": str(r.get("in_game_username") or r.get("user_id") or "匿名修士"),
+                "total_damage": int(r.get("total_damage", 0) or 0),
+            }
+            for r in top_rows
+        ],
     }
 
 
@@ -621,14 +642,14 @@ def attack_world_boss(user_id: str) -> Tuple[Dict[str, Any], int]:
         day = local_day_key(now)
         cur.execute(
             """
-            INSERT INTO world_boss_attacks (user_id, last_attack_day, attacks_today)
-            VALUES (%s, %s, 0)
+            INSERT INTO world_boss_attacks (user_id, last_attack_day, attacks_today, total_damage)
+            VALUES (%s, %s, 0, 0)
             ON CONFLICT (user_id) DO NOTHING
             """,
             (user_id, day),
         )
         cur.execute(
-            "SELECT last_attack_day, attacks_today FROM world_boss_attacks WHERE user_id = %s FOR UPDATE",
+            "SELECT last_attack_day, attacks_today, total_damage FROM world_boss_attacks WHERE user_id = %s FOR UPDATE",
             (user_id,),
         )
         attack_row = cur.fetchone()
@@ -757,8 +778,8 @@ def attack_world_boss(user_id: str) -> Tuple[Dict[str, Any], int]:
 
         attacks_used_today = attacks_today + 1
         cur.execute(
-            "UPDATE world_boss_attacks SET last_attack_day = %s, attacks_today = %s WHERE user_id = %s",
-            (day, attacks_used_today, user_id),
+            "UPDATE world_boss_attacks SET last_attack_day = %s, attacks_today = %s, total_damage = COALESCE(total_damage, 0) + %s WHERE user_id = %s",
+            (day, attacks_used_today, int(damage), user_id),
         )
         event_point_grants = _apply_action_points(
             cur,

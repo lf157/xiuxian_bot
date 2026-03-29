@@ -221,8 +221,8 @@ def _build_sect_guardian(user_rank: int, tier: int) -> Dict[str, Any]:
         stat_mult = 0.8
         guard_name = "宗门弟子"
     else:
-        guard_rank = min(user_rank + 2, len(REALMS))
-        stat_mult = 1.0
+        guard_rank = min(user_rank + 1, len(REALMS))
+        stat_mult = 0.85
         guard_name = "宗门护法"
 
     realm = get_realm_by_id(guard_rank) or REALMS[0]
@@ -769,6 +769,26 @@ def join_sect(user_id: str, sect_id: str, *, skip_trial: bool = False) -> Tuple[
                 }, 400
 
     sect = fetch_one("SELECT * FROM sects WHERE sect_id = %s", (sect_id,))
+    if not sect and predefined:
+        now = int(time.time())
+        max_members = min(SECT_MAX_MEMBERS_CAP, SECT_BASE_MAX_MEMBERS + max(0, int(predefined.get("tier", 1) or 1) - 1) * 2)
+        with db_transaction() as cur:
+            cur.execute(
+                """INSERT INTO sects
+                   (sect_id, name, description, leader_id, level, exp, fund_copper, fund_gold, max_members,
+                    war_wins, war_losses, last_war_time, created_at)
+                   VALUES (%s, %s, %s, %s, 1, 0, 0, 0, %s, 0, 0, 0, %s)
+                   ON CONFLICT (sect_id) DO NOTHING""",
+                (
+                    sect_id,
+                    str(predefined.get("name") or sect_id),
+                    str(predefined.get("desc") or ""),
+                    "system",
+                    max_members,
+                    now,
+                ),
+            )
+        sect = fetch_one("SELECT * FROM sects WHERE sect_id = %s", (sect_id,))
     if not sect:
         return {"success": False, "code": "NOT_FOUND", "message": "宗门不存在"}, 404
 

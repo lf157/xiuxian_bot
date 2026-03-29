@@ -7,6 +7,7 @@ from core.routes._helpers import error, success, log_action, parse_json_payload,
 from core.game.items import get_shop_items, get_item_by_id
 from core.services.settlement_extra import settle_shop_buy, settle_use_item, get_shop_remaining_limit
 from core.database.connection import get_user_by_id
+from core.services.quests_service import increment_quest
 
 shop_bp = Blueprint("shop", __name__)
 
@@ -57,6 +58,7 @@ def shop_list():
             return auth_error
     items = get_shop_items(currency)
     if user_id and get_user_by_id(user_id):
+        increment_quest(user_id, "daily_shop")
         enriched = []
         for item in items:
             row = item.copy()

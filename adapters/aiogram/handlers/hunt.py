@@ -16,6 +16,8 @@ from adapters.aiogram.services import (
     handle_expired_callback,
     new_request_id,
     parse_callback,
+    reject_non_owner,
+    reply_or_answer,
     resolve_uid,
     respond_query,
     safe_answer,
@@ -70,7 +72,7 @@ async def _show_hunt_panel_message(message: Message, state: FSMContext, uid: str
     monsters_data = await api_get("/api/monsters", params={"user_id": uid}, actor_uid=uid)
     status_data = await api_get(f"/api/hunt/status/{uid}", actor_uid=uid)
     if not monsters_data.get("success"):
-        await message.answer(
+        await reply_or_answer(message,
             f"❌ {_error_text(monsters_data, '获取怪物列表失败')}",
             reply_markup=ui.main_menu_keyboard(registered=True),
         )
@@ -80,7 +82,7 @@ async def _show_hunt_panel_message(message: Message, state: FSMContext, uid: str
     cooldown_remaining = int((status_data or {}).get("cooldown_remaining", 0) or 0)
     await state.set_state(HuntFSM.selecting_monster)
     await state.update_data(uid=uid)
-    await message.answer(
+    await reply_or_answer(message,
         ui.format_hunt_panel(monsters, cooldown_remaining=cooldown_remaining, can_hunt=can_hunt),
         reply_markup=ui.hunt_monsters_keyboard(monsters),
     )
@@ -167,17 +169,19 @@ async def _do_hunt_action(
     )
 
 
-@router.message(Command("xian_hunt", "hunt"))
+@router.message(Command("xian_hunt"))
 async def cmd_hunt(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message, state)
     if not uid:
-        await message.answer("未找到角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到角色，请先注册。", reply_markup=ui.register_keyboard())
         return
     await _show_hunt_panel_message(message, state, uid)
 
 
 @router.callback_query(F.data.startswith("hunt:"))
 async def cb_hunt(query: CallbackQuery, state: FSMContext) -> None:
+    if await reject_non_owner(query):
+        return
     await safe_answer(query)
     parsed = parse_callback(str(query.data or ""))
     if parsed is None:

@@ -17,9 +17,9 @@ def generate_universal_uid() -> str:
     生成唯一用户ID（使用 schema_meta 序列计数器）。
     原子操作，线程安全。
     """
-    from core.database.connection import get_sqlite
+    from core.database.connection import get_db
 
-    conn = get_sqlite()
+    conn = get_db()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     try:
         # 原子递增并返回新值
@@ -118,7 +118,7 @@ def restore_from_backup(backup_path: str) -> bool:
     """
     import subprocess
     from core.config import config as app_config
-    from core.database.connection import close_sqlite
+    from core.database.connection import close_db
 
     if not os.path.exists(backup_path):
         logger.error(f"Backup file not found: {backup_path}")
@@ -128,7 +128,7 @@ def restore_from_backup(backup_path: str) -> bool:
         logger.error("Backup verification failed, aborting restore")
         return False
 
-    close_sqlite()
+    close_db()
 
     dsn = app_config.db_dsn
     try:

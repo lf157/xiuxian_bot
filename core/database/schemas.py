@@ -8,6 +8,15 @@ core/database/schemas.py
 """
 
 from typing import Dict, Any, Union, List, Optional
+from core.constants import (
+    DEFAULT_STAMINA_MAX,
+    DEFAULT_HP,
+    DEFAULT_MP,
+    DEFAULT_ATTACK,
+    DEFAULT_DEFENSE,
+    DEFAULT_CRIT_RATE,
+    DEFAULT_PVP_RATING,
+)
 
 
 # ── users 表字段定义 ──
@@ -145,13 +154,13 @@ USER_DEFAULT_VALUES = {
     "asc_reduction": 0,
     "sign": 0,
     "element": None,
-    "hp": 100,
-    "mp": 50,
-    "max_hp": 100,
-    "max_mp": 50,
-    "attack": 10,
-    "defense": 5,
-    "crit_rate": 0.05,
+    "hp": DEFAULT_HP,
+    "mp": DEFAULT_MP,
+    "max_hp": DEFAULT_HP,
+    "max_mp": DEFAULT_MP,
+    "attack": DEFAULT_ATTACK,
+    "defense": DEFAULT_DEFENSE,
+    "crit_rate": DEFAULT_CRIT_RATE,
     "weak_until": 0,
     "breakthrough_pity": 0,
     "created_at": 0,
@@ -178,14 +187,14 @@ USER_DEFAULT_VALUES = {
     "defense_buff_value": 0,
     "breakthrough_boost_until": 0,
     "breakthrough_boost_pct": 0,
-    "pvp_rating": 1000,
+    "pvp_rating": DEFAULT_PVP_RATING,
     "pvp_wins": 0,
     "pvp_losses": 0,
     "pvp_draws": 0,
     "pvp_daily_count": 0,
     "pvp_daily_reset": 0,
     "pvp_season_id": None,
-    "stamina": 24,
+    "stamina": DEFAULT_STAMINA_MAX,
     "stamina_updated_at": 0,
     "vitals_updated_at": 0,
     "chat_energy_today": 0,
@@ -212,7 +221,7 @@ ITEM_SCHEMA = {
     "item_id": str,               # 物品定义ID
     "item_name": str,             # 显示名
     "item_type": str,             # weapon/armor/accessory/pill/material
-    "quality": str,               # common/uncommon/rare/epic/legendary/spirit/holy
+    "quality": str,               # common/spirit/immortal/divine/holy
     "quantity": int,              # 数量
     "level": int,                 # 物品等级
     "attack_bonus": int,

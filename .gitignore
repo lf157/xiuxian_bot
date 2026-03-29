@@ -1,4 +1,5 @@
 .env
+config.json
 __pycache__/
 *.pyc
 *.pyo
@@ -12,9 +13,9 @@ build/
 backups/
 .pytest_cache/
 
-# MiniApp
-xiuxian-web/node_modules/
-xiuxian-web/dist/
-xiuxian-web/src/auto-imports.d.ts
-xiuxian-web/gateway/xiuxian-gateway
-xiuxian-web/gateway/xiuxian-gateway.exe
+log/
+logs/
+
+claude/
+claude.md
+node_modules/

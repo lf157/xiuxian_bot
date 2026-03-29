@@ -6,7 +6,7 @@ import threading
 import time
 from typing import Any, Dict, List, Tuple
 
-from core.database.connection import db_transaction, fetch_all, fetch_one, get_user_by_id, get_sqlite
+from core.database.connection import db_transaction, fetch_all, fetch_one, get_user_by_id, get_db
 from core.game.items import get_item_by_id
 from core.services.audit_log_service import write_audit_log
 from core.services.metrics_service import log_event, log_economy_ledger
@@ -28,7 +28,7 @@ def _as_int(value: Any, default: int = 0) -> int:
 
 
 def _ensure_bounty_schema() -> None:
-    conn = get_sqlite()
+    conn = get_db()
     cur = conn.cursor()
     cur.execute(
         "SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'bounty_orders'"

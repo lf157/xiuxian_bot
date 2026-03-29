@@ -113,7 +113,7 @@ def get_user_status(user_id):
             'weak_remaining_seconds': weak_remaining_seconds,
             'weak_debuff_pct': int(user.get('weak_debuff_pct', 30) or 30),
             'weak_effects': user.get('weak_effects') or (
-                ["不能开始修炼", "HP/MP/攻击/防御/暴击率 -30%"] if is_weak else []
+                ["不能开始修炼", "气血/灵力/攻击/防御/暴击率 -30%"] if is_weak else []
             ),
             'lang': user.get('lang', 'CHS'),
             'equipped_weapon': user.get('equipped_weapon'),
@@ -128,98 +128,115 @@ def get_user_status(user_id):
         return None
 
 
+def _make_bar(current: int, maximum: int, length: int = 10) -> str:
+    """生成 ██████░░░░ 形式的进度条。"""
+    if maximum <= 0:
+        ratio = 1.0
+    else:
+        ratio = max(0.0, min(1.0, current / maximum))
+    filled = int(round(ratio * length))
+    return '█' * filled + '░' * (length - filled)
+
+
 def format_status_text(status_info, lang="CHS", platform=None, equipped_items=None):
     """格式化状态显示"""
     if not status_info:
         return "❌ 用户信息未找到"
 
-    # 进度条
-    next_exp = status_info.get('next_exp')
-    current_exp = status_info.get('exp', 0)
+    username = status_info.get('in_game_username', '未知')
+    realm_display = format_realm_display(status_info.get('rank', 1))
+    element = status_info.get('element', '无')
 
-    if next_exp:
-        progress = min(100, int(current_exp / next_exp * 100))
-        bar_length = 15
-        filled = int(bar_length * progress / 100)
-        progress_bar = '█' * filled + '░' * (bar_length - filled)
-        exp_text = f"{progress_bar} {progress}%\n├ 修为: {current_exp:,} / {next_exp:,}"
-    else:
-        exp_text = f"├ 修为: {current_exp:,} (已满级)"
-
-    # 状态
-    state_text = "🧘 修炼中" if status_info.get("state") else "💤 空闲"
+    # ── 状态 & 异常 ──
+    state_label = "修炼中" if status_info.get("state") else "空闲中"
     weak_active = bool(status_info.get("is_weak"))
-    weak_line = "正常"
-    weak_detail_lines = []
     if weak_active:
         weak_left = max(0, int(status_info.get("weak_remaining_seconds", 0) or 0))
-        weak_line = f"虚弱中（剩余 {_format_remaining_duration(weak_left)}）"
-        weak_effects = status_info.get("weak_effects") or []
-        if weak_effects:
-            for effect in weak_effects:
-                weak_detail_lines.append(f"  • {effect}")
-        else:
-            weak_detail_lines = [
-                "  • 不能开始修炼",
-                f"  • HP/MP/攻击/防御/暴击率 -{int(status_info.get('weak_debuff_pct', 30) or 30)}%",
-            ]
+        condition_label = f"虚弱（{_format_remaining_duration(weak_left)}）"
+    else:
+        condition_label = "无异常"
 
-    # 装备信息
-    equip_lines = ""
+    # ── 数值 ──
+    current_exp = int(status_info.get('exp', 0) or 0)
+    next_exp = status_info.get('next_exp')
+    hp = int(status_info.get('hp', 100) or 100)
+    max_hp = int(status_info.get('max_hp', 100) or 100)
+    mp = int(status_info.get('mp', 50) or 50)
+    max_mp = int(status_info.get('max_mp', 50) or 50)
+    stamina_raw = status_info.get('stamina', DEFAULT_STAMINA_MAX)
+    max_stamina = int(status_info.get('max_stamina', DEFAULT_STAMINA_MAX) or DEFAULT_STAMINA_MAX)
+    try:
+        stamina_int = int(float(stamina_raw))
+    except (TypeError, ValueError):
+        stamina_int = max_stamina
+
+    attack = int(status_info.get('attack', 10) or 10)
+    defense = int(status_info.get('defense', 5) or 5)
+    copper = int(status_info.get('copper', 0) or 0)
+    gold = int(status_info.get('gold', 0) or 0)
+    map_name = status_info.get('current_map_name') or status_info.get('current_map', '苍澜城')
+
+    # ── 进度条 ──
+    if next_exp:
+        next_exp_int = int(next_exp)
+        exp_bar = _make_bar(current_exp, next_exp_int)
+        exp_line = f"📖修为  {exp_bar} {current_exp:,}/{next_exp_int:,}"
+    else:
+        exp_line = f"📖修为  {'█' * 10} {current_exp:,}（已满级）"
+
+    hp_bar = _make_bar(hp, max_hp)
+    mp_bar = _make_bar(mp, max_mp)
+    stamina_bar = _make_bar(stamina_int, max_stamina)
+
+    lines = [
+        f"*{username}*　·　{realm_display}　·　{element}灵根",
+        "",
+        f"——🧘状态 · {state_label} · {condition_label}——",
+        exp_line,
+        f"❤️气血  {hp_bar} {hp:,}/{max_hp:,}",
+        f"💙灵力  {mp_bar} {mp:,}/{max_mp:,}",
+        f"⚡️精力  {stamina_bar} {stamina_int}/{max_stamina}",
+        "",
+        f"⚔️攻击 {attack:,}　　🛡️防御 {defense:,}",
+        f"🟦下品灵石 {copper:,}　　🟩中品灵石 {gold:,}",
+    ]
+
+    # ── 虚弱详情 ──
+    if weak_active:
+        weak_effects = status_info.get("weak_effects") or [
+            "不能开始修炼",
+            f"气血/灵力/攻击/防御/暴击率 -{int(status_info.get('weak_debuff_pct', 30) or 30)}%",
+        ]
+        lines.append("")
+        lines.append("⚠️虚弱影响：")
+        for effect in weak_effects:
+            lines.append(f"　• {effect}")
+
+    # ── 装备 ──
     if equipped_items:
-        equip_parts = []
-        for slot, item in equipped_items.items():
-            if item:
-                equip_parts.append(f"  {item}")
+        equip_parts = [f"　{item}" for item in equipped_items.values() if item]
         if equip_parts:
-            equip_lines = "\n".join(equip_parts)
+            lines.append("")
+            lines.append("——👕装备——")
+            lines.extend(equip_parts)
 
-    # 游戏时间
-    world_tier = 1  # 默认凡界，后续根据玩家当前地图判断
-    game_time = get_game_time(world_tier)
-
-    text = f"""
-╔══════════════════════╗
-║  *{status_info.get('in_game_username', '未知')}*
-╠══════════════════════╣
-├ 🕐 {game_time['display']}
-├ 🔮 境界: {format_realm_display(status_info.get('rank', 1))}
-├ 🌟 五行: {status_info.get('element', '无')}
-├ 📍 所在地: {status_info.get('current_map_name') or status_info.get('current_map', '苍澜城')}
-├ 💰 下品灵石: {status_info.get('copper', 0):,}
-├ 💎 中品灵石: {status_info.get('gold', 0):,}
-├ ⚡ 精力: {_format_stamina_value(status_info.get('stamina', DEFAULT_STAMINA_MAX))} / {status_info.get('max_stamina', DEFAULT_STAMINA_MAX)}
-╠══════════════════════╣
-├ ❤️ HP: {status_info.get('hp', 100)} / {status_info.get('max_hp', 100)}
-├ 💙 MP: {status_info.get('mp', 50)} / {status_info.get('max_mp', 50)}
-├ ⚔️ 攻击: {status_info.get('attack', 10)}
-├ 🛡️ 防御: {status_info.get('defense', 5)}
-╠══════════════════════╣
-{exp_text}
-├ 🎯 狩猎次数: {status_info.get('dy_times', 0)}
-├ 📍 状态: {state_text}
-├ ☠️ 虚弱: {weak_line}"""
-
-    if weak_detail_lines:
-        text += "\n├ 📉 虚弱影响:\n" + "\n".join(weak_detail_lines)
-
-    if equip_lines:
-        text += f"""
-╠══════════════════════╣
-├ 👕 装备:
-{equip_lines}"""
+    # ── 宗门 ──
     sect_buffs = status_info.get("sect_buffs") or {}
     if sect_buffs.get("in_sect"):
-        text += (
-            f"\n╠══════════════════════╣\n"
-            f"├ 🏛️ 宗门: {sect_buffs.get('sect_name')}\n"
-            f"├ 修炼加成: +{int(float(sect_buffs.get('cultivation_pct', 0) or 0))}%\n"
-            f"├ 属性加成: +{int(float(sect_buffs.get('stat_pct', 0) or 0))}%\n"
-            f"├ 战斗收益: +{int(float(sect_buffs.get('battle_reward_pct', 0) or 0))}%"
+        lines.append("")
+        lines.append(f"——🏛️宗门 · {sect_buffs.get('sect_name')}——")
+        lines.append(
+            f"修炼+{int(float(sect_buffs.get('cultivation_pct', 0) or 0))}%　"
+            f"属性+{int(float(sect_buffs.get('stat_pct', 0) or 0))}%　"
+            f"战斗收益+{int(float(sect_buffs.get('battle_reward_pct', 0) or 0))}%"
         )
 
-    text += "\n╚══════════════════════╝\n"
-    return text
+    # ── 所在地 ──
+    lines.append("")
+    lines.append("——🗺所在地——")
+    lines.append(f"📌{map_name}")
+
+    return "\n".join(lines)
 
 
 def check_user_exists(user_id):

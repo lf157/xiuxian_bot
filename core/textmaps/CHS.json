@@ -10,8 +10,8 @@
         "user_status": {
             "description": "用户状态详情",
             "type": "embed",
-            "text": "## 👤 {in_game_username}\n🆔 UID: `{user_id}`\n⭐ 境界: {stage_description} (第{rank}重)\n💫 修为: {exp:,}/{max_exp:,}\n📊 进度: {progress_bar} {progress:.1f}%\n🔥 五行: {element}\n💰 下品灵石: {copper:,}\n💎 中品灵石: {gold:,}\n📅 打野次数: {dy_times}/3\n🧘 状态: {state_text}",
-            "text_TG": "👤 *{in_game_username}*\n🆔 UID: `{user_id}`\n⭐ 境界: {stage_description} (第{rank}重)\n💫 修为: {exp:,}/{max_exp:,}\n📊 进度: {progress_bar} {progress:.1f}%\n🔥 五行: {element}\n💰 下品灵石: {copper:,}\n💎 中品灵石: {gold:,}\n📅 打野次数: {dy_times}/3\n🧘 状态: {state_text}",
+            "text": "## 👤 {in_game_username}\n🆔 UID: `{user_id}`\n⭐ 境界: {stage_description} (第{rank}重)\n💫 修为: {exp:,}/{max_exp:,}\n📊 进度: {progress_bar} {progress:.1f}%\n🔥 五行: {element}\n🟦 下品灵石: {copper:,}\n🟩 中品灵石: {gold:,}\n📅 打野次数: {dy_times}/3\n🧘 状态: {state_text}",
+            "text_TG": "👤 *{in_game_username}*\n🆔 UID: `{user_id}`\n⭐ 境界: {stage_description} (第{rank}重)\n💫 修为: {exp:,}/{max_exp:,}\n📊 进度: {progress_bar} {progress:.1f}%\n🔥 五行: {element}\n🟦 下品灵石: {copper:,}\n🟩 中品灵石: {gold:,}\n📅 打野次数: {dy_times}/3\n🧘 状态: {state_text}",
             "text_Matrix": ""
         },
         "no_account": {

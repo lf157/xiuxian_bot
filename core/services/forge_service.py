@@ -16,7 +16,7 @@ from core.database.connection import (
     fetch_one,
     fetch_all,
     db_transaction,
-    get_sqlite,
+    get_db,
     get_item_by_db_id,
     get_user_by_id,
     refresh_user_stamina,
@@ -41,7 +41,7 @@ _QUALITY_ORDER = {
 
 
 def _ensure_forge_schema() -> None:
-    conn = get_sqlite()
+    conn = get_db()
     cur = conn.cursor()
 
     cur.execute(

@@ -1,7 +1,4 @@
 {
-  "miniapp": {
-    "url": ""
-  },
   "adapters": {
     "telegram": false,
     "aiogram": true
@@ -350,7 +347,7 @@
     }
   },
   "secret_realm": {
-    "daily_limit": 3
+    "daily_limit": 5
   },
   "economy": {
     "exchange_rate": 1000
@@ -470,7 +467,7 @@
     "secret_realm": 0
   },
   "core_server": {
-    "api_token": "change_me_internal_token",
+    "api_token": "local_test_secret_123",
     "port": 11450
   },
   "db": {
@@ -478,7 +475,7 @@
     "universal_uid_start": 1000000
   },
   "tokens": {
-    "telegram_token": ""
+    "telegram_token": "8629733450:AAGve45V40WK0YqzXRyoMfn-0UUfAbvWpec"
   },
   "battle": {
     "mp": {
@@ -512,7 +509,7 @@
     "world_boss": {
       "id": "world_boss_1",
       "name": "赤炎妖王",
-      "max_hp": 3000,
+      "max_hp": 50000,
       "reward_copper": 1200,
       "reward_exp": 1200,
       "reward_gold": 2,

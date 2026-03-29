@@ -9,6 +9,7 @@ from core.routes._helpers import (
     success,
     log_action,
     parse_json_payload,
+    resolve_actor_path_user_id,
     resolve_actor_user_id,
 )
 from core.database.connection import fetch_one, execute_query, db_transaction
@@ -118,7 +119,7 @@ def travel():
 @travel_bp.route("/api/travel/map/<user_id>", methods=["GET"])
 def travel_map(user_id: str):
     """返回玩家当前世界层级的大地图数据。"""
-    _, auth_error = resolve_actor_user_id({"user_id": user_id})
+    _, auth_error = resolve_actor_path_user_id(user_id)
     if auth_error:
         return auth_error
 

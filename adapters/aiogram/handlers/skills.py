@@ -17,6 +17,8 @@ from adapters.aiogram.services import (
     handle_expired_callback,
     new_request_id,
     parse_callback,
+    reject_non_owner,
+    reply_or_answer,
     resolve_uid,
     respond_query,
     safe_answer,
@@ -123,9 +125,9 @@ async def _show_skill_menu_message(message: Message, state: FSMContext, uid: str
     skills, err = await _fetch_skills(uid)
     await state.set_state(SkillsFSM.listing)
     if err:
-        await message.answer(f"❌ {err}", reply_markup=ui.main_menu_keyboard(registered=True))
+        await reply_or_answer(message, f"❌ {err}", reply_markup=ui.main_menu_keyboard(registered=True))
         return
-    await message.answer(ui.format_skill_panel(skills), reply_markup=ui.skill_list_keyboard(skills))
+    await reply_or_answer(message, ui.format_skill_panel(skills), reply_markup=ui.skill_list_keyboard(skills))
 
 
 async def _show_skill_menu_query(query: CallbackQuery, state: FSMContext, uid: str) -> None:
@@ -154,17 +156,19 @@ async def _show_skill_menu_with_hint(query: CallbackQuery, state: FSMContext, ui
     )
 
 
-@router.message(Command("xian_skills", "xian_skill", "skills", "skill"))
+@router.message(Command("xian_skills"))
 async def cmd_skills(message: Message, state: FSMContext) -> None:
     uid = await _uid_from_message(message, state)
     if not uid:
-        await message.answer("未找到角色，请先注册。", reply_markup=ui.register_keyboard())
+        await reply_or_answer(message, "未找到角色，请先注册。", reply_markup=ui.register_keyboard())
         return
     await _show_skill_menu_message(message, state, uid)
 
 
 @router.callback_query(F.data.startswith("skill:"))
 async def cb_skills(query: CallbackQuery, state: FSMContext) -> None:
+    if await reject_non_owner(query):
+        return
     await safe_answer(query)
     parsed = parse_callback(str(query.data or ""))
     if parsed is None:
@@ -196,12 +200,21 @@ async def cb_skills(query: CallbackQuery, state: FSMContext) -> None:
             await _show_skill_menu_with_hint(query, state, uid, f"未找到技能 {skill_id}，可能已变更，请从列表重新进入。")
             return
         learned = bool(row.get("learned"))
-        name = str(row.get("name") or skill_id).strip()
-        text_lines = [f"📘 技能详情：{name}", f"技能ID：{skill_id}"]
+        display_name = str(row.get("name") or skill_id).strip()
+        clean_name = display_name
+        if clean_name.startswith("✅ ") or clean_name.startswith("📘 ") or clean_name.startswith("🆕 "):
+            clean_name = clean_name[2:].strip()
+        text_lines = [f"📘 技能详情：{clean_name}"]
         if row.get("desc"):
             text_lines.append(str(row.get("desc")))
         if row.get("unlock_rank") is not None:
-            text_lines.append(f"解锁境界：{row.get('unlock_rank')}")
+            try:
+                from core.game.realms import get_realm_by_id
+                _realm = get_realm_by_id(int(row.get("unlock_rank")))
+                _realm_name = _realm["name"] if _realm else str(row.get("unlock_rank"))
+            except Exception:
+                _realm_name = str(row.get("unlock_rank"))
+            text_lines.append(f"解锁境界：{_realm_name}")
         text_lines.append(f"状态：{'已学会' if learned else '未学会'}")
         await respond_query(
             query,

@@ -8,6 +8,7 @@
 import os
 import json
 import logging
+import warnings
 from typing import Any, Dict, Optional
 from urllib.parse import urlparse
 
@@ -131,10 +132,14 @@ class _AppConfig:
     @property
     def internal_api_token(self) -> str:
         """核心服务内部调用令牌。"""
-        return os.environ.get("XXBOT_INTERNAL_API_TOKEN") or \
-               os.environ.get("INTERNAL_TOKEN") or \
-               self.get_nested("core_server", "api_token", default="") or \
-               self.telegram_token()
+        token = os.environ.get("XXBOT_INTERNAL_API_TOKEN") or \
+                os.environ.get("INTERNAL_TOKEN") or \
+                self.get_nested("core_server", "api_token", default="")
+        if not token:
+            logger.warning(
+                "内部 API 令牌未配置。请设置 XXBOT_INTERNAL_API_TOKEN 环境变量或在 config.json 中设置 core_server.api_token。"
+            )
+        return token or ""
 
     @property
     def admin_password(self) -> str:
@@ -170,12 +175,6 @@ class _AppConfig:
         return f"http://{self.core_server_host}:{self.core_server_port}"
 
     @property
-    def miniapp_url(self) -> str:
-        raw = os.environ.get("XXBOT_MINIAPP_URL") or \
-              self.get_nested("miniapp", "url", default="")
-        return str(raw or "").strip()
-
-    @property
     def admin_panel_port(self) -> int:
         return int(self.get_nested("admin_panel", "port", default=11451))
 
@@ -183,7 +182,12 @@ class _AppConfig:
 
     @property
     def db_path(self) -> str:
-        """兼容旧代码，新代码请使用 db_dsn。"""
+        """已废弃，请使用 db_dsn。"""
+        warnings.warn(
+            "config.db_path 已废弃，请使用 config.db_dsn",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         env_path = os.environ.get("XXBOT_DB_PATH")
         if env_path:
             return env_path
@@ -200,6 +204,11 @@ class _AppConfig:
         db = os.environ.get("POSTGRES_DB", "xiuxian")
         user = os.environ.get("POSTGRES_USER", "xiuxian")
         password = os.environ.get("POSTGRES_PASSWORD", "xiuxian")
+        if user == "xiuxian" and password == "xiuxian" and db == "xiuxian":
+            logger.warning(
+                "正在使用默认数据库凭据 (xiuxian/xiuxian)。"
+                "生产环境请设置 DATABASE_URL 或 POSTGRES_USER/POSTGRES_PASSWORD/POSTGRES_DB 环境变量。"
+            )
         return f"postgresql://{user}:{password}@{host}:{port}/{db}"
 
     @property

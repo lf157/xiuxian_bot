@@ -263,10 +263,10 @@ async def main() -> None:
     logging.getLogger().addHandler(error_capture)
 
     from core.database.connection import (
-        connect_sqlite,
+        connect_db,
         create_tables,
         execute,
-        close_sqlite,
+        close_db,
         get_user_by_platform,
         add_item,
     )
@@ -281,7 +281,7 @@ async def main() -> None:
     )
     from core.game.realms import get_next_realm
 
-    connect_sqlite()
+    connect_db()
     create_tables()
     run_migrations()
 
@@ -788,7 +788,7 @@ async def main() -> None:
         print("OK: bot-layer smoke suite passed.")
     finally:
         await bot_app.shutdown()
-        close_sqlite()
+        close_db()
 
 
 if __name__ == "__main__":

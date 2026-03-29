@@ -39,7 +39,7 @@ DAILY_QUESTS = [
     {
         "id": "daily_shop",
         "name": "逛逛商店",
-        "desc": "在商店购买 1 次",
+        "desc": "进入商店 1 次",
         "goal": 1,
         "rewards": {"copper": 40, "exp": 20},
     },

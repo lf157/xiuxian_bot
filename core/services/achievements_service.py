@@ -6,7 +6,7 @@ import threading
 import time
 from typing import Any, Dict, List, Tuple
 
-from core.database.connection import fetch_one, fetch_all, db_transaction, get_user_by_id, get_sqlite
+from core.database.connection import fetch_one, fetch_all, db_transaction, get_user_by_id, get_db
 from core.game.achievements import list_achievements, get_achievement, list_achievements_by_stage, get_current_stage_achievements
 from core.services.metrics_service import log_event, log_economy_ledger
 
@@ -15,7 +15,7 @@ _ACH_TABLES_LOCK = threading.Lock()
 
 
 def _ensure_achievement_tables() -> None:
-    conn = get_sqlite()
+    conn = get_db()
     cur = conn.cursor()
     cur.execute(
         """

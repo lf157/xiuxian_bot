@@ -92,7 +92,7 @@
   "focused_catalyst": "专精催化剂",
   "iron_ore": "铁矿石",
   "herb": "草药",
-  "spirit_stone": "灵石",
+  "spirit_stone": "聚元石",
   "spirit_herb": "灵草",
   "demon_core": "妖核",
   "recipe_fragment": "丹方残页",
@@ -108,7 +108,7 @@
   "weak_seconds_mult": "虚弱时间倍率",
   "fire_bonus": "火灵根加成",
   "steady_bonus": "稳健突破加成",
-  "ally_help_bonus": "道友助阵加成",
+
   "spirit_density_bonus_scale": "地脉灵气加成系数",
   "pity_bonus_per_point": "心魔值单点加成",
   "pity_bonus_cap": "心魔值加成上限",

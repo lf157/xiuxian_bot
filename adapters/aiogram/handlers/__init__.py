@@ -15,6 +15,7 @@ from adapters.aiogram.handlers.shop_alchemy_forge import router as shop_alchemy_
 from adapters.aiogram.handlers.skills import router as skills_router
 from adapters.aiogram.handlers.social_pvp_sect import router as social_pvp_sect_router
 from adapters.aiogram.handlers.story_events_quests import router as story_events_quests_router
+from adapters.aiogram.handlers.travel import router as travel_router
 
 root_router = Router(name="aiogram_root")
 root_router.include_router(menu_account_router)
@@ -27,6 +28,7 @@ root_router.include_router(shop_alchemy_forge_router)
 root_router.include_router(secret_realms_router)
 root_router.include_router(social_pvp_sect_router)
 root_router.include_router(story_events_quests_router)
+root_router.include_router(travel_router)
 root_router.include_router(admin_router)
 
 __all__ = ["root_router"]

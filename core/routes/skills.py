@@ -42,6 +42,12 @@ def skills_list(user_id):
         row["skill_level"] = level
         row["mastery_required"] = 0 if level >= SKILL_MAX_LEVEL else mastery_required(level)
         row["max_level"] = SKILL_MAX_LEVEL
+        skill_def = get_skill(str(row.get("skill_id") or ""))
+        if skill_def:
+            row.setdefault("name", skill_def.get("name", ""))
+            row.setdefault("desc", skill_def.get("desc", ""))
+            row.setdefault("type", skill_def.get("type", ""))
+            row.setdefault("unlock_rank", skill_def.get("unlock_rank", 1))
     unlockable = get_unlockable_skills(
         int(user.get("rank", 1) or 1),
         user_element=user.get("element"),
